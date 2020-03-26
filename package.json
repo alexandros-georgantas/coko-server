@@ -1,9 +1,11 @@
 {
-  "name": "@cokoapps/server",
+  "name": "@coko/server",
   "version": "0.0.0",
   "description": "A tweaked version of pubsweet-server for use by Coko's projects",
   "main": "index.js",
   "scripts": {
+    "cz": "git-cz",
+    "release": "standard-version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +18,36 @@
     "coko"
   ],
   "author": "Yannis Barlas",
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@pubsweet/logger": "^0.2.42",
+    "@pubsweet/models": "^0.3.7",
+    "body-parser": "^1.19.0",
+    "config": "^3.3.1",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0",
+    "http-status-codes": "^1.4.0",
+    "morgan": "^1.10.0",
+    "passport": "^0.4.1",
+    "pubsweet-server": "^13.9.4",
+    "waait": "^1.0.5"
+  },
+  "devDependencies": {
+    "@coko/lint": "^0.0.1",
+    "standard-version": "^7.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-customizable"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
 }
