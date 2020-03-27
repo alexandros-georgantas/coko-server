@@ -148,10 +148,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@coko/lint@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@coko/lint/-/lint-0.0.1.tgz#aeb8c063f94ff3af127abdb483f8a4a3efe36fd0"
-  integrity sha512-zFxn/nizvbVF8OD44mJjMorSJxgvjZXFgrF/Q57hJtW9Pdfb/BKpisXzSALEjdzdZDjPWpAVu69w6naUcIwBYA==
+"@coko/lint@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@coko/lint/-/lint-0.0.2.tgz#a03a8ca3bec5f4bcf2dc7346a8eafe9060e93a53"
+  integrity sha512-UhtXIbxqmV2N+i+3xIof9e5KXywdw/jO9rfJlTdcWRjQTTdqBwJgLYn3yqMOh4LxCGKzYgHCkLzskh2p9/Hfxw==
   dependencies:
     "@commitlint/cli" "^8.3.5"
     "@commitlint/config-conventional" "^8.3.4"

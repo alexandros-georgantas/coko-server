@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.coko.foundation:cokoapps/server.git"
+    "url": "https://gitlab.coko.foundation/cokoapps/server"
   },
   "keywords": [
     "pubsweet",
@@ -37,7 +37,7 @@
     "waait": "^1.0.5"
   },
   "devDependencies": {
-    "@coko/lint": "^0.0.1",
+    "@coko/lint": "^0.0.2",
     "standard-version": "^7.1.0"
   },
   "config": {
