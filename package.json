@@ -35,6 +35,7 @@
     "http-status-codes": "^1.4.0",
     "lodash": "^4.17.15",
     "morgan": "^1.10.0",
+    "node-cron": "^2.0.3",
     "passport": "^0.4.1",
     "pubsweet-server": "^13.9.4",
     "waait": "^1.0.5"

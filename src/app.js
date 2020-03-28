@@ -103,6 +103,11 @@ const configureApp = app => {
       .json({ message: err.message })
   })
 
+  if (config.has('pubsweet-server.cron.path')) {
+    /* eslint-disable-next-line import/no-dynamic-require */
+    require(config.get('pubsweet-server.cron.path'))
+  }
+
   // Actions to perform when the HTTP server starts listening
   app.onListen = async server => {
     const {
