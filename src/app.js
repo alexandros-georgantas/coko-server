@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable global-require, no-param-reassign */
 
 const path = require('path')
 
@@ -13,20 +13,15 @@ const passport = require('passport')
 const wait = require('waait')
 
 const logger = require('@pubsweet/logger')
-const models = require('@pubsweet/models')
 
-const gqlApi = require('pubsweet-server/src/graphql/api')
-const index = require('pubsweet-server/src/routes/index')
-const api = require('pubsweet-server/src/routes/api')
 const registerComponents = require('pubsweet-server/src/register-components')
-const authsome = require('pubsweet-server/src/helpers/authsome')
-const authentication = require('pubsweet-server/src/authentication')
-const { startJobQueue, stopJobQueue } = require('pubsweet-server/src/jobs')
-const {
-  addSubscriptions,
-} = require('pubsweet-server/src/graphql/subscriptions')
+const api = require('pubsweet-server/src/routes/api')
+const index = require('pubsweet-server/src/routes/index')
 
 const configureApp = app => {
+  const models = require('@pubsweet/models')
+  const authsome = require('pubsweet-server/src/helpers/authsome')
+
   app.locals.models = models
 
   app.use(bodyParser.json({ limit: '50mb' }))
@@ -62,6 +57,8 @@ const configureApp = app => {
 
   // Register passport authentication strategies
   app.use(passport.initialize())
+  const authentication = require('pubsweet-server/src/authentication')
+
   passport.use('bearer', authentication.strategies.bearer)
   passport.use('anonymous', authentication.strategies.anonymous)
   passport.use('local', authentication.strategies.local)
@@ -72,12 +69,14 @@ const configureApp = app => {
   registerComponents(app)
 
   app.use('/api', api) // REST API
+
+  const gqlApi = require('./graphqlApi')
   gqlApi(app) // GraphQL API
 
   app.use('/', index) // Serve the index page for front end
 
   app.use((err, req, res, next) => {
-    // development error handler, will print stacktrace
+    // Development error handler, will print stacktrace
     if (app.get('env') === 'development' || app.get('env') === 'test') {
       logger.error(err)
       logger.error(err.stack)
@@ -106,15 +105,18 @@ const configureApp = app => {
 
   // Actions to perform when the HTTP server starts listening
   app.onListen = async server => {
-    // Add GraphQL subscriptions
-    addSubscriptions(server)
+    const {
+      addSubscriptions,
+    } = require('pubsweet-server/src/graphql/subscriptions')
+    addSubscriptions(server) // Add GraphQL subscriptions
 
-    // Manage job queue
-    await startJobQueue()
+    const { startJobQueue } = require('pubsweet-server/src/jobs')
+    await startJobQueue() // Manage job queue
   }
 
   // Actions to perform when the server closes
   app.onClose = async () => {
+    const { stopJobQueue } = require('pubsweet-server/src/jobs')
     await stopJobQueue()
     return wait(500)
   }
