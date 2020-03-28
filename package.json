@@ -37,6 +37,7 @@
     "morgan": "^1.10.0",
     "node-cron": "^2.0.3",
     "passport": "^0.4.1",
+    "pubsweet": "^5.1.10",
     "pubsweet-server": "^13.9.4",
     "waait": "^1.0.5"
   },
