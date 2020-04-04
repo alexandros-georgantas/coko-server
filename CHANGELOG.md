@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://gitlab.coko.foundation/cokoapps/server/compare/v0.0.2...v0.1.0) (2020-04-04)
+
+
+### Features
+
+* **server:** cors config to allow client running on a different port ([dff70dd](https://gitlab.coko.foundation/cokoapps/server/commit/dff70dd2623adc3855129f1e98ba1cda68f37a0d))
+
 ### [0.0.2](https://gitlab.coko.foundation/cokoapps/server/compare/v0.0.1...v0.0.2) (2020-03-28)
 
 
