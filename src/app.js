@@ -4,6 +4,7 @@ const path = require('path')
 
 const bodyParser = require('body-parser')
 const config = require('config')
+const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const express = require('express')
 const helmet = require('helmet')
@@ -54,6 +55,16 @@ const configureApp = app => {
       express.static(path.resolve(config.get('pubsweet-server.uploads'))),
     )
   }
+
+  // Allow CORS from client if host / port is different
+  app.use(
+    cors({
+      origin: `${config.get('pubsweet-client.host')}:${config.get(
+        'pubsweet-client.port',
+      )}`,
+      credentials: true,
+    }),
+  )
 
   // Register passport authentication strategies
   app.use(passport.initialize())

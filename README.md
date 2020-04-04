@@ -65,6 +65,20 @@ cron.schedule('* * * * * *', () => {
 
 The library that enables this is `node-cron`. Be sure to check its [documentation](https://github.com/node-cron/node-cron#node-cron) for further details.
 
+### CORS support for the client
+
+If you run your client on a different host/port than the server, you might run into issues where cross-origin requests are rejected. If that happens, make sure the following entries exist in your config. The server should take care of it once these are defined.
+
+```js
+// replace values with the ones you are using
+{
+  'pubsweet-client': {
+    host: 'http://localhost',
+    port: 4000,
+  }
+}
+```
+
 ### Other exports from included packages
 
 - `createJWT` is an export of a function in `pubsweet-server` that does just that. Useful if you have custom login resolvers.
