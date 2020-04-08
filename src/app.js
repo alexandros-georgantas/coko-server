@@ -57,14 +57,19 @@ const configureApp = app => {
   }
 
   // Allow CORS from client if host / port is different
-  app.use(
-    cors({
-      origin: `${config.get('pubsweet-client.host')}:${config.get(
-        'pubsweet-client.port',
-      )}`,
-      credentials: true,
-    }),
-  )
+  if (
+    config.has('pubsweet-client.host') &&
+    config.has('pubsweet-client.port')
+  ) {
+    app.use(
+      cors({
+        origin: `${config.get('pubsweet-client.host')}:${config.get(
+          'pubsweet-client.port',
+        )}`,
+        credentials: true,
+      }),
+    )
+  }
 
   // Register passport authentication strategies
   app.use(passport.initialize())
