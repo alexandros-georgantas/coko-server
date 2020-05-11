@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://gitlab.coko.foundation/cokoapps/server/compare/v0.1.0...v1.0.0) (2020-05-11)
+
+
+### Features
+
+* **middleware:** add middleware for authorization ([33659f4](https://gitlab.coko.foundation/cokoapps/server/commit/33659f424453f19f45f90eade432bc0df207e06c))
+
+
+### Bug Fixes
+
+* **server:** fix crash when trying to read empty config values ([c6c07e4](https://gitlab.coko.foundation/cokoapps/server/commit/c6c07e46141156a39c7e875223798303ea70e776))
+
 ## [0.1.0](https://gitlab.coko.foundation/cokoapps/server/compare/v0.0.2...v0.1.0) (2020-04-04)
 
 
