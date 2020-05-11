@@ -5,10 +5,10 @@ const errors = require('@pubsweet/errors')
 
 const config = require('config')
 
-const schema = require('pubsweet-server/src/graphql/schema')
 const connectors = require('pubsweet-server/src/connectors')
 const loaders = require('pubsweet-server/src/graphql/loaders')
 const helpers = require('pubsweet-server/src/helpers/authorization')
+const schema = require('./graphqlSchema')
 
 const hostname = config.has('pubsweet-server.hostname')
   ? config.get('pubsweet-server.hostname')
