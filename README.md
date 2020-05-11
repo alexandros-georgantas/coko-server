@@ -36,6 +36,49 @@ If you place this file in `server/app.js`, starting the server should work autom
 }
 ```
 
+### Authorization middleware
+
+The server provides authorization checks through using `graphql-shield`.  
+You can access all of shield's exports (eg. `rule`, `and`, `or` etc.) through `@coko/server/authorization`.  
+The only exception is `shield`, which is used internally by the server.
+
+To get started, declare your permissions in any file you want:
+
+```js
+// myPermissions.js
+
+const { rule } = require('@coko/server/authorization')
+
+const permissions = {
+  Query: {
+    myQuery: rule()(async (parent, args, ctx, info) => {
+      // my auth logic here
+    }),
+  },
+  Mutation: {
+    myMutation: rule()(async (parent, args, ctx, info) => {
+      // my other auth logic here
+    }),
+  },
+}
+
+module.exports = permissions
+```
+
+For the server to access your permissions, simply add them to the config:
+
+```js
+// config/default.js
+
+const permissions = require('../path/to/myPermissions.js')
+
+{
+  permissions: permissions
+}
+```
+
+Please refer to shield's [documentation](https://github.com/maticzav/graphql-shield#overview) for more details.
+
 ### Cron support
 
 All you need for cron-based scheduled tasks to run is to provide the path to your cron jobs.
@@ -85,5 +128,5 @@ If you run your client on a different host/port than the server, you might run i
 
 ### Future features
 
-- Graphql middleware
+- Notification middleware
 - Include more pubsweet packages into the bundle
