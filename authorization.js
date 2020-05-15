@@ -9,6 +9,8 @@ const {
   not,
 } = require('graphql-shield')
 
+const { isAdmin, isAuthenticated } = require('./src/helpers')
+
 module.exports = {
   rule,
   inputRule,
@@ -18,4 +20,6 @@ module.exports = {
   chain,
   or,
   not,
+  isAuthenticated,
+  isAdmin,
 }
