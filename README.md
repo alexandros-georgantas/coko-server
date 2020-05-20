@@ -41,6 +41,7 @@ If you place this file in `server/app.js`, starting the server should work autom
 The server provides authorization checks through using `graphql-shield`.  
 You can access all of shield's exports (eg. `rule`, `and`, `or` etc.) through `@coko/server/authorization`.  
 The only exception is `shield`, which is used internally by the server.
+Besides shield's exports, two helpers, `isAdmin` and `isAuthenticated` are provided.
 
 To get started, declare your permissions in any file you want:
 
@@ -54,6 +55,9 @@ const permissions = {
     myQuery: rule()(async (parent, args, ctx, info) => {
       // my auth logic here
     }),
+    // using provided helpers
+    anotherQuery: isAdmin,
+    yetAnotherQuery: isAuthenticated,
   },
   Mutation: {
     myMutation: rule()(async (parent, args, ctx, info) => {
