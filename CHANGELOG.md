@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.0.0...v1.1.0) (2020-05-20)
+
+
+### Features
+
+* **middleware:** add helpers for authorization middleware ([f17b265](https://gitlab.coko.foundation/cokoapps/server/commit/f17b2655d50764289a88e4fae5852f302e4bddc0))
+
+
+### Bug Fixes
+
+* **middleware:** ensure rules are not empty before applying shield ([557dc56](https://gitlab.coko.foundation/cokoapps/server/commit/557dc56dc2cf5d628aeca56422e8a78b61dd8c90))
+
 ## [1.0.0](https://gitlab.coko.foundation/cokoapps/server/compare/v0.1.0...v1.0.0) (2020-05-11)
 
 
