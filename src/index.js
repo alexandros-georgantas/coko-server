@@ -1,5 +1,6 @@
 const cron = require('node-cron')
 
+const BaseModel = require('@pubsweet/base-model')
 const authentication = require('pubsweet-server/src/authentication')
 const logger = require('@pubsweet/logger')
 
@@ -12,4 +13,5 @@ module.exports = {
   cron,
   createJWT,
   logger,
+  BaseModel,
 }

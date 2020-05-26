@@ -23,6 +23,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@pubsweet/base-model": "^3.6.5",
     "@pubsweet/errors": "^2.0.32",
     "@pubsweet/logger": "^0.2.42",
     "@pubsweet/models": "^0.3.7",
