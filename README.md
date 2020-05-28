@@ -7,7 +7,7 @@ It is also meant to bundle as many server-side pubsweet dependencies as possible
 Install package and remove the dependencies it is meant to replace.
 
 ```sh
-yarn remove pubsweet pubsweet-server # if migrating from an existing project
+yarn remove pubsweet pubsweet-server @pubsweet/logger # if migrating from an existing project
 yarn add @coko/server
 ```
 
@@ -34,6 +34,14 @@ If you place this file in `server/app.js`, starting the server should work autom
     app: path.resolve(__dirname, 'helpers', 'customApp.js'),
   }
 }
+```
+
+### Logger
+
+To access the logger simply import like so:
+
+```js
+const { logger } = require('@coko/server')
 ```
 
 ### Authorization middleware
