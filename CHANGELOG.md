@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.1.0...v1.2.0) (2020-05-28)
+
+
+### Features
+
+* **server:** export BaseModel ([82e7cd5](https://gitlab.coko.foundation/cokoapps/server/commit/82e7cd5c4de4d0b9e0017c24a52fee0cb36bdc62))
+* **server:** export logger ([a3dfd2b](https://gitlab.coko.foundation/cokoapps/server/commit/a3dfd2b0df720cbb96c71c5c95977625058f97dc))
+
 ## [1.1.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.0.0...v1.1.0) (2020-05-20)
 
 
