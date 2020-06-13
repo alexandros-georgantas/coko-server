@@ -2,12 +2,47 @@ const config = require('config')
 const isEmpty = require('lodash/isEmpty')
 const { applyMiddleware } = require('graphql-middleware')
 const { shield } = require('graphql-shield')
-let schema = require('pubsweet-server/src/graphql/schema')
+
+const logger = require('@pubsweet/logger')
+const schema = require('pubsweet-server/src/graphql/schema')
+
+const emailMiddleware = require('./middleware/email')
+
+const baseMessage = 'Coko server =>'
+
+const logRegistration = name =>
+  logger.info(`${baseMessage} Middleware: Registered ${name} middleware`)
+
+const middleware = []
+console.log('') // eslint-disable-line no-console
+logger.info(`${baseMessage} Registering graphql middleware...`)
+
+/**
+ * Authorization middleware
+ */
 
 const permissions = config.has('permissions') && config.get('permissions')
 
-if (permissions && !isEmpty(permissions)) {
-  schema = applyMiddleware(schema, shield(permissions))
+if (!isEmpty(permissions)) {
+  const authorizationMiddleware = shield(permissions)
+  middleware.push(authorizationMiddleware)
+  logRegistration('authorization')
 }
 
-module.exports = schema
+/**
+ * Email middleware
+ */
+
+const emailConfig =
+  config.has('emailMiddleware') && config.get('emailMiddleware')
+
+if (!isEmpty(emailConfig)) {
+  middleware.push(emailMiddleware)
+  logRegistration('email')
+}
+
+console.log('') // eslint-disable-line no-console
+
+const schemaWithMiddleWare = applyMiddleware(schema, ...middleware)
+
+module.exports = schemaWithMiddleWare

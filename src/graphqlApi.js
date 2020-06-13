@@ -1,13 +1,14 @@
 const { ApolloServer } = require('apollo-server-express')
 const isEmpty = require('lodash/isEmpty')
+const config = require('config')
+
 const logger = require('@pubsweet/logger')
 const errors = require('@pubsweet/errors')
-
-const config = require('config')
 
 const connectors = require('pubsweet-server/src/connectors')
 const loaders = require('pubsweet-server/src/graphql/loaders')
 const helpers = require('pubsweet-server/src/helpers/authorization')
+
 const schema = require('./graphqlSchema')
 
 const hostname = config.has('pubsweet-server.hostname')
