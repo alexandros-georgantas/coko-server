@@ -86,6 +86,46 @@ const permissions = require('../path/to/myPermissions.js')
 
 Please refer to shield's [documentation](https://github.com/maticzav/graphql-shield#overview) for more details.
 
+### Email middleware
+
+Email notifications get sent out as a side effect of a **_mutation_** in your schema.
+
+Create a file wherever you like:
+
+```js
+const myFunc = async (resolve, parent, args, ctx, info) => {
+  // do some stuff before the resolver
+
+  const result = await resolve(parent, args, ctx, info)
+
+  // do some stuff after the resolver
+
+  // send your email
+
+  return result
+}
+
+module.exports = {
+  // myMutation needs to match a mutation name in your schema
+  myMutation: myFunc,
+}
+```
+
+Now in your config:
+
+```js
+// config/default.js
+const emailService = require('path/to/your/email/file')
+
+{
+  emailMiddleware: {
+    service: emailService
+  }
+}
+```
+
+This middleware uses `graphql-middleware` to provide its functionality, so make sure to read its [documentation](https://github.com/prisma-labs/graphql-middleware) and understand its function signature.
+
 ### Cron support
 
 All you need for cron-based scheduled tasks to run is to provide the path to your cron jobs.
@@ -154,5 +194,4 @@ Useful if you have custom login resolvers.
 
 ### Future features
 
-- Notification middleware
 - Include more pubsweet packages into the bundle
