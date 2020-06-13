@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.2.0...v1.3.0) (2020-06-13)
+
+
+### Features
+
+* **middleware:** add email middleware ([f0e6fb9](https://gitlab.coko.foundation/cokoapps/server/commit/f0e6fb9456f33e12be84181f2f70bf430f242399))
+
 ## [1.2.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.1.0...v1.2.0) (2020-05-28)
 
 
