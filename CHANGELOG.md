@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.3.0...v1.4.0) (2020-10-26)
+
+
+### Features
+
+* **middleware:** enable shield debug mode when not in production ([fa2ce20](https://gitlab.coko.foundation/cokoapps/server/commit/fa2ce20327724f75b877adbea28d18fd9d285f75))
+* **server:** add ability to disable server ([4d89db0](https://gitlab.coko.foundation/cokoapps/server/commit/4d89db0b9832328e45801cb63ef4bfe9f77aca7a))
+
 ## [1.3.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.2.0...v1.3.0) (2020-06-13)
 
 
