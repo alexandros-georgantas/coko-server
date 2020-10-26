@@ -86,8 +86,20 @@ const configureApp = app => {
 
   app.use('/api', api) // REST API
 
-  const gqlApi = require('./graphqlApi')
-  gqlApi(app) // GraphQL API
+  let useGraphQLServer = true
+  if (
+    config.has('pubsweet-server.useGraphQLServer') &&
+    config.get('pubsweet-server.useGraphQLServer') === false
+  ) {
+    useGraphQLServer = false
+  }
+
+  logger.warn('useGraphQLServer', useGraphQLServer)
+
+  if (useGraphQLServer) {
+    const gqlApi = require('./graphqlApi')
+    gqlApi(app) // GraphQL API
+  }
 
   app.use('/', index) // Serve the index page for front end
 

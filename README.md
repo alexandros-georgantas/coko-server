@@ -155,6 +155,24 @@ cron.schedule('* * * * * *', () => {
 
 The library that enables this is `node-cron`. Be sure to check its [documentation](https://github.com/node-cron/node-cron#node-cron) for further details.
 
+### Disable GraphQL
+
+There are cases where you might not want a graphql server at all. eg. If you are building a sevice with a single REST api endpoint with coko server.
+
+To disable graphql on the server, change the following value in your config:
+
+```js
+// config/default.js
+
+module.exports = {
+  'pubsweet-server': {
+    useGraphQLServer: false,
+  },
+}
+```
+
+_Note that this is `true` by default as using GraphQL will be the most common use case._
+
 ### CORS support for the client
 
 If you run your client on a different host/port than the server, you might run into issues where cross-origin requests are rejected. If that happens, make sure the following entries exist in your config. The server should take care of it once these are defined.
