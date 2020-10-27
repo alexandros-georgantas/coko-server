@@ -94,7 +94,7 @@ const configureApp = app => {
     useGraphQLServer = false
   }
 
-  logger.warn('useGraphQLServer', useGraphQLServer)
+  logger.info('useGraphQLServer', useGraphQLServer)
 
   if (useGraphQLServer) {
     const gqlApi = require('./graphqlApi')
@@ -138,10 +138,12 @@ const configureApp = app => {
 
   // Actions to perform when the HTTP server starts listening
   app.onListen = async server => {
-    const {
-      addSubscriptions,
-    } = require('pubsweet-server/src/graphql/subscriptions')
-    addSubscriptions(server) // Add GraphQL subscriptions
+    if (useGraphQLServer) {
+      const {
+        addSubscriptions,
+      } = require('pubsweet-server/src/graphql/subscriptions')
+      addSubscriptions(server) // Add GraphQL subscriptions
+    }
 
     const { startJobQueue } = require('pubsweet-server/src/jobs')
     await startJobQueue() // Manage job queue
