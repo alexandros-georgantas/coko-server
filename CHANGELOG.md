@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.4.0...v1.4.1) (2020-10-27)
+
+
+### Bug Fixes
+
+* **server:** do not load subscriptions if gql is off ([b7359ae](https://gitlab.coko.foundation/cokoapps/server/commit/b7359ae67a5630581df35e77202e792dcfe42915))
+
 ## [1.4.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.3.0...v1.4.0) (2020-10-26)
 
 
