@@ -189,7 +189,15 @@ If you run your client on a different host/port than the server, you might run i
 
 ### Other exports from included packages
 
-##### Logger
+##### startServer
+
+Returns function to start pubsweet server. Useful for when you want to avoid using any cli wrapper (eg. for production docker images).
+
+```js
+const { startServer } = require('@coko/server')
+```
+
+##### logger
 
 Returns pubsweet's logger
 
@@ -197,7 +205,7 @@ Returns pubsweet's logger
 const { logger } = require('@coko/server')
 ```
 
-##### Base Model
+##### BaseModel
 
 Returns pubsweet's base model
 
