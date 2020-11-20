@@ -57,15 +57,18 @@ const configureApp = app => {
   }
 
   // Allow CORS from client if host / port is different
-  if (
-    config.has('pubsweet-client.host') &&
-    config.has('pubsweet-client.port')
-  ) {
+  if (config.has('pubsweet-client.host')) {
+    const clientProtocol = config.get('pubsweet-client.protocol') || 'http'
+    const clientHost = config.get('pubsweet-client.host')
+    const clientPort = config.get('pubsweet-client.port')
+
+    const clientUrl = `${clientProtocol}://${clientHost}${
+      clientPort ? `:${clientPort}` : ''
+    }`
+
     app.use(
       cors({
-        origin: `${config.get('pubsweet-client.host')}:${config.get(
-          'pubsweet-client.port',
-        )}`,
+        origin: clientUrl,
         credentials: true,
       }),
     )
