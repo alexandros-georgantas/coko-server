@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.5.0...v1.6.0) (2020-11-20)
+
+
+### Features
+
+* **server:** allow server to read broken down client url for cors ([a3997b7](https://gitlab.coko.foundation/cokoapps/server/commit/a3997b770883a53197686e98a6d7b30a21d67100))
+
 ## [1.5.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.4.1...v1.5.0) (2020-11-16)
 
 
