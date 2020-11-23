@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.3](https://gitlab.coko.foundation/cokoapps/server/compare/v1.6.2...v1.6.3) (2020-11-23)
+
+
+### Bug Fixes
+
+* **server:** handle client protocol and port not being defined ([a100b6b](https://gitlab.coko.foundation/cokoapps/server/commit/a100b6ba705e575cb200833fdf9ba8818861786f))
+
 ### [1.6.2](https://gitlab.coko.foundation/cokoapps/server/compare/v1.6.1...v1.6.2) (2020-11-23)
 
 
