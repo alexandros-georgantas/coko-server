@@ -48,6 +48,7 @@ const configureApp = app => {
   app.use(cookieParser())
   app.use(helmet())
   app.use(express.static(path.resolve('.', '_build')))
+  app.use(express.static(path.resolve('.', 'static')))
 
   if (config.has('pubsweet-server.uploads')) {
     app.use(
