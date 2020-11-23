@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.2](https://gitlab.coko.foundation/cokoapps/server/compare/v1.6.1...v1.6.2) (2020-11-23)
+
+
+### Bug Fixes
+
+* **server:** serve static folder from server ([e565522](https://gitlab.coko.foundation/cokoapps/server/commit/e565522b078c9396dede7815845d05731499d643))
+
 ### [1.6.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.6.0...v1.6.1) (2020-11-20)
 
 
