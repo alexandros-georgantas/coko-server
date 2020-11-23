@@ -59,9 +59,15 @@ const configureApp = app => {
 
   // Allow CORS from client if host / port is different
   if (config.has('pubsweet-client.host')) {
-    const clientProtocol = config.get('pubsweet-client.protocol') || 'http'
+    const clientProtocol =
+      (config.has('pubsweet-client.protocol') &&
+        config.get('pubsweet-client.protocol')) ||
+      'http'
+
     let clientHost = config.get('pubsweet-client.host')
-    const clientPort = config.get('pubsweet-client.port')
+
+    const clientPort =
+      config.has('pubsweet-client.port') && config.get('pubsweet-client.port')
 
     // This is here because webpack dev server might need to be started with
     // 0.0.0.0 instead of localhost, but the incoming request will still be
