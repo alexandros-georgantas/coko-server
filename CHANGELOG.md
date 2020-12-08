@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.7.0...v1.7.1) (2020-12-08)
+
+
+### Bug Fixes
+
+* **server:** fix bundle serving path ([71812d4](https://gitlab.coko.foundation/cokoapps/server/commit/71812d499572af0396be4736e09d27a4f578c68c))
+
 ## [1.7.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.6.3...v1.7.0) (2020-12-08)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@coko/server",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "A tweaked version of pubsweet-server for use by Coko's projects",
   "main": "src/index.js",
   "scripts": {
