@@ -17,7 +17,6 @@ const logger = require('@pubsweet/logger')
 
 const registerComponents = require('pubsweet-server/src/register-components')
 const api = require('pubsweet-server/src/routes/api')
-const index = require('pubsweet-server/src/routes/index')
 
 const configureApp = app => {
   const models = require('@pubsweet/models')
@@ -112,14 +111,19 @@ const configureApp = app => {
     useGraphQLServer = false
   }
 
-  logger.info('useGraphQLServer', useGraphQLServer)
-
   if (useGraphQLServer) {
     const gqlApi = require('./graphqlApi')
     gqlApi(app) // GraphQL API
   }
 
-  app.use('/', index) // Serve the index page for front end
+  if (
+    config.has('pubsweet-server.serveClient') &&
+    config.get('pubsweet-server.serveClient')
+  ) {
+    app.get('*', (req, res) => {
+      res.sendFile(path.join('.', '_build', 'assets', 'index.html'))
+    })
+  }
 
   app.use((err, req, res, next) => {
     // Development error handler, will print stacktrace
