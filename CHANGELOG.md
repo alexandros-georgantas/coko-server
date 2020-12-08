@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.6.3...v1.7.0) (2020-12-08)
+
+
+### Features
+
+* **server:** add env variable that will serve build ([e1bec79](https://gitlab.coko.foundation/cokoapps/server/commit/e1bec79db9c972ac9bd9edf0e9cdc58934603727))
+
 ### [1.6.3](https://gitlab.coko.foundation/cokoapps/server/compare/v1.6.2...v1.6.3) (2020-11-23)
 
 
