@@ -157,6 +157,14 @@ const configureApp = app => {
     require(config.get('pubsweet-server.cron.path'))
   }
 
+  let useJobQueue = true
+  if (
+    config.has('pubsweet-server.useJobQueue') &&
+    config.get('pubsweet-server.useJobQueue') === false
+  ) {
+    useJobQueue = false
+  }
+
   // Actions to perform when the HTTP server starts listening
   app.onListen = async server => {
     if (useGraphQLServer) {
@@ -165,18 +173,20 @@ const configureApp = app => {
       } = require('pubsweet-server/src/graphql/subscriptions')
       addSubscriptions(server) // Add GraphQL subscriptions
     }
-
-    const { startJobQueue } = require('pubsweet-server/src/jobs')
-    await startJobQueue() // Manage job queue
+    if (useJobQueue) {
+      const { startJobQueue } = require('pubsweet-server/src/jobs')
+      await startJobQueue() // Manage job queue
+    }
   }
 
   // Actions to perform when the server closes
   app.onClose = async () => {
-    const { stopJobQueue } = require('pubsweet-server/src/jobs')
-    await stopJobQueue()
+    if (useJobQueue) {
+      const { stopJobQueue } = require('pubsweet-server/src/jobs')
+      await stopJobQueue()
+    }
     return wait(500)
   }
-
   return app
 }
 
