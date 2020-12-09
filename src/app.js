@@ -19,6 +19,8 @@ const registerComponents = require('pubsweet-server/src/register-components')
 const api = require('pubsweet-server/src/routes/api')
 const index = require('pubsweet-server/src/routes/index')
 
+const healthcheck = require('./healthcheck')
+
 const configureApp = app => {
   const models = require('@pubsweet/models')
   const authsome = require('pubsweet-server/src/helpers/authsome')
@@ -103,6 +105,8 @@ const configureApp = app => {
   registerComponents(app)
 
   app.use('/api', api) // REST API
+
+  app.get('/healthcheck', healthcheck) // Server health endpoint
 
   let useGraphQLServer = true
   if (
