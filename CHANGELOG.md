@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.7.1...v1.8.0) (2020-12-09)
+
+
+### Features
+
+* **server:** add ability to turn off pg-boos job queue ([35a56f1](https://gitlab.coko.foundation/cokoapps/server/commit/35a56f1f81b4bf3c276595e7525ea7e6648ce305))
+* **server:** add health check endpoint ([a03a4cb](https://gitlab.coko.foundation/cokoapps/server/commit/a03a4cb9c1cd1dce84949ed58011019acc08c3ca))
+
 ### [1.7.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.7.0...v1.7.1) (2020-12-08)
 
 
