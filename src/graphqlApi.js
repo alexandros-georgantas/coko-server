@@ -1,4 +1,4 @@
-const { ApolloServer } = require('apollo-server-express')
+const { ApolloServer, ForbiddenError, UserInputError, AuthenticationError, ApolloError } = require('apollo-server-express')
 const isEmpty = require('lodash/isEmpty')
 const config = require('config')
 
@@ -44,12 +44,18 @@ const api = app => {
         pubsweetError => error instanceof pubsweetError,
       )
 
+      const isGraphqlDefinedError = [ForbiddenError, UserInputError, AuthenticationError, ApolloError].some(
+        graphqlError => error instanceof graphqlError
+      )
+
       // err is always a GraphQLError which should be passed to the client
-      if (!isEmpty(err.originalError) && !isPubsweetDefinedError)
+      if (!isEmpty(err.originalError) && !isPubsweetDefinedError && !isGraphqlDefinedError)
         return {
           name: 'Server Error',
           message: 'Something went wrong! Please contact your administrator',
         }
+
+      if (isGraphqlDefinedError) return error
 
       return {
         name: error.name || 'GraphQLError',
