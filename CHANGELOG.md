@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.8.0...v1.9.0) (2021-03-03)
+
+
+### Features
+
+* **server:** expose pg-boss from ps-server ([ed611f7](https://gitlab.coko.foundation/cokoapps/server/commit/ed611f71927cc64b9b5b7e936a326a0e2e5185fc))
+
+
+### Bug Fixes
+
+* **server:** add error handling for graphql errors ([358d8fa](https://gitlab.coko.foundation/cokoapps/server/commit/358d8fafd9638afa993bd9a5e76acd3c8c2275f0))
+
 ## [1.8.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.7.1...v1.8.0) (2020-12-09)
 
 
