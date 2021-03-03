@@ -6,14 +6,19 @@ const { startServer } = require('pubsweet-server')
 const logger = require('@pubsweet/logger')
 
 const app = require('./app')
+const { boss, connectToJobQueue } = require('./pgboss')
 
 const createJWT = authentication.token.create
 
 module.exports = {
   app,
-  cron,
   createJWT,
   logger,
   startServer,
   BaseModel,
+
+  cron,
+
+  boss,
+  connectToJobQueue,
 }
