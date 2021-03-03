@@ -42,7 +42,7 @@
     "node-cron": "^2.0.3",
     "passport": "^0.4.1",
     "pubsweet": "^5.1.18",
-    "pubsweet-server": "^13.11.5",
+    "pubsweet-server": "^13.12.2",
     "waait": "^1.0.5"
   },
   "devDependencies": {

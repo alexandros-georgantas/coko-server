@@ -156,11 +156,6 @@ const configureApp = app => {
       .json({ message: err.message })
   })
 
-  if (config.has('pubsweet-server.cron.path')) {
-    /* eslint-disable-next-line import/no-dynamic-require */
-    require(config.get('pubsweet-server.cron.path'))
-  }
-
   let useJobQueue = true
   if (
     config.has('pubsweet-server.useJobQueue') &&
@@ -177,9 +172,15 @@ const configureApp = app => {
       } = require('pubsweet-server/src/graphql/subscriptions')
       addSubscriptions(server) // Add GraphQL subscriptions
     }
+
     if (useJobQueue) {
       const { startJobQueue } = require('pubsweet-server/src/jobs')
       await startJobQueue() // Manage job queue
+    }
+
+    if (config.has('pubsweet-server.cron.path')) {
+      /* eslint-disable-next-line import/no-dynamic-require */
+      require(config.get('pubsweet-server.cron.path'))
     }
   }
 
@@ -191,6 +192,7 @@ const configureApp = app => {
     }
     return wait(500)
   }
+
   return app
 }
 
