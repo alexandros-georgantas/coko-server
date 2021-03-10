@@ -23,10 +23,10 @@
     "access": "public"
   },
   "dependencies": {
-    "@pubsweet/base-model": "^4.0.3",
-    "@pubsweet/errors": "^2.0.39",
-    "@pubsweet/logger": "^0.2.49",
-    "@pubsweet/models": "^0.3.14",
+    "@pubsweet/base-model": "^4.0.8",
+    "@pubsweet/errors": "^2.0.44",
+    "@pubsweet/logger": "^0.2.54",
+    "@pubsweet/models": "^0.3.19",
     "apollo-server-express": "^2.11.0",
     "body-parser": "^1.19.0",
     "config": "^3.3.2",
@@ -41,8 +41,8 @@
     "morgan": "^1.10.0",
     "node-cron": "^2.0.3",
     "passport": "^0.4.1",
-    "pubsweet": "^5.1.18",
-    "pubsweet-server": "^13.12.2",
+    "pubsweet": "^5.1.23",
+    "pubsweet-server": "^13.12.3",
     "waait": "^1.0.5"
   },
   "devDependencies": {
