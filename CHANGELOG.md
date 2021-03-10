@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.9.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.9.0...v1.9.1) (2021-03-10)
+
+
+### Bug Fixes
+
+* **server:** fix pg-boss version mismatch ([b27496e](https://gitlab.coko.foundation/cokoapps/server/commit/b27496e4ada78d51df1b40642277d9d781fb9034))
+
 ## [1.9.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.8.0...v1.9.0) (2021-03-03)
 
 
