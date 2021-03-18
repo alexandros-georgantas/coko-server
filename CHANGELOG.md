@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.11.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.10.0...v1.11.0) (2021-03-18)
+
+
+### Features
+
+* **server:** export db from db-manager ([6524687](https://gitlab.coko.foundation/cokoapps/server/commit/652468782a52c5940807598a4eef75a59d4d135c))
+
 ## [1.10.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.9.1...v1.10.0) (2021-03-18)
 
 
