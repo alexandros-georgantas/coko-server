@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@pubsweet/base-model": "^4.0.8",
+    "@pubsweet/db-manager": "^3.1.19",
     "@pubsweet/errors": "^2.0.44",
     "@pubsweet/logger": "^0.2.54",
     "@pubsweet/models": "^0.3.19",
