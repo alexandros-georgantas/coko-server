@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.9.1...v1.10.0) (2021-03-18)
+
+
+### Features
+
+* **server:** expose pubsubmanager from ps-server ([0f5db7e](https://gitlab.coko.foundation/cokoapps/server/commit/0f5db7e08909539ef92adf74e79ff1db30ca6014))
+
 ### [1.9.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.9.0...v1.9.1) (2021-03-10)
 
 
