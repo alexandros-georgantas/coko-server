@@ -8,7 +8,7 @@ Install package and remove the dependencies it is meant to replace.
 
 ```sh
 ## if migrating from an existing project
-yarn remove pubsweet pubsweet-server @pubsweet/logger @pubsweet/base-model
+yarn remove pubsweet pubsweet-server @pubsweet/logger @pubsweet/base-model @pubsweet/component-send-email
 ##
 
 yarn add @coko/server
@@ -155,6 +155,46 @@ cron.schedule('* * * * * *', () => {
 
 The library that enables this is `node-cron`. Be sure to check its [documentation](https://github.com/node-cron/node-cron#node-cron) for further details.
 
+### Queue manager
+
+We use [`pg-boss`](https://github.com/timgit/pg-boss/blob/master/docs/usage.md#publish) to handle queues. This package exposes an instance of pg-boss, so you don't have to initiate it yourself. In other words, there's no need to use the `start` and `stop` functions. These are handled.
+
+The following SQL code needs to have run on your database, either via a database init script or as part of a migration:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```
+
+Use the queue manager as follows:
+
+```js
+const { boss } = require('@coko/server')
+
+await boss.publish('my-job', { and: 'how' })
+```
+
+The above method is recommended, but if you already use pubsweet's `connectToJobQueue` and want a low-overhead way to switch to `@coko/server`, we also expose the same function for backwards compatibility.
+
+```js
+// Replace this
+const { connectToJobQueue } = require('pubsweet-server')
+
+// With this
+const { connectToJobQueue } = require('@coko/server')
+```
+
+You can also disable the queue manager altogether with the following config option:
+
+```js
+// config/default.js
+
+module.exports = {
+  'pubsweet-server': {
+    useJobQueue: false,
+  },
+}
+```
+
 ### Disable GraphQL
 
 There are cases where you might not want a graphql server at all. eg. If you are building a sevice with a single REST api endpoint with coko server.
@@ -211,6 +251,22 @@ Returns pubsweet's base model
 
 ```js
 const { BaseModel } = require('@coko/server')
+```
+
+##### sendEmail
+
+Reads your mailer config and sends an email.
+
+```js
+const { sendEmail } = require('@coko/server')
+
+sendEmail({
+  from: 'noreply@me.com',
+  html: `<p>Hello</p>`,
+  subject: `The hello message`,
+  text: 'Hello',
+  to: 'someone@email.com',
+})
 ```
 
 ##### createJWT

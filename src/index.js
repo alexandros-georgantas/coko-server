@@ -5,6 +5,7 @@ const authentication = require('pubsweet-server/src/authentication')
 const { pubsubManager, startServer } = require('pubsweet-server')
 const logger = require('@pubsweet/logger')
 const { db } = require('@pubsweet/db-manager')
+const { send: sendEmail } = require('@pubsweet/component-send-email')
 
 const app = require('./app')
 const { boss, connectToJobQueue } = require('./pgboss')
@@ -16,6 +17,8 @@ module.exports = {
   createJWT,
   pubsubManager,
   startServer,
+
+  sendEmail,
 
   BaseModel,
   logger,
