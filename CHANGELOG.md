@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.12.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.11.0...v1.12.0) (2021-03-23)
+
+
+### Features
+
+* **server:** include send email component & update docs ([8dc9faa](https://gitlab.coko.foundation/cokoapps/server/commit/8dc9faae2f85bd462c3b4dbc90ad126a0a6584c6))
+
 ## [1.11.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.10.0...v1.11.0) (2021-03-18)
 
 
