@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.12.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.12.0...v1.12.1) (2021-03-29)
+
+
+### Bug Fixes
+
+* **server:** server should not crash without mailer config ([62b9d7f](https://gitlab.coko.foundation/cokoapps/server/commit/62b9d7f9259a4723ca5ba08207ddb3484a40883a))
+
 ## [1.12.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.11.0...v1.12.0) (2021-03-23)
 
 
