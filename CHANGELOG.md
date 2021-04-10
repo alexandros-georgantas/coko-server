@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.13.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.12.2...v1.13.0) (2021-04-10)
+
+
+### Features
+
+* **server:** add useTransaction ([d33b2f2](https://gitlab.coko.foundation/cokoapps/server/commit/d33b2f24b0a6e197410b1f96949a8a1455fcf2c4))
+
 ### [1.12.2](https://gitlab.coko.foundation/cokoapps/server/compare/v1.12.1...v1.12.2) (2021-03-30)
 
 
