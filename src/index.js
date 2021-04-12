@@ -1,4 +1,5 @@
 const cron = require('node-cron')
+const { v4: uuid } = require('uuid')
 
 const BaseModel = require('@pubsweet/base-model')
 const authentication = require('pubsweet-server/src/authentication')
@@ -27,6 +28,7 @@ module.exports = {
   useTransaction,
 
   cron,
+  uuid,
 
   boss,
   connectToJobQueue,

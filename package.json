@@ -45,6 +45,7 @@
     "passport": "^0.4.1",
     "pubsweet": "^5.1.25",
     "pubsweet-server": "^13.12.5",
+    "uuid": "^8.3.2",
     "waait": "^1.0.5"
   },
   "devDependencies": {
