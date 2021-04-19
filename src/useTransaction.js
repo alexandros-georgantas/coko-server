@@ -1,4 +1,4 @@
-const { BaseModel } = require('@pubsweet/base-model')
+const BaseModel = require('@pubsweet/base-model')
 
 const useTransaction = async (callback, options = {}) => {
   const { passedTrxOnly = false, trx } = options
