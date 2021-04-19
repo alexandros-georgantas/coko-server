@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.14.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.13.0...v1.14.0) (2021-04-19)
+
+
+### Features
+
+* **server:** add uuid helper ([62a04de](https://gitlab.coko.foundation/cokoapps/server/commit/62a04de4c0fa569bf88ac4571ac55b858ba12532))
+
+
+### Bug Fixes
+
+* fix useTransaction base model import ([a06af0f](https://gitlab.coko.foundation/cokoapps/server/commit/a06af0fe85a65d2eee3dfa41950e3b3397bf838d))
+
 ## [1.13.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.12.2...v1.13.0) (2021-04-10)
 
 
