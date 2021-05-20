@@ -1,0 +1,15 @@
+# config files
+.cz-config.js
+.commitlintrc.js
+.eslintrc.js
+.gitignore
+.prettierrc.js
+jest.config.js
+yarn.lock
+
+# test related files
+config/
+__tests__/
+**.test.js
+**.spec.js
+docker-compose.yml

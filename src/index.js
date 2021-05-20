@@ -1,7 +1,6 @@
 const cron = require('node-cron')
 const { v4: uuid } = require('uuid')
 
-const BaseModel = require('@pubsweet/base-model')
 const authentication = require('pubsweet-server/src/authentication')
 const { pubsubManager, startServer } = require('pubsweet-server')
 const logger = require('@pubsweet/logger')
@@ -11,6 +10,7 @@ const { send: sendEmail } = require('@pubsweet/component-send-email')
 const app = require('./app')
 const { boss, connectToJobQueue } = require('./pgboss')
 const useTransaction = require('./useTransaction')
+const { BaseModel } = require('./models')
 
 const createJWT = authentication.token.create
 
