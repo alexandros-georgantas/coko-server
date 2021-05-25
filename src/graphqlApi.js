@@ -1,4 +1,11 @@
-const { ApolloServer, ForbiddenError, UserInputError, AuthenticationError, ApolloError } = require('apollo-server-express')
+const {
+  ApolloServer,
+  ForbiddenError,
+  UserInputError,
+  AuthenticationError,
+  ApolloError,
+} = require('apollo-server-express')
+
 const isEmpty = require('lodash/isEmpty')
 const config = require('config')
 
@@ -34,6 +41,9 @@ const api = app => {
       connectors,
       user: req.user,
       loaders: loaders(),
+
+      req,
+      res,
     }),
     formatError: err => {
       const error = isEmpty(err.originalError) ? err : err.originalError
@@ -44,12 +54,19 @@ const api = app => {
         pubsweetError => error instanceof pubsweetError,
       )
 
-      const isGraphqlDefinedError = [ForbiddenError, UserInputError, AuthenticationError, ApolloError].some(
-        graphqlError => error instanceof graphqlError
-      )
+      const isGraphqlDefinedError = [
+        ForbiddenError,
+        UserInputError,
+        AuthenticationError,
+        ApolloError,
+      ].some(graphqlError => error instanceof graphqlError)
 
       // err is always a GraphQLError which should be passed to the client
-      if (!isEmpty(err.originalError) && !isPubsweetDefinedError && !isGraphqlDefinedError)
+      if (
+        !isEmpty(err.originalError) &&
+        !isPubsweetDefinedError &&
+        !isGraphqlDefinedError
+      )
         return {
           name: 'Server Error',
           message: 'Something went wrong! Please contact your administrator',
@@ -70,6 +87,7 @@ const api = app => {
     },
     ...extraApolloConfig,
   })
+
   server.applyMiddleware({ app })
 }
 
