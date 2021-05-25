@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.15.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.14.0...v1.15.0) (2021-05-25)
+
+
+### Features
+
+* **server:** expose req & res in graphql context ([7a78b77](https://gitlab.coko.foundation/cokoapps/server/commit/7a78b77f1f4fc1cb46831b688aad5aeeb9c6f2c7))
+
 ## [1.14.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.13.0...v1.14.0) (2021-04-19)
 
 
