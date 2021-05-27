@@ -28,6 +28,8 @@
     "@pubsweet/db-manager": "^3.1.21",
     "@pubsweet/errors": "^2.0.46",
     "@pubsweet/logger": "^0.2.56",
+    "@pubsweet/model-team": "^4.0.16",
+    "@pubsweet/model-user": "^6.0.16",
     "@pubsweet/models": "^0.3.21",
     "apollo-server-express": "^2.11.0",
     "body-parser": "^1.19.0",
