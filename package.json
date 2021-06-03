@@ -44,6 +44,7 @@
     "lodash": "^4.17.20",
     "morgan": "^1.10.0",
     "node-cron": "^2.0.3",
+    "objection": "^2.2.15",
     "passport": "^0.4.1",
     "pubsweet": "^5.1.25",
     "pubsweet-server": "^13.12.5",
