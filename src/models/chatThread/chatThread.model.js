@@ -1,10 +1,6 @@
 const BaseModel = require('../BaseModel')
 
-const logger = require('@pubsweet/logger')
-
 const { id } = require('../_helpers/types')
-
-const baseMessage = 'Chat Thread Model:'
 
 class ChatThread extends BaseModel {
   constructor(properties) {
@@ -23,10 +19,9 @@ class ChatThread extends BaseModel {
       properties: {
         chatType: {
           type: 'string',
-          enum: ['scienceOfficer', 'reviewer', 'author', 'curator'],
         },
-	relatedObjectId: id,
-        userId: id,
+        relatedObjectId: id,
+        teamId: id,
       },
     }
   }
@@ -44,29 +39,6 @@ class ChatThread extends BaseModel {
           to: 'chatThreads.id',
         },
       },
-    }
-  }
-
-  static async createCuratorThread(relatedObjectId, curatorId, options = {}) {
-    try {
-      const { trx } = options
-
-      const curatorThread = await this.query(trx).findOne({
-	relatedObjectId,
-        userId: curatorId,
-        chatType: 'curator',
-      })
-
-      if (curatorThread) return null // thread already exists
-
-      return this.query(trx).insert({
-	relatedObjectId,
-        userId: curatorId,
-        chatType: 'curator',
-      })
-    } catch (e) {
-      logger.error(`${baseMessage} Create curator thread failed!`)
-      throw new Error(e)
     }
   }
 }

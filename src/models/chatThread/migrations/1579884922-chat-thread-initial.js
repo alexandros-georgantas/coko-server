@@ -10,13 +10,11 @@ exports.up = knex => {
         .defaultTo(knex.fn.now())
       table.timestamp('updated', { useTz: true })
 
-      table.uuid('user_id').references('users.id')
+      table.uuid('team_id').references('teams.id')
 
-      table.uuid('related_object_id').references('chat_related_objects.id').notNullable()
+      table.uuid('related_object_id').notNullable()
 
-      table
-        .enu('chat_type', ['scienceOfficer', 'reviewer', 'author', 'curator'])
-        .notNullable()
+      table.string('chat_type').notNullable()
 
       table.text('type')
     })
