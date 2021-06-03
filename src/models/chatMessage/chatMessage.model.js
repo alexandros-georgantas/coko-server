@@ -1,13 +1,6 @@
-const  BaseModel  = require('../BaseModel')
+const BaseModel = require('../BaseModel')
 
-const { dateNotNullable, id, stringNotEmpty } = require('../_helpers/types')
-
-/*
-  Added a 'timestamp' field, instead of using 'created'.
-  This is becase the migrations would have made all existing chat messages
-  as created 'now' and I didn't want to tamper with the current 'created' field,
-  as it can serve an important auditing role.
-*/
+const { id, stringNotEmpty } = require('../_helpers/types')
 
 class ChatMessage extends BaseModel {
   constructor(properties) {
@@ -26,7 +19,6 @@ class ChatMessage extends BaseModel {
       properties: {
         content: stringNotEmpty,
         chatThreadId: id,
-        timestamp: dateNotNullable, // should only be used for migrations
         userId: id,
       },
     }
@@ -46,12 +38,6 @@ class ChatMessage extends BaseModel {
         },
       },
     }
-  }
-
-  // Let it accept timestamp to make migrations of old messages work
-  $beforeInsert() {
-    super.$beforeInsert()
-    if (!this.timestamp) this.timestamp = this.created
   }
 }
 

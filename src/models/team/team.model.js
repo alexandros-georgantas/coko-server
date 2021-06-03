@@ -1,14 +1,13 @@
-const { TEAMS, GLOBAL_TEAMS } = require('../../api/constants')
-
 const { ValidationError } = require('objection')
 const union = require('lodash/union')
 
 const PubsweetTeam = require('@pubsweet/model-team/src/team')
-const { logger } = require('@coko/server')
+const { logger } = require('@pubsweet/logger')
+const { TEAMS, GLOBAL_TEAMS } = require('../../api/constants')
 
 const TeamMember = require('../teamMember/teamMember.model')
 const { booleanDefaultFalse } = require('../_helpers/types')
-const useTransaction = require('../_helpers/useTransaction')
+const useTransaction = require('../../useTransaction')
 
 const globalTeams = Object.values(GLOBAL_TEAMS)
 const nonGlobalTeams = Object.values(TEAMS)
@@ -124,12 +123,10 @@ class Team extends PubsweetTeam {
     const remove = async trx => {
       const team = await Team.query(trx).findById(teamId)
 
-      await TeamMember.query(trx)
-        .delete()
-        .where({
-          teamId,
-          userId,
-        })
+      await TeamMember.query(trx).delete().where({
+        teamId,
+        userId,
+      })
 
       /**
        * If a user is removed from a global team, they should also be unassigned

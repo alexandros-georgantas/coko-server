@@ -2,6 +2,7 @@ const merge = require('lodash/merge')
 const { Model } = require('objection')
 
 const { model: PubsweetUser } = require('@pubsweet/model-user/src')
+const { TeamMember } = require('@pubsweet/models')
 const logger = require('@pubsweet/logger')
 const { ValidationError } = require('@pubsweet/errors')
 
@@ -80,6 +81,50 @@ class User extends PubsweetUser {
         },
       },
     }
+  }
+
+  // From https://gitlab.coko.foundation/ncbi/ncbi/-/blob/develop/server/models/user/user.js#L61-101
+
+  static async hasGlobalRole(userId, role) {
+    try {
+      const isMember = await TeamMember.query()
+        .leftJoin('teams', 'team_members.teamId', 'teams.id')
+        .findOne({
+          global: true,
+          role,
+          userId,
+        })
+
+      return !!isMember
+    } catch (e) {
+      logger.error('User model: hasGlobalRole failed', e)
+      throw new Error(e)
+    }
+  }
+
+  async hasGlobalRole(role) {
+    return User.hasGlobalRole(this.id, role)
+  }
+
+  static async hasRoleOnObject(userId, role, objectId) {
+    try {
+      const isMember = await TeamMember.query()
+        .leftJoin('teams', 'team_members.teamId', 'teams.id')
+        .findOne({
+          role,
+          userId,
+          objectId,
+        })
+
+      return !!isMember
+    } catch (e) {
+      logger.error('User model: hasRoleOnObject failed', e)
+      throw new Error(e)
+    }
+  }
+
+  async hasRoleOnObject(role, objectId) {
+    return User.hasRoleOnObject(this.id, role, objectId)
   }
 
   static async findById(userId) {
