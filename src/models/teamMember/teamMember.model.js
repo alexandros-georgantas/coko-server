@@ -82,10 +82,13 @@ class TeamMember extends PubsweetTeamMember {
     if (!role || !Object.values(TEAMS).includes(role)) {
       throw new Error('No valid role provided')
     }
+
     if (!userId) {
       throw new Error('No user provided')
     }
+
     let manuscripts
+
     switch (role) {
       case TEAMS.AUTHOR:
         manuscripts = await this.manuscriptVersionFromMemberQuery(role, userId)
@@ -97,10 +100,12 @@ class TeamMember extends PubsweetTeamMember {
           REVIEWER_STATUSES.accepted,
         )
         break
+
       default: {
         manuscripts = await this.manuscriptFromMemberQuery(role, userId)
       }
     }
+
     return manuscripts.map(m => m.manuscriptId)
   }
 
@@ -110,6 +115,7 @@ class TeamMember extends PubsweetTeamMember {
       userId,
       status,
     )
+
     return manuscripts.map(m => m.manuscriptVersionId)
   }
 
@@ -121,9 +127,7 @@ class TeamMember extends PubsweetTeamMember {
     const { ChatThread, CuratorReview, Team } = require('@pubsweet/models')
 
     try {
-      const team = await Team.query(trx)
-        .findById(this.teamId)
-        .throwIfNotFound()
+      const team = await Team.query(trx).findById(this.teamId).throwIfNotFound()
 
       /**
        * When assigning a curator, if they don't already exist:

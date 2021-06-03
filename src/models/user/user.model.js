@@ -1,10 +1,10 @@
 const merge = require('lodash/merge')
-const { Model } = require('objection')
 
-const { model: PubsweetUser } = require('@pubsweet/model-user/src')
-const { TeamMember } = require('@pubsweet/models')
+const { User: PubsweetUser } = require('@pubsweet/models')
+const { Team, TeamMember } = require('@pubsweet/models')
 const logger = require('@pubsweet/logger')
 const { ValidationError } = require('@pubsweet/errors')
+const BaseModel = require('../BaseModel')
 
 const {
   arrayOfStrings,
@@ -60,20 +60,32 @@ class User extends PubsweetUser {
 
     return {
       identities: {
-        relation: Model.HasManyRelation,
+        relation: BaseModel.HasManyRelation,
         modelClass: Identity,
         join: {
           from: 'users.id',
           to: 'identities.userId',
         },
       },
+      defaultIdentity: {
+        relation: BaseModel.HasOneRelation,
+        modelClass: Identity,
+        join: {
+          from: 'users.id',
+          to: 'identities.userId',
+        },
+        filter: builder => {
+          builder.where('isDefault', true)
+        },
+      },
+
       teams: {
         relation: PubsweetUser.ManyToManyRelation,
-        modelClass: require.resolve('@pubsweet/model-team/src/team'),
+        modelClass: Team,
         join: {
           from: 'users.id',
           through: {
-            modelClass: require.resolve('@pubsweet/model-team/src/team_member'),
+            modelClass: TeamMember,
             from: 'team_members.user_id',
             to: 'team_members.team_id',
           },
