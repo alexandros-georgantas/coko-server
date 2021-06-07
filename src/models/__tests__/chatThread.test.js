@@ -1,11 +1,7 @@
 const { v4: uuid } = require('uuid')
 
-const {
-  ChatMessage,
-  ChatThread,
-  ChatRelatedObject,
-  User,
-} = require('@pubsweet/models')
+const { ChatMessage, ChatThread, User, Team } = require('@pubsweet/models')
+const { TEAMS } = require('../../api/constants')
 
 const clearDb = require('./_clearDb')
 
@@ -19,11 +15,11 @@ describe('ChatThread Model', () => {
   })
 
   test('creates a new thread', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const thread = await ChatThread.query().insert({
       chatType: 'scienceOfficer',
-      relatedObjectId: relatedObject.id,
+      relatedObjectId: relatedObject,
     })
 
     expect(thread.chatType).toEqual('scienceOfficer')
@@ -39,37 +35,37 @@ describe('ChatThread Model', () => {
   })
 
   test('does not create a new thread with an invalid related object id', async () => {
-
     const createThread = () =>
       ChatThread.query().insert({
         chatType: 'reviewer',
-	relatedObjectId: uuid(),
+        relatedObjectId: uuid(),
       })
 
     await expect(createThread()).rejects.toThrow()
   })
 
   test('does not create a new thread without a valid chat type', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const createThread = () =>
       ChatThread.query().insert({
         chatType: 'wrong',
-	relatedObjectId: relatedObject.id
+        relatedObjectId: relatedObject,
       })
 
     await expect(createThread()).rejects.toThrow()
   })
 
   test('can retrieve the thread messages', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const userOne = await User.query().insert({})
     const userTwo = await User.query().insert({})
     const userThree = await User.query().insert({})
+
     const thread = await ChatThread.query().insert({
       chatType: 'author',
-      relatedObjectId: relatedObject.id,
+      relatedObjectId: relatedObject,
     })
 
     const messages = [
@@ -94,7 +90,7 @@ describe('ChatThread Model', () => {
 
     const result = await ChatThread.query()
       .findById(thread.id)
-      .eager('messages')
+      .withGraphFetched('messages')
 
     expect(result.messages).toHaveLength(3)
     expect(result.messages[0].userId).toEqual(messages[0].userId)
@@ -102,14 +98,14 @@ describe('ChatThread Model', () => {
     expect(result.messages[2].chatThreadId).toEqual(messages[2].chatThreadId)
   })
 
-  // 
+  //
   test('can only have one author chat per related object', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
-    console.log(relatedObject)
+    const relatedObject = uuid()
+
     const createThread = async () =>
       ChatThread.query().insert({
         chatType: 'author',
-	relatedObjectId: relatedObject.id,
+        relatedObjectId: relatedObject,
       })
 
     // First should be fine, second should make the constraint throw
@@ -118,12 +114,12 @@ describe('ChatThread Model', () => {
   })
 
   test('can only have one science officer chat per related object', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const createThread = async () =>
       ChatThread.query().insert({
         chatType: 'scienceOfficer',
-	relatedObjectId: relatedObject.id,
+        relatedObjectId: relatedObject,
       })
 
     // First should be fine, second should make the constraint throw
@@ -131,73 +127,52 @@ describe('ChatThread Model', () => {
     await expect(createThread()).rejects.toThrow()
   })
 
-  test('can only have one reviewer chat per related object per reviewer', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
+  test('can have more than one free-form chat type per related object per team', async () => {
+    const relatedObject = uuid()
 
-    const userOne = await User.query().insert({})
-    const userTwo = await User.query().insert({})
+    const teamOne = await Team.query().insert({ role: TEAMS.EDITOR })
+    const teamTwo = await Team.query().insert({ role: TEAMS.REVIEWER })
 
-    const createThread = async reviewerId =>
+    const createThread = async teamId =>
       ChatThread.query().insert({
         chatType: 'reviewer',
-        userId: reviewerId,
-	relatedObjectId: relatedObject.id,
+        teamId,
+        relatedObjectId: relatedObject,
       })
 
     // Different reviewer ids for the same related object should be fine
-    await createThread(userOne.id)
-    await createThread(userTwo.id)
+    await createThread(teamOne.id)
+    await createThread(teamTwo.id)
 
     const threads = await ChatThread.query()
     expect(threads).toHaveLength(2)
 
-    // But the same reviewer id on the same related object should make the constraint throw
-    await expect(createThread(userOne.id)).rejects.toThrow()
-  })
+    // But the same reviewer id on the same related object should be ok
+    await createThread(teamOne.id)
 
-  test('can only have one curator chat per related object per curator', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
-
-    const userOne = await User.query().insert({})
-    const userTwo = await User.query().insert({})
-
-    const createThread = async curatorId =>
-      ChatThread.query().insert({
-        chatType: 'curator',
-        userId: curatorId,
-	relatedObjectId: relatedObject.id,
-      })
-
-    // Different curator ids for the same related object should be fine
-    await createThread(userOne.id)
-    await createThread(userTwo.id)
-
-    const threads = await ChatThread.query()
-    expect(threads).toHaveLength(2)
-
-    // But the same curator id on the same related object should make the constraint throw
-    await expect(createThread(userOne.id)).rejects.toThrow()
+    const threads2 = await ChatThread.query()
+    expect(threads2).toHaveLength(3)
   })
 
   test('user id must not be null for reviewer chats', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const createThread = async () =>
       ChatThread.query().insert({
         chatType: 'reviewer',
-	relatedObjectId: relatedObject.id
+        relatedObjectId: relatedObject,
       })
 
     await expect(createThread()).rejects.toThrow()
   })
 
   test('user id must not be null for curator chats', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const createThread = async () =>
       ChatThread.query().insert({
         chatType: 'curator',
-	relatedObjectId: relatedObject.id,
+        relatedObjectId: relatedObject,
       })
 
     await expect(createThread()).rejects.toThrow()
@@ -205,20 +180,20 @@ describe('ChatThread Model', () => {
 
   test('user id must be null for author and science officer chats', async () => {
     const user = await User.query().insert({})
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const createAuthorThread = async () =>
       ChatThread.query().insert({
         chatType: 'author',
         userId: user.id,
-	relatedObjectId: relatedObject.id,
+        relatedObjectId: relatedObject,
       })
 
     const createSOThread = async () =>
       ChatThread.query().insert({
         chatType: 'scienceOfficer',
         userId: user.id,
-	relatedObjectId: relatedObject.id,
+        relatedObjectId: relatedObject.id,
       })
 
     await expect(createAuthorThread()).rejects.toThrow()
@@ -227,40 +202,15 @@ describe('ChatThread Model', () => {
 
   test('does not create a new reviewer thread with an invalid reviewer id', async () => {
     const userId = uuid()
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const createThread = async () =>
       ChatThread.query().insert({
         chatType: 'reviewer',
-        userId: userId,
-	relatedObjectId: relatedObject.id,
+        userId,
+        relatedObjectId: relatedObject,
       })
 
     await expect(createThread()).rejects.toThrow()
-  })
-
-  test('creates curator thread', async () => {
-    const curator = await User.query().insert({})
-    const relatedObject = await ChatRelatedObject.query().insert({})
-
-    let threads
-
-    const findThreads = async () =>
-      ChatThread.query().where({
-        userId: curator.id,
-        chatType: 'curator',
-	relatedObjectId: relatedObject.id,
-      })
-
-    await ChatThread.createCuratorThread(relatedObject.id, curator.id)
-
-    threads = await findThreads()
-    expect(threads).toHaveLength(1)
-
-    // this time it already exists, so call should be ignored
-    await ChatThread.createCuratorThread(relatedObject.id, curator.id)
-
-    threads = await findThreads()
-    expect(threads).toHaveLength(1) // still 1
   })
 })

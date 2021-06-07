@@ -1,4 +1,4 @@
-const { BaseModel } = require('@coko/server')
+const { BaseModel } = require('../BaseModel')
 
 const {
   boolean,

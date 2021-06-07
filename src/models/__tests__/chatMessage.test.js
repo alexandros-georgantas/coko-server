@@ -1,11 +1,6 @@
-const uuid = require('uuid/v4')
+const { v4: uuid } = require('uuid')
 
-const {
-  ChatMessage,
-  ChatThread,
-  ChatRelatedObject,
-  User,
-} = require('@pubsweet/models')
+const { ChatMessage, ChatThread, User } = require('@pubsweet/models')
 
 const clearDb = require('./_clearDb')
 
@@ -20,12 +15,11 @@ describe('ChatMessage model', () => {
 
   test('creates a new chat message', async () => {
     const user = await User.query().insert({})
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const thread = await ChatThread.query().insert({
       chatType: 'reviewer',
-      userId: user.id,
-      relatedObjectId: relatedObject.id
+      relatedObjectId: relatedObject,
     })
 
     const message = await ChatMessage.query().insert({
@@ -39,11 +33,11 @@ describe('ChatMessage model', () => {
 
   test('does not create a new chat message without content', async () => {
     const user = await User.query().insert({})
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const thread = await ChatThread.query().insert({
       chatType: 'scienceOfficer',
-      relatedObjectId: relatedObject.id,
+      relatedObjectId: relatedObject,
     })
 
     const createMessageWithoutContent = () =>
@@ -91,11 +85,11 @@ describe('ChatMessage model', () => {
   })
 
   test('does not create a new chat message without a user', async () => {
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const thread = await ChatThread.query().insert({
       chatType: 'author',
-      relatedObjectId: relatedObject.id,
+      relatedObjectId: relatedObject,
     })
 
     const createMessage = () =>
@@ -109,11 +103,11 @@ describe('ChatMessage model', () => {
 
   test('does not create a new chat message with an invalid user', async () => {
     const userId = uuid()
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const thread = await ChatThread.query().insert({
       chatType: 'author',
-      relatedObjectId: relatedObject.id,
+      relatedObjectId: relatedObject,
     })
 
     const createMessage = () =>
@@ -128,12 +122,11 @@ describe('ChatMessage model', () => {
 
   test('fetches user of message', async () => {
     const user = await User.query().insert({})
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const thread = await ChatThread.query().insert({
       chatType: 'reviewer',
-      userId: user.id,
-      relatedObjectId: relatedObject.id,
+      relatedObjectId: relatedObject,
     })
 
     const message = await ChatMessage.query().insert({
@@ -144,18 +137,18 @@ describe('ChatMessage model', () => {
 
     const result = await ChatMessage.query()
       .findById(message.id)
-      .eager('user')
+      .withGraphFetched('user')
 
     expect(result.user.id).toEqual(user.id)
   })
 
-  test('adds a timestamp', async () => {
+  test('adds a created column as timestamp', async () => {
     const user = await User.query().insert({})
-    const relatedObject = await ChatRelatedObject.query().insert({})
+    const relatedObject = uuid()
 
     const thread = await ChatThread.query().insert({
       chatType: 'author',
-      relatedObjectId: relatedObject.id,
+      relatedObjectId: relatedObject,
     })
 
     const message = await ChatMessage.query().insert({
@@ -165,6 +158,7 @@ describe('ChatMessage model', () => {
     })
 
     const result = await ChatMessage.query().findById(message.id)
-    expect(result.timestamp).toBeInstanceOf(Date)
+    expect(result.created).toBeInstanceOf(Date)
+    expect(result.updated).toBeInstanceOf(Date)
   })
 })
