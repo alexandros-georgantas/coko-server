@@ -1,12 +1,6 @@
 const { v4: uuid } = require('uuid')
 
-const {
-  Team,
-  TeamMember,
-  User,
-  ChatThread,
-  ChatMessage,
-} = require('@pubsweet/models')
+const { Team, TeamMember, User, ChatThread } = require('@pubsweet/models')
 
 const clearDb = require('./_clearDb')
 

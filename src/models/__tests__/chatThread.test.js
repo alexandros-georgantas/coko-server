@@ -34,28 +34,6 @@ describe('ChatThread Model', () => {
     await expect(createThread()).rejects.toThrow()
   })
 
-  test('does not create a new thread with an invalid related object id', async () => {
-    const createThread = () =>
-      ChatThread.query().insert({
-        chatType: 'reviewer',
-        relatedObjectId: uuid(),
-      })
-
-    await expect(createThread()).rejects.toThrow()
-  })
-
-  test('does not create a new thread without a valid chat type', async () => {
-    const relatedObject = uuid()
-
-    const createThread = () =>
-      ChatThread.query().insert({
-        chatType: 'wrong',
-        relatedObjectId: relatedObject,
-      })
-
-    await expect(createThread()).rejects.toThrow()
-  })
-
   test('can retrieve the thread messages', async () => {
     const relatedObject = uuid()
 
@@ -98,40 +76,20 @@ describe('ChatThread Model', () => {
     expect(result.messages[2].chatThreadId).toEqual(messages[2].chatThreadId)
   })
 
-  //
-  test('can only have one author chat per related object', async () => {
-    const relatedObject = uuid()
-
-    const createThread = async () =>
-      ChatThread.query().insert({
-        chatType: 'author',
-        relatedObjectId: relatedObject,
-      })
-
-    // First should be fine, second should make the constraint throw
-    await createThread()
-    await expect(createThread()).rejects.toThrow()
-  })
-
-  test('can only have one science officer chat per related object', async () => {
-    const relatedObject = uuid()
-
-    const createThread = async () =>
-      ChatThread.query().insert({
-        chatType: 'scienceOfficer',
-        relatedObjectId: relatedObject,
-      })
-
-    // First should be fine, second should make the constraint throw
-    await createThread()
-    await expect(createThread()).rejects.toThrow()
-  })
-
   test('can have more than one free-form chat type per related object per team', async () => {
     const relatedObject = uuid()
 
-    const teamOne = await Team.query().insert({ role: TEAMS.EDITOR })
-    const teamTwo = await Team.query().insert({ role: TEAMS.REVIEWER })
+    const teamOne = await Team.query().insert({
+      role: TEAMS.EDITOR,
+      objectId: uuid(),
+      objectType: 'unknownObject',
+    })
+
+    const teamTwo = await Team.query().insert({
+      role: TEAMS.REVIEWER,
+      objectId: uuid(),
+      objectType: 'unknownObject',
+    })
 
     const createThread = async teamId =>
       ChatThread.query().insert({
@@ -154,53 +112,7 @@ describe('ChatThread Model', () => {
     expect(threads2).toHaveLength(3)
   })
 
-  test('user id must not be null for reviewer chats', async () => {
-    const relatedObject = uuid()
-
-    const createThread = async () =>
-      ChatThread.query().insert({
-        chatType: 'reviewer',
-        relatedObjectId: relatedObject,
-      })
-
-    await expect(createThread()).rejects.toThrow()
-  })
-
-  test('user id must not be null for curator chats', async () => {
-    const relatedObject = uuid()
-
-    const createThread = async () =>
-      ChatThread.query().insert({
-        chatType: 'curator',
-        relatedObjectId: relatedObject,
-      })
-
-    await expect(createThread()).rejects.toThrow()
-  })
-
-  test('user id must be null for author and science officer chats', async () => {
-    const user = await User.query().insert({})
-    const relatedObject = uuid()
-
-    const createAuthorThread = async () =>
-      ChatThread.query().insert({
-        chatType: 'author',
-        userId: user.id,
-        relatedObjectId: relatedObject,
-      })
-
-    const createSOThread = async () =>
-      ChatThread.query().insert({
-        chatType: 'scienceOfficer',
-        userId: user.id,
-        relatedObjectId: relatedObject.id,
-      })
-
-    await expect(createAuthorThread()).rejects.toThrow()
-    await expect(createSOThread()).rejects.toThrow()
-  })
-
-  test('does not create a new reviewer thread with an invalid reviewer id', async () => {
+  test('does not create a chat thread with an user id (changed to team id)', async () => {
     const userId = uuid()
     const relatedObject = uuid()
 
