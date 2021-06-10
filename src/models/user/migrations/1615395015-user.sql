@@ -17,3 +17,5 @@ add column surname text,
 add column title_pre text,
 add column title_post text
 ;
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
