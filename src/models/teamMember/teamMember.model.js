@@ -1,6 +1,6 @@
 const omit = require('lodash/omit')
 
-const PubsweetTeamMember = require('@pubsweet/model-team/src/team_member')
+const { TeamMember: PubsweetTeamMember } = require('@pubsweet/models')
 
 const { REVIEWER_STATUSES } = require('../../api/constants')
 

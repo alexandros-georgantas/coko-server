@@ -1,7 +1,8 @@
 const { ValidationError } = require('objection')
 const union = require('lodash/union')
 
-const PubsweetTeam = require('@pubsweet/model-team/src/team')
+const { Team: PubsweetTeam } = require('@pubsweet/models')
+
 const { logger } = require('@pubsweet/logger')
 const { TEAMS, GLOBAL_TEAMS } = require('../../api/constants')
 
