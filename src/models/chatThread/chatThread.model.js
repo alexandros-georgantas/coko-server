@@ -21,7 +21,6 @@ class ChatThread extends BaseModel {
           type: 'string',
         },
         relatedObjectId: id,
-        teamId: id,
       },
     }
   }
