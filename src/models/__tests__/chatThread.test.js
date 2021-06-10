@@ -1,7 +1,7 @@
 const { v4: uuid } = require('uuid')
 
 const { ChatMessage, ChatThread, User, Team } = require('@pubsweet/models')
-const { TEAMS } = require('../../api/constants')
+const { TEAMS, GLOBAL_TEAMS } = require('../../api/constants')
 
 const clearDb = require('./_clearDb')
 
@@ -76,43 +76,76 @@ describe('ChatThread Model', () => {
     expect(result.messages[2].chatThreadId).toEqual(messages[2].chatThreadId)
   })
 
-  test('can have more than one free-form chat type per related object per team', async () => {
+  test('Relating chatThreads to Teams , global and non-global ', async () => {
     const relatedObject = uuid()
 
-    const teamOne = await Team.query().insert({
-      role: TEAMS.EDITOR,
-      objectId: uuid(),
-      objectType: 'unknownObject',
-    })
-
-    const teamTwo = await Team.query().insert({
-      role: TEAMS.REVIEWER,
-      objectId: uuid(),
-      objectType: 'unknownObject',
-    })
-
-    const createThread = async teamId =>
+    const createThread = async relatedObjectId =>
       ChatThread.query().insert({
         chatType: 'reviewer',
-        teamId,
-        relatedObjectId: relatedObject,
+        relatedObjectId,
       })
 
-    // Different reviewer ids for the same related object should be fine
-    await createThread(teamOne.id)
-    await createThread(teamTwo.id)
+    // the same relatedObject id on another chat thread should be ok
+    const ctOne = await createThread(relatedObject)
+    const ctTwo = await createThread(relatedObject)
 
     const threads = await ChatThread.query()
     expect(threads).toHaveLength(2)
 
-    // But the same reviewer id on the same related object should be ok
-    await createThread(teamOne.id)
+    await Team.query().insert({
+      role: TEAMS.EDITOR,
+      objectId: ctOne.id,
+      objectType: 'unknownObject',
+      global: false,
+    })
 
-    const threads2 = await ChatThread.query()
-    expect(threads2).toHaveLength(3)
+    await Team.query().insert({
+      role: TEAMS.EDITOR,
+      objectId: ctTwo.id,
+      objectType: 'unknownObject',
+      global: false,
+    })
+
+    // We should be able to link the different chat threads to two different teams
+    const teams = await Team.query()
+    expect(teams).toHaveLength(2)
+
+    // a non-global team can't have the same chatThread associated with it with same role.
+
+    await expect(
+      Team.query().insert({
+        role: TEAMS.EDITOR,
+        objectId: ctTwo.id,
+        objectType: 'unknownObject',
+        global: false,
+      }),
+    ).rejects.toThrow()
+
+    // same chatThread but different role works.
+    await Team.query().insert({
+      role: TEAMS.SCIENCE_OFFICER,
+      objectId: ctTwo.id,
+      objectType: 'unknownObject',
+      global: false,
+    })
+
+    // We should be able to link the different chat threads to two different teams
+    const teams2 = await Team.query()
+    expect(teams2).toHaveLength(3)
+
+    // and have a global team can't have a chatThread associated with it at all.
+
+    await expect(
+      Team.query().insert({
+        role: GLOBAL_TEAMS.GLOBAL_SECTION_EDITOR,
+        objectId: ctTwo.id,
+        objectType: 'unknownObject',
+        global: true,
+      }),
+    ).rejects.toThrow()
   })
 
-  test('does not create a chat thread with an user id (changed to team id)', async () => {
+  test('does not create a chat thread with an user id (removed in later versions)', async () => {
     const userId = uuid()
     const relatedObject = uuid()
 
