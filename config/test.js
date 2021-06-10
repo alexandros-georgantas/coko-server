@@ -20,4 +20,29 @@ module.exports = {
   pubsweet: {
     components,
   },
+
+  reviewer_statuses: {
+    accepted: 'accepted',
+    added: 'added',
+    invited: 'invited',
+    rejected: 'rejected',
+    revoked: 'revoked',
+  },
+
+  teams: {
+    global: {
+      EDITORS: 'editors',
+      SCIENCE_OFFICERS: 'scienceOfficers',
+      GLOBAL_SECTION_EDITOR: 'globalSectionEditor',
+      GLOBAL_CURATOR: 'globalCurator',
+    },
+    nonglobal: {
+      EDITOR: 'editor',
+      AUTHOR: 'author',
+      REVIEWER: 'reviewer',
+      SCIENCE_OFFICER: 'scienceOfficer',
+      SECTION_EDITOR: 'sectionEditor',
+      CURATOR: 'curator',
+    },
+  },
 }

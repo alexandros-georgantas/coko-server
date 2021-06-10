@@ -1,8 +1,9 @@
 const { v4: uuid } = require('uuid')
-
+const config = require('config')
 const { ChatThread, Team, TeamMember, User } = require('@pubsweet/models')
-const { REVIEWER_STATUSES } = require('../../api/constants')
 const clearDb = require('./_clearDb')
+
+const REVIEWER_STATUSES = config.get('reviewer_statuses')
 
 describe('Team Member Model', () => {
   beforeAll(() => clearDb())

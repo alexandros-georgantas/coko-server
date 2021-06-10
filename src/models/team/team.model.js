@@ -1,17 +1,15 @@
-const { ValidationError } = require('objection')
 const union = require('lodash/union')
-
-const { Team: PubsweetTeam } = require('@pubsweet/models')
-
+const { ValidationError } = require('objection')
 const { logger } = require('@pubsweet/logger')
-const { TEAMS, GLOBAL_TEAMS } = require('../../api/constants')
-
+const { Team: PubsweetTeam } = require('@pubsweet/models')
+const config = require('config')
 const TeamMember = require('../teamMember/teamMember.model')
+
 const { booleanDefaultFalse } = require('../_helpers/types')
 const useTransaction = require('../../useTransaction')
 
-const globalTeams = Object.values(GLOBAL_TEAMS)
-const nonGlobalTeams = Object.values(TEAMS)
+const globalTeams = Object.values(config.get('teams.global'))
+const nonGlobalTeams = Object.values(config.get('teams.nonglobal'))
 const allTeams = union(globalTeams, nonGlobalTeams)
 
 class Team extends PubsweetTeam {
@@ -136,6 +134,8 @@ class Team extends PubsweetTeam {
        */
       if (team.global) {
         // TO DO -- standardize with 'global' prefix
+        // XXXX get rid of this!
+        // Make a real two way mapping between nonglobal and global roles.
         const mapper = {
           editors: 'editor',
           scienceOfficers: 'scienceOfficer',

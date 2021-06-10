@@ -1,8 +1,9 @@
 const omit = require('lodash/omit')
+const config = require('config')
 
 const { TeamMember: PubsweetTeamMember } = require('@pubsweet/models')
 
-const { REVIEWER_STATUSES } = require('../../api/constants')
+const REVIEWER_STATUSES = config.get('reviewer_statuses')
 
 class TeamMember extends PubsweetTeamMember {
   static get schema() {

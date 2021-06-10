@@ -1,7 +1,9 @@
 const { v4: uuid } = require('uuid')
-
+const config = require('config')
 const { ChatMessage, ChatThread, User, Team } = require('@pubsweet/models')
-const { TEAMS, GLOBAL_TEAMS } = require('../../api/constants')
+
+const globalTeams = config.get('teams.global')
+const nonGlobalTeams = config.get('teams.nonglobal')
 
 const clearDb = require('./_clearDb')
 
@@ -93,14 +95,14 @@ describe('ChatThread Model', () => {
     expect(threads).toHaveLength(2)
 
     await Team.query().insert({
-      role: TEAMS.EDITOR,
+      role: nonGlobalTeams.EDITOR,
       objectId: ctOne.id,
       objectType: 'unknownObject',
       global: false,
     })
 
     await Team.query().insert({
-      role: TEAMS.EDITOR,
+      role: nonGlobalTeams.EDITOR,
       objectId: ctTwo.id,
       objectType: 'unknownObject',
       global: false,
@@ -114,7 +116,7 @@ describe('ChatThread Model', () => {
 
     await expect(
       Team.query().insert({
-        role: TEAMS.EDITOR,
+        role: nonGlobalTeams.EDITOR,
         objectId: ctTwo.id,
         objectType: 'unknownObject',
         global: false,
@@ -123,7 +125,7 @@ describe('ChatThread Model', () => {
 
     // same chatThread but different role works.
     await Team.query().insert({
-      role: TEAMS.SCIENCE_OFFICER,
+      role: nonGlobalTeams.SCIENCE_OFFICER,
       objectId: ctTwo.id,
       objectType: 'unknownObject',
       global: false,
@@ -137,7 +139,7 @@ describe('ChatThread Model', () => {
 
     await expect(
       Team.query().insert({
-        role: GLOBAL_TEAMS.GLOBAL_SECTION_EDITOR,
+        role: globalTeams.GLOBAL_SECTION_EDITOR,
         objectId: ctTwo.id,
         objectType: 'unknownObject',
         global: true,
