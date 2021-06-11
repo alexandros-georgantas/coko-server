@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.15.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.0...v1.15.1) (2021-06-11)
+
+
+### Bug Fixes
+
+* **server:** do not allow gql playground in production ([30f10d0](https://gitlab.coko.foundation/cokoapps/server/commit/30f10d0ac928880764e4bdc81055b83ffe97ba8d))
+
 ## [1.15.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.14.0...v1.15.0) (2021-05-25)
 
 
