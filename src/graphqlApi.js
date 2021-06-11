@@ -18,9 +18,11 @@ const helpers = require('pubsweet-server/src/helpers/authorization')
 
 const schema = require('./graphqlSchema')
 
-const hostname = config.has('pubsweet-server.hostname')
-  ? config.get('pubsweet-server.hostname')
-  : 'localhost'
+const host = `${config.get('pubsweet-server.host')}${
+  config.get('pubsweet-server.port')
+    ? `:${config.get('pubsweet-server.port')}`
+    : ''
+}`
 
 const extraApolloConfig = config.has('pubsweet-server.apollo')
   ? config.get('pubsweet-server.apollo')
@@ -82,9 +84,13 @@ const api = app => {
         },
       }
     },
-    playground: {
-      subscriptionEndpoint: `ws://${hostname}:3000/subscriptions`,
-    },
+    playground:
+      process.env.NODE_ENV === 'production'
+        ? false
+        : {
+            subscriptionEndpoint: `ws://${host}/subscriptions`,
+          },
+    introspection: process.env.NODE_ENV === 'development',
     ...extraApolloConfig,
   })
 
