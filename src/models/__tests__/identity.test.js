@@ -1,6 +1,6 @@
-const { Identity } = require('@pubsweet/models')
+const { Identity, User } = require('@pubsweet/models')
 
-const { createUsers } = require('../_helpers/createUsers')
+const { createUsers, createUser } = require('../_helpers/createUsers')
 
 const clearDb = require('./_clearDb')
 
@@ -17,5 +17,39 @@ describe('Identitty Model', () => {
     const users = await createUsers(4)
 
     expect(users).toHaveLength(4)
+  })
+
+  test('Create a user, delete its identities', async () => {
+    const { user, id } = await createUser()
+
+    const numIds = await user.deleteIdentities()
+
+    const ids = await Identity.query().where({
+      userId: user.id,
+    })
+
+    expect(ids).toHaveLength(0)
+    expect(numIds === 1).toBeTruthy()
+  })
+
+  test('Cant find user by email from User object ', async () => {
+    const user = await createUser()
+
+    // This API on coko server User object should NOT work.
+    const ids = User.findByEmail(user.email)
+
+    expect(ids).toBeUndefined()
+  })
+
+  test('find user by email from Identity object ', async () => {
+    const { user, id } = await createUser()
+    // Find the identity object
+
+    const ids = await Identity.query().where({
+      email: id.email.toLowerCase(),
+    })
+
+    expect(ids).toHaveLength(1)
+    expect(user.id === ids[0].userId).toBeTruthy()
   })
 })

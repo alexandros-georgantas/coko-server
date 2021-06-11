@@ -1,10 +1,8 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { internet, name } = require('faker')
 const range = require('lodash/range')
 
-const {
-  User,
-  Identity
-} = require('@pubsweet/models')
+const { User, Identity } = require('@pubsweet/models')
 
 const createUser = async () => {
   const user = await User.query().insert({
@@ -12,14 +10,14 @@ const createUser = async () => {
     surname: name.lastName(),
   })
 
-  await Identity.query().insert({
+  const id = await Identity.query().insert({
     userId: user.id,
     email: internet.email(),
     isConfirmed: true,
     isDefault: true,
   })
 
-  return user
+  return { user, id }
 }
 
 const createUsers = async n => Promise.all(range(n).map(() => createUser()))

@@ -1,7 +1,7 @@
 const merge = require('lodash/merge')
 
 const { User: PubsweetUser } = require('@pubsweet/models')
-const { Team, TeamMember } = require('@pubsweet/models')
+const { Team, TeamMember, Identity } = require('@pubsweet/models')
 const logger = require('@pubsweet/logger')
 const { ValidationError } = require('@pubsweet/errors')
 const BaseModel = require('../BaseModel')
@@ -93,6 +93,14 @@ class User extends PubsweetUser {
         },
       },
     }
+  }
+
+  async deleteIdentities() {
+    const numDeleted = await Identity.query().delete().where({
+      userId: this.id,
+    })
+    
+    return numDeleted
   }
 
   // From https://gitlab.coko.foundation/ncbi/ncbi/-/blob/develop/server/models/user/user.js#L61-101
