@@ -1,4 +1,4 @@
-const { BaseModel } = require('../BaseModel')
+const { Identity: PubsweetIdentity } = require('@pubsweet/models')
 
 const {
   boolean,
@@ -8,7 +8,7 @@ const {
   stringNullable,
 } = require('../_helpers/types')
 
-class Identity extends BaseModel {
+class Identity extends PubsweetIdentity {
   constructor(properties) {
     super(properties)
     this.type = 'identity'
@@ -40,7 +40,7 @@ class Identity extends BaseModel {
 
     return {
       user: {
-        relation: BaseModel.BelongsToOneRelation,
+        relation: PubsweetIdentity.BelongsToOneRelation,
         modelClass: User,
         join: {
           from: 'identities.userId',
