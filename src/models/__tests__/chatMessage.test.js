@@ -5,8 +5,7 @@ const { ChatMessage, ChatThread, User } = require('@pubsweet/models')
 const clearDb = require('./_clearDb')
 
 describe('ChatMessage model', () => {
-  beforeAll(() => clearDb())
-  afterEach(() => clearDb())
+  beforeEach(() => clearDb())
 
   afterAll(() => {
     const knex = ChatMessage.knex()

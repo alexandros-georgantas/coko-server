@@ -5,8 +5,7 @@ const { createUsers, createUser } = require('../_helpers/createUsers')
 const clearDb = require('./_clearDb')
 
 describe('Identitty Model', () => {
-  beforeAll(() => clearDb())
-  afterEach(() => clearDb())
+  beforeEach(() => clearDb())
 
   afterAll(() => {
     const knex = Identity.knex()

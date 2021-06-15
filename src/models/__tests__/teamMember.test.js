@@ -6,8 +6,7 @@ const clearDb = require('./_clearDb')
 const REVIEWER_STATUSES = config.get('reviewer_statuses')
 
 describe('Team Member Model', () => {
-  beforeAll(() => clearDb())
-  afterEach(() => clearDb())
+  beforeEach(() => clearDb())
 
   afterAll(() => {
     const knex = TeamMember.knex()

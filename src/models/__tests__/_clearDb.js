@@ -9,11 +9,11 @@ const dbCleaner = async () => {
 
   if (rows.length > 0) {
     await Promise.all(
-      rows.map(row => {
+      rows.map(async row => {
         const { tablename } = row
 
         if (tablename !== 'migrations') {
-          return db.raw(`TRUNCATE TABLE ${tablename} CASCADE`)
+          await db.raw(`TRUNCATE TABLE ${tablename} CASCADE`)
         }
 
         return true
