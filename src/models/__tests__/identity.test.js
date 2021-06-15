@@ -19,7 +19,7 @@ describe('Identitty Model', () => {
   })
 
   test('Create a user, delete its identities', async () => {
-    const { user, id } = await createUser()
+    const { user } = await createUser()
 
     const numIds = await user.deleteIdentities()
 
