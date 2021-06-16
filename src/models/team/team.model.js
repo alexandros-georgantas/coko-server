@@ -1,9 +1,10 @@
 const union = require('lodash/union')
 const { ValidationError } = require('objection')
 const { logger } = require('@pubsweet/logger')
-const { Team: PubsweetTeam } = require('@pubsweet/models')
+
 const config = require('config')
-const TeamMember = require('../teamMember/teamMember.model')
+
+const BaseModel = require('../BaseModel')
 
 const { booleanDefaultFalse } = require('../_helpers/types')
 const useTransaction = require('../../useTransaction')
@@ -12,12 +13,29 @@ const globalTeams = Object.values(config.get('teams.global'))
 const nonGlobalTeams = Object.values(config.get('teams.nonglobal'))
 const allTeams = union(globalTeams, nonGlobalTeams)
 
-class Team extends PubsweetTeam {
+class Team extends BaseModel {
+  constructor(properties) {
+    super(properties)
+
+    this.type = 'team'
+  }
+
+  static get tableName() {
+    return 'teams'
+  }
+
   static get schema() {
     return {
       type: 'object',
       required: ['role'],
       properties: {
+        objectId: { type: ['string', 'null'], format: 'uuid' },
+        objectType: { type: ['string', 'null'] },
+        name: { type: 'string' },
+        owners: {
+          type: ['array', 'null'],
+          items: { type: 'string', format: 'uuid' },
+        },
         role: {
           type: 'string',
           enum: allTeams,
@@ -76,6 +94,9 @@ class Team extends PubsweetTeam {
    * Members should be an array of user ids
    */
   static async updateMembershipByTeamId(teamId, members, options = {}) {
+    /* eslint-disable-next-line global-require, no-shadow */
+    const { Team, TeamMember } = require('@pubsweet/models')
+
     const queries = async trx => {
       const existingMembers = await TeamMember.query(trx).where({ teamId })
       const existingMemberUserIds = existingMembers.map(m => m.userId)
@@ -97,6 +118,9 @@ class Team extends PubsweetTeam {
   }
 
   static async addMember(teamId, userId, options = {}) {
+    /* eslint-disable-next-line global-require, no-shadow */
+    const { TeamMember } = require('@pubsweet/models')
+
     const data = {
       teamId,
       userId,
@@ -119,43 +143,14 @@ class Team extends PubsweetTeam {
   }
 
   static async removeMember(teamId, userId, options = {}) {
-    const remove = async trx => {
-      const team = await Team.query(trx).findById(teamId)
+    /* eslint-disable-next-line global-require, no-shadow */
+    const { TeamMember } = require('@pubsweet/models')
 
+    const remove = async trx => {
       await TeamMember.query(trx).delete().where({
         teamId,
         userId,
       })
-
-      /**
-       * If a user is removed from a global team, they should also be unassigned
-       * from all objects that they have that role on.
-       * eg. you cannot be an editor of X if you are not an editor anymore
-       */
-      if (team.global) {
-        // TO DO -- standardize with 'global' prefix
-        // XXXX get rid of this!
-        // Make a real two way mapping between nonglobal and global roles.
-        const mapper = {
-          editors: 'editor',
-          scienceOfficers: 'scienceOfficer',
-          globalCurator: 'curator',
-          globalSectionEditor: 'sectionEditor',
-        }
-
-        const membershipsToDelete = await TeamMember.query(trx)
-          .leftJoin('teams', 'team_members.team_id', 'teams.id')
-          .where({
-            role: mapper[team.role],
-            userId,
-          })
-
-        await Promise.all(
-          membershipsToDelete.map(membership =>
-            TeamMember.query(trx).deleteById(membership.id),
-          ),
-        )
-      }
     }
 
     try {

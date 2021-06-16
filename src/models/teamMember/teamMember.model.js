@@ -1,47 +1,46 @@
-const omit = require('lodash/omit')
-const config = require('config')
+const BaseModel = require('../BaseModel')
 
-const { TeamMember: PubsweetTeamMember } = require('@pubsweet/models')
+class TeamMember extends BaseModel {
+  static get tableName() {
+    return 'team_members'
+  }
 
-const REVIEWER_STATUSES = config.get('reviewer_statuses')
-
-class TeamMember extends PubsweetTeamMember {
   static get schema() {
     return {
       type: 'object',
       required: ['teamId', 'userId'],
+      properties: {
+        userId: { type: 'string', format: 'uuid' },
+        teamId: { type: 'string', format: 'uuid' },
+        aliasId: { type: ['string', 'null'], format: 'uuid' },
+        status: { type: 'string' },
+        global: { type: ['boolean', 'null'] },
+      },
     }
   }
 
   static get relationMappings() {
-    return omit(PubsweetTeamMember.relationMappings, 'alias')
-  }
+    // eslint-disable-next-line global-require
+    const { Team, User } = require('@pubsweet/models')
 
-  async $afterInsert(queryContext) {
-    await super.$afterInsert(queryContext)
-  }
-
-  // `false` here would mean that they are already invited
-  canInvite() {
-    return !this.status || this.status === REVIEWER_STATUSES.added
-  }
-
-  // The inverse of canInvite
-  hasBeenInvited() {
-    return (
-      this.status === REVIEWER_STATUSES.invited ||
-      this.status === REVIEWER_STATUSES.accepted ||
-      this.status === REVIEWER_STATUSES.rejected ||
-      this.status === REVIEWER_STATUSES.revoked
-    )
-  }
-
-  // Has been invited and the invitation has not been revoked or rejected
-  hasActiveInvitation() {
-    return (
-      this.status === REVIEWER_STATUSES.invited ||
-      this.status === REVIEWER_STATUSES.accepted
-    )
+    return {
+      user: {
+        relation: BaseModel.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: 'team_members.userId',
+          to: 'users.id',
+        },
+      },
+      team: {
+        relation: BaseModel.BelongsToOneRelation,
+        modelClass: Team,
+        join: {
+          from: 'team_members.teamId',
+          to: 'teams.id',
+        },
+      },
+    }
   }
 }
 

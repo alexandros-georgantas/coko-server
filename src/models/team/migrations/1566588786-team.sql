@@ -1,6 +1,16 @@
-alter table only teams
-alter column global set default false
-;
+CREATE TABLE teams (
+  id UUID PRIMARY KEY,
+  created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT current_timestamp,
+  updated TIMESTAMP WITH TIME ZONE,
+  object_id UUID,
+  object_type varchar(255),
+  name TEXT,
+  role TEXT NOT NULL,
+  members JSONB,
+  owners JSONB,
+  global BOOLEAN DEFAULT false,
+  type TEXT NOT NULL
+);
 
 CREATE UNIQUE INDEX unique_global_team
 ON teams (role)

@@ -2,9 +2,10 @@
 const { internet, name } = require('faker')
 const range = require('lodash/range')
 
-const { User, Identity } = require('@pubsweet/models')
-
 const createUser = async () => {
+  // eslint-disable-next-line global-require
+  const { User, Identity } = require('@pubsweet/models')
+
   const user = await User.query().insert({
     givenNames: name.firstName(),
     surname: name.lastName(),

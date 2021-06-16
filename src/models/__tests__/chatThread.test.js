@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid')
 const config = require('config')
-const { ChatMessage, ChatThread, User, Team } = require('@pubsweet/models')
+const { ChatMessage, ChatThread, User, Team } = require('..')
 
 const globalTeams = config.get('teams.global')
 const nonGlobalTeams = config.get('teams.nonglobal')

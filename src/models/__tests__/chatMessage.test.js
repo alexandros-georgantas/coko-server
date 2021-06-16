@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid')
 
-const { ChatMessage, ChatThread, User } = require('@pubsweet/models')
+const { ChatMessage, ChatThread, User } = require('..')
 
 const clearDb = require('./_clearDb')
 

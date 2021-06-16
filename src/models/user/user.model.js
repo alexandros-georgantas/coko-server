@@ -1,7 +1,4 @@
 const merge = require('lodash/merge')
-
-const { User: PubsweetUser } = require('@pubsweet/models')
-const { Team, TeamMember, Identity } = require('@pubsweet/models')
 const logger = require('@pubsweet/logger')
 const { ValidationError } = require('@pubsweet/errors')
 const BaseModel = require('../BaseModel')
@@ -15,20 +12,18 @@ const {
   stringNotEmpty,
 } = require('../_helpers/types')
 
-class User extends PubsweetUser {
+class User extends BaseModel {
+
   constructor(properties) {
     super(properties)
+    this.type = 'user'
+  }
 
-    delete this.collections
-    delete this.fragments
-    delete this.teams
-    delete this.email
+  static get tableName() {
+    return 'users'
   }
 
   /*
-    Given names & surname are not required, as pre-migration users might not
-    have them.
-
     Username & password are not required to allow for scenarios where a user
     has been created (eg. reviewer invitation), but they have not signed up yet.
   */
@@ -37,6 +32,14 @@ class User extends PubsweetUser {
       type: 'object',
       required: [],
       properties: {
+        email: { type: 'string', format: 'email' },
+        username: { type: 'string', pattern: '^[a-zA-Z0-9]+' },
+        passwordHash: { type: 'string' },
+        passwordResetToken: { type: ['string', 'null'] },
+        passwordResetTimestamp: {
+          type: ['string', 'object', 'null'],
+          format: 'date-time',
+        },
         admin: booleanDefaultFalse,
         // TO DO -- temporarily set implicitly to true, until we have the tc
         agreedTc: booleanDefaultTrue,
@@ -56,7 +59,7 @@ class User extends PubsweetUser {
 
   static get relationMappings() {
     /* eslint-disable-next-line global-require, no-shadow */
-    const { Identity } = require('@pubsweet/models')
+    const { Team, TeamMember, Identity } = require('@pubsweet/models')
 
     return {
       identities: {
@@ -80,7 +83,7 @@ class User extends PubsweetUser {
       },
 
       teams: {
-        relation: PubsweetUser.ManyToManyRelation,
+        relation: BaseModel.ManyToManyRelation,
         modelClass: Team,
         join: {
           from: 'users.id',
@@ -95,17 +98,12 @@ class User extends PubsweetUser {
     }
   }
 
-  async deleteIdentities() {
-    const numDeleted = await Identity.query().delete().where({
-      userId: this.id,
-    })
-    
-    return numDeleted
-  }
-
   // From https://gitlab.coko.foundation/ncbi/ncbi/-/blob/develop/server/models/user/user.js#L61-101
 
   static async hasGlobalRole(userId, role) {
+    /* eslint-disable-next-line global-require, no-shadow */
+    const { TeamMember } = require('@pubsweet/models')
+
     try {
       const isMember = await TeamMember.query()
         .leftJoin('teams', 'team_members.teamId', 'teams.id')
@@ -127,6 +125,9 @@ class User extends PubsweetUser {
   }
 
   static async hasRoleOnObject(userId, role, objectId) {
+    /* eslint-disable-next-line global-require, no-shadow */
+    const { TeamMember } = require('@pubsweet/models')
+
     try {
       const isMember = await TeamMember.query()
         .leftJoin('teams', 'team_members.teamId', 'teams.id')
@@ -184,6 +185,14 @@ class User extends PubsweetUser {
     return user.$query().patchAndFetch({
       password: newPassword,
     })
+  }
+
+  $formatJson(json) {
+    // eslint-disable-next-line no-param-reassign
+    json = super.$formatJson(json)
+    // eslint-disable-next-line no-param-reassign
+    delete json.passwordHash
+    return json
   }
 
   async hashPassword(pwd) {
