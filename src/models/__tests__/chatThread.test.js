@@ -8,8 +8,7 @@ const nonGlobalTeams = config.get('teams.nonglobal')
 const clearDb = require('./_clearDb')
 
 describe('ChatThread Model', () => {
-  beforeAll(() => clearDb())
-  afterEach(() => clearDb())
+  beforeEach(() => clearDb())
 
   afterAll(() => {
     const knex = ChatThread.knex()

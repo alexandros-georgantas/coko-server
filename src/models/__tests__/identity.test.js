@@ -5,8 +5,7 @@ const { createUsers, createUser } = require('../_helpers/createUsers')
 const clearDb = require('./_clearDb')
 
 describe('Identitty Model', () => {
-  beforeAll(() => clearDb())
-  afterEach(() => clearDb())
+  beforeEach(() => clearDb())
 
   afterAll(() => {
     const knex = Identity.knex()
@@ -23,7 +22,7 @@ describe('Identitty Model', () => {
   FIXME :: make this test delete the identity manually
 
   test('Create a user, delete its identities', async () => {
-    const { user, id } = await createUser()
+    const { user } = await createUser()
 
     const numIds = await user.deleteIdentities()
 

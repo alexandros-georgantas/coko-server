@@ -5,8 +5,7 @@ const { Team, TeamMember, User, ChatThread } = require('../index')
 const clearDb = require('./_clearDb')
 
 describe('Team Model', () => {
-  beforeAll(() => clearDb())
-  afterEach(() => clearDb())
+  beforeEach(() => clearDb())
 
   afterAll(() => {
     const knex = Team.knex()
