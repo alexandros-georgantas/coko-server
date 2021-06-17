@@ -67,7 +67,7 @@ exports.up = knex => {
 
     return teams
   } catch (e) {
-    logger.error('Team: Initial: Migration failed!')
+    logger.error('Teams: Initial: Migration failed!')
     throw new Error(e)
   }
 }

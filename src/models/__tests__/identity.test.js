@@ -36,22 +36,25 @@ describe('Identitty Model', () => {
     await expect(makeNewId(false)).toBeDefined()
   })
 
-  /*
-  FIXME :: make this test delete the identity manually
-
   test('Create a user, delete its identities', async () => {
     const { user } = await createUser()
 
-    const numIds = await user.deleteIdentities()
+    // delete the associated Identities.
+    const numIds = await Identity.query()
+      .where({
+        userId: user.id,
+      })
+      .delete()
 
     const ids = await Identity.query().where({
       userId: user.id,
     })
 
+    // Should have gotten back that no Identities for that user are available.
     expect(ids).toHaveLength(0)
+    // Should have gotten back that ONE identity was deleted.
     expect(numIds === 1).toBeTruthy()
   })
-  */
 
   test('Cant find user by email from User object ', async () => {
     const user = await createUser()
