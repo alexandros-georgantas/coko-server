@@ -1,8 +1,10 @@
 const { v4: uuid } = require('uuid')
-
+const config = require('config')
 const { Team, TeamMember, User, ChatThread } = require('../index')
-
 const clearDb = require('./_clearDb')
+
+const globalTeams = config.get('teams.global')
+const nonGlobalTeams = config.get('teams.nonglobal')
 
 describe('Team Model', () => {
   beforeEach(() => clearDb())
@@ -348,5 +350,74 @@ describe('Team Model', () => {
     })
 
     expect(sectionEditors.length).toEqual(0)
+  })
+
+  test('Teams , global and non-global, being related to ChatThreads ', async () => {
+    const relatedObject = uuid()
+
+    const createThread = async relatedObjectId =>
+      ChatThread.query().insert({
+        chatType: 'reviewer',
+        relatedObjectId,
+      })
+
+    // the same relatedObject id on another chat thread should be ok
+    const ctOne = await createThread(relatedObject)
+    const ctTwo = await createThread(relatedObject)
+
+    const threads = await ChatThread.query()
+    expect(threads).toHaveLength(2)
+
+    await Team.query().insert({
+      role: nonGlobalTeams.EDITOR,
+      objectId: ctOne.id,
+      objectType: 'unknownObject',
+      global: false,
+    })
+
+    await Team.query().insert({
+      role: nonGlobalTeams.EDITOR,
+      objectId: ctTwo.id,
+      objectType: 'unknownObject',
+      global: false,
+    })
+
+    // We should be able to link the different chat threads to two different teams
+    const teams = await Team.query()
+    expect(teams).toHaveLength(2)
+
+    // a non-global team can't have the same chatThread associated with it with same role.
+
+    await expect(
+      Team.query().insert({
+        role: nonGlobalTeams.EDITOR,
+        objectId: ctTwo.id,
+        objectType: 'unknownObject',
+        global: false,
+      }),
+    ).rejects.toThrow()
+
+    // same chatThread but different role works.
+    await Team.query().insert({
+      role: nonGlobalTeams.SCIENCE_OFFICER,
+      objectId: ctTwo.id,
+      objectType: 'unknownObject',
+      global: false,
+    })
+
+    // We should be able to link the different chat threads to two different teams
+    const teams2 = await Team.query()
+    expect(teams2).toHaveLength(3)
+
+    // and have a global team can't have a chatThread associated with it at all.
+
+    await expect(
+      Team.query().insert({
+        role: globalTeams.GLOBAL_SECTION_EDITOR,
+        objectId: ctTwo.id,
+        objectType: 'unknownObject',
+        global: true,
+      }),
+    ).rejects.toThrow()
   })
 })
