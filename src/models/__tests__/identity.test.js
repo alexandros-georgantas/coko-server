@@ -18,6 +18,24 @@ describe('Identitty Model', () => {
     expect(users).toHaveLength(4)
   })
 
+  test('cant have more than one default identity', async () => {
+    const users = await createUsers(1)
+
+    expect(users).toHaveLength(1)
+
+    const makeNewId = defaultish =>
+      Identity.query().insert({
+        userId: users[0].user.id,
+        email: 'a@b.org',
+        isConfirmed: true,
+        isDefault: defaultish,
+      })
+
+    await expect(makeNewId(true)).rejects.toThrow()
+
+    await expect(makeNewId(false)).toBeDefined()
+  })
+
   /*
   FIXME :: make this test delete the identity manually
 

@@ -16,7 +16,7 @@ exports.up = knex => {
 
       table.text('content').notNullable()
 
-      table.text('type')
+      table.text('type').notNullable()
     })
   } catch (e) {
     logger.error('Chat message: Initial: Migration failed!')
