@@ -27,7 +27,7 @@ describe('Team Model', () => {
 
   test('creates a new global team', async () => {
     const team = await Team.query().insert({
-      role: 'globalCurator',
+      role: 'editor',
       global: true,
     })
 
@@ -37,13 +37,13 @@ describe('Team Model', () => {
 
   test('global teams are unique', async () => {
     await Team.query().insert({
-      role: 'globalCurator',
+      role: 'editor',
       global: true,
     })
 
     const createDuplicate = () =>
       Team.query().insert({
-        role: 'globalCurator',
+        role: 'editor',
         global: true,
       })
 
@@ -79,7 +79,7 @@ describe('Team Model', () => {
   test('global teams must not have an associated object', async () => {
     const create = () =>
       Team.query().insert({
-        role: 'globalCurator',
+        role: 'editor',
         global: true,
         objectId: uuid(),
         objectType: 'unknownObject',
@@ -109,13 +109,13 @@ describe('Team Model', () => {
   test('global teams should only accept global roles', async () => {
     const createValid = () =>
       Team.query().insert({
-        role: 'globalCurator',
+        role: 'editor',
         global: true,
       })
 
     const createInvalid = () =>
       Team.query().insert({
-        role: 'author',
+        role: 'non-global-role',
         global: true,
       })
 
@@ -134,7 +134,7 @@ describe('Team Model', () => {
 
     const createInvalid = () =>
       Team.query().insert({
-        role: 'globalCurators',
+        role: 'global-role',
         objectId: uuid(),
         objectType: 'unknownObject',
       })
@@ -147,11 +147,11 @@ describe('Team Model', () => {
   test('finds all global teams', async () => {
     await Team.query().insert([
       {
-        role: 'globalCurator',
+        role: 'editor',
         global: true,
       },
       {
-        role: 'globalSectionEditor',
+        role: 'author',
         global: true,
       },
     ])
@@ -159,31 +159,33 @@ describe('Team Model', () => {
     const teams = await Team.findAllGlobalTeams()
     expect(teams.length).toEqual(2)
 
-    const curatorTeam = teams.find(t => t.role === 'globalCurator')
+    const curatorTeam = teams.find(t => t.role === 'editor')
     expect(curatorTeam).toBeDefined()
     expect(curatorTeam.global).toBeTruthy()
 
-    const sectionEditorTeam = teams.find(t => t.role === 'globalSectionEditor')
+    const sectionEditorTeam = teams.find(t => t.role === 'author')
     expect(sectionEditorTeam).toBeDefined()
     expect(sectionEditorTeam.global).toBeTruthy()
   })
 
   test('finds global teams by role', async () => {
     await Team.query().insert({
-      role: 'globalCurator',
+      role: 'editor',
       global: true,
     })
 
-    const res = await Team.findGlobalTeamByRole('globalCurator')
+    const res = await Team.findGlobalTeamByRole('editor')
 
     expect(res).toBeDefined()
-    expect(res.role).toEqual('globalCurator')
+    expect(res.role).toEqual('editor')
     expect(res.global).toBeTruthy()
   })
 
   test('finds teams by role and object', async () => {
     const objectId = uuid()
     const objectType = 'lorem'
+
+    const REVIEWER_ROLE = 'editor'
 
     await Team.query().insert({
       role: 'author',
@@ -192,7 +194,7 @@ describe('Team Model', () => {
     })
 
     await Team.query().insert({
-      role: 'reviewer',
+      role: REVIEWER_ROLE,
       objectId,
       objectType,
     })
@@ -204,18 +206,18 @@ describe('Team Model', () => {
     expect(authorTeam.global).toBeFalsy()
 
     const reviewerTeam = await Team.findTeamByRoleAndObject(
-      'reviewer',
+      REVIEWER_ROLE,
       objectId,
     )
 
     expect(reviewerTeam).toBeDefined()
-    expect(reviewerTeam.role).toEqual('reviewer')
+    expect(reviewerTeam.role).toEqual(REVIEWER_ROLE)
     expect(reviewerTeam.global).toBeFalsy()
   })
 
   test('adds member to team', async () => {
     const team = await Team.query().insert({
-      role: 'globalCurator',
+      role: 'editor',
       global: true,
     })
 
@@ -243,7 +245,7 @@ describe('Team Model', () => {
     const users = await User.query().insert([{}, {}])
 
     const globalCurators = await Team.query().insert({
-      role: 'globalCurator',
+      role: 'editor',
       global: true,
     })
 
@@ -264,7 +266,7 @@ describe('Team Model', () => {
         })
 
         const team = await Team.query().insert({
-          role: 'curator',
+          role: 'editor',
           objectId: ct.id,
           objectType: 'chatthread',
         })
@@ -307,12 +309,12 @@ describe('Team Model', () => {
     const userThree = await User.query().insert({})
 
     const curatorTeam = await Team.query().insert({
-      role: 'globalCurator',
+      role: 'editor',
       global: true,
     })
 
     const sectionEditorTeam = await Team.query().insert({
-      role: 'globalSectionEditor',
+      role: 'author',
       global: true,
     })
 
@@ -399,7 +401,7 @@ describe('Team Model', () => {
 
     // same chatThread but different role works.
     await Team.query().insert({
-      role: nonGlobalTeams.SCIENCE_OFFICER,
+      role: nonGlobalTeams.AUTHOR,
       objectId: ctTwo.id,
       objectType: 'unknownObject',
       global: false,
@@ -413,7 +415,7 @@ describe('Team Model', () => {
 
     await expect(
       Team.query().insert({
-        role: globalTeams.GLOBAL_SECTION_EDITOR,
+        role: globalTeams.AUTHOR,
         objectId: ctTwo.id,
         objectType: 'unknownObject',
         global: true,

@@ -31,18 +31,12 @@ module.exports = {
 
   teams: {
     global: {
-      EDITORS: 'editors',
-      SCIENCE_OFFICERS: 'scienceOfficers',
-      GLOBAL_SECTION_EDITOR: 'globalSectionEditor',
-      GLOBAL_CURATOR: 'globalCurator',
+      EDITOR: 'editor',
+      AUTHOR: 'author',
     },
     nonglobal: {
       EDITOR: 'editor',
       AUTHOR: 'author',
-      REVIEWER: 'reviewer',
-      SCIENCE_OFFICER: 'scienceOfficer',
-      SECTION_EDITOR: 'sectionEditor',
-      CURATOR: 'curator',
     },
   },
 }
