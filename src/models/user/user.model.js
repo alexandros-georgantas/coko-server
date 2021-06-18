@@ -1,7 +1,11 @@
 const merge = require('lodash/merge')
 const logger = require('@pubsweet/logger')
 const { ValidationError } = require('@pubsweet/errors')
+const bcrypt = require('bcrypt')
+const config = require('config')
 const BaseModel = require('../BaseModel')
+
+const BCRYPT_COST = config.util.getEnv('NODE_ENV') === 'test' ? 1 : 12
 
 const {
   arrayOfStrings,
@@ -194,8 +198,8 @@ class User extends BaseModel {
     return json
   }
 
-  async hashPassword(pwd) {
-    this.passwordHash = await User.hashPassword(pwd)
+  async hashPassword(plaintext) {
+    this.passwordHash = await bcrypt.hash(plaintext, BCRYPT_COST)
     delete this.password
   }
 
@@ -209,9 +213,13 @@ class User extends BaseModel {
     if (this.password) await this.hashPassword(this.password)
   }
 
-  // ** validPassword() returns a promise, needs to be used with await
+  async validPassword(plaintext) {
+    return plaintext && this.passwordHash
+      ? bcrypt.compare(plaintext, this.passwordHash)
+      : false
+  }
 
-  /* eslint-disable class-methods-use-this */
+  // eslint-disable-next-line class-methods-use-this
   async save() {
     logger.error('User model: save method has been disabled')
   }
@@ -225,7 +233,10 @@ class User extends BaseModel {
   static ownersWithUsername(object) {
     logger.error('User model: ownersWithUsernames method has been disabled')
   }
-  /* eslint-enable class-methods-use-this */
+
+  static findByUsername(username) {
+    return this.findByField('username', username).then(users => users[0])
+  }
 }
 
 module.exports = User
