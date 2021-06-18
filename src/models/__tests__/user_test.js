@@ -23,4 +23,30 @@ describe('User', () => {
     const shouldBeInvalid = await savedUser.validPassword('wrongpassword')
     expect(shouldBeInvalid).toEqual(false)
   })
+
+  it('raises an error if trying to save a user with a non-unique username', async () => {
+    await User.query().insert({ ...fixtures.user })
+    const otherUserFixture = fixtures.otherUser
+    otherUserFixture.username = fixtures.user.username
+
+    const insertOtherUser = () =>
+      User.query().insert({
+        ...otherUserFixture,
+      })
+
+    await expect(insertOtherUser()).rejects.toThrow()
+  })
+
+  it('raises an error if trying to save a user with a non-unique email', async () => {
+    await User.query().insert({ ...fixtures.user })
+    const otherUserFixture = fixtures.otherUser
+    otherUserFixture.email = fixtures.user.email
+
+    const insertOtherUser = () =>
+      User.query().insert({
+        ...otherUserFixture,
+      })
+
+    await expect(insertOtherUser()).rejects.toThrow()
+  })
 })
