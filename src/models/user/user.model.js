@@ -35,7 +35,6 @@ class User extends BaseModel {
       type: 'object',
       required: [],
       properties: {
-        email: { type: 'string', format: 'email' },
         username: { type: 'string', pattern: '^[a-zA-Z0-9]+' },
         passwordHash: { type: 'string' },
         passwordResetToken: { type: ['string', 'null'] },
