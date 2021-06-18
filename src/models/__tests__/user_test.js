@@ -49,4 +49,16 @@ describe('User', () => {
 
     await expect(insertOtherUser()).rejects.toThrow()
   })
+
+  it('uses custom JSON serialization', async () => {
+    const user = await User.query().insert({ ...fixtures.user })
+
+    const savedUser = await User.findByUsername(user.username)
+    expect(savedUser).toHaveProperty('username', user.username)
+    expect(savedUser).toHaveProperty('passwordHash')
+
+    const stringifiedUser = JSON.parse(JSON.stringify(savedUser))
+    expect(stringifiedUser).toHaveProperty('username', user.username)
+    expect(stringifiedUser).not.toHaveProperty('passwordHash')
+  })
 })
