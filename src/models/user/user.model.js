@@ -13,7 +13,6 @@ const {
 } = require('../_helpers/types')
 
 class User extends BaseModel {
-
   constructor(properties) {
     super(properties)
     this.type = 'user'
