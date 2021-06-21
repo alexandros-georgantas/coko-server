@@ -2,6 +2,7 @@ const { v4: uuid } = require('uuid')
 const config = require('config')
 const { Team, TeamMember, User, ChatThread } = require('../index')
 const clearDb = require('./_clearDb')
+const { createTeamWithMember } = require('../_helpers/createUsers')
 
 const globalTeams = config.get('teams.global')
 const nonGlobalTeams = config.get('teams.nonglobal')
@@ -269,6 +270,7 @@ describe('Team Model', () => {
           role: 'editor',
           objectId: ct.id,
           objectType: 'chatthread',
+          global: false,
         })
 
         chatTeams.push(team)
@@ -354,7 +356,7 @@ describe('Team Model', () => {
     expect(sectionEditors.length).toEqual(0)
   })
 
-  test('Teams , global and non-global, being related to ChatThreads ', async () => {
+  test('global and non-global teams can be related to ChatThreads ', async () => {
     const relatedObject = uuid()
 
     const createThread = async relatedObjectId =>
@@ -421,5 +423,110 @@ describe('Team Model', () => {
         global: true,
       }),
     ).rejects.toThrow()
+  })
+
+  it('has updated set when created', async () => {
+    const team = await Team.query().insert({
+      name: 'Test',
+      role: nonGlobalTeams.AUTHOR,
+      global: true,
+    })
+
+    expect(team.role).toEqual(nonGlobalTeams.AUTHOR)
+    const now = new Date().toISOString()
+    expect(team.updated).toHaveLength(now.length)
+  })
+
+  it('can be saved and found and deleted', async () => {
+    const team = await Team.query().insert({
+      name: 'Test',
+      role: nonGlobalTeams.AUTHOR,
+      global: true,
+    })
+
+    expect(team.name).toEqual('Test')
+
+    const foundTeam = await Team.find(team.id)
+    expect(foundTeam.name).toEqual('Test')
+
+    await foundTeam.delete()
+
+    async function tryToFind() {
+      await Team.find(foundTeam.id)
+    }
+
+    await expect(tryToFind()).rejects.toThrow('Object not found')
+  })
+
+  it('can have some members', async () => {
+    const newTeam = (await createTeamWithMember(nonGlobalTeams.AUTHOR)).team
+
+    const team = await Team.query()
+      .findById(newTeam.id)
+      .withGraphFetched('members')
+
+    expect(team.members).toHaveLength(1)
+  })
+
+  it('deletes memberships after team is deleted', async () => {
+    const { team, user } = await createTeamWithMember(nonGlobalTeams.AUTHOR)
+
+    let foundUser = await User.query()
+      .findById(user.id)
+      .withGraphFetched('teams')
+
+    expect(foundUser.teams).toHaveLength(1)
+
+    await Team.query().deleteById(team.id)
+
+    foundUser = await User.query().findById(user.id).withGraphFetched('teams')
+
+    expect(foundUser.teams).toHaveLength(0)
+  })
+
+  it('creates team and related objects with one call', async () => {
+    const user = await User.query().insert({
+      password: 'some@example.com',
+      username: 'test',
+    })
+
+    const team = await Team.query().upsertGraphAndFetch(
+      {
+        role: nonGlobalTeams.EDITOR,
+        name: 'My team',
+        global: false,
+        objectId: '5989b23c-356b-4ae9-bee5-bbd11f29028b',
+        objectType: 'fragment',
+        members: [
+          {
+            user: { id: user.id },
+          },
+        ],
+      },
+      {
+        relate: true,
+        unrelate: true,
+      },
+    )
+
+    expect(team.members).toHaveLength(1)
+    expect(team.members[0].id).toBeDefined()
+    expect(team.members[0].user.id).toBe(user.id)
+
+    const userWithTeams = await User.query()
+      .findById(user.id)
+      .withGraphFetched('teams')
+
+    expect(userWithTeams.teams[0].id).toBe(team.id)
+  })
+
+  it('can not create a team member without a team', async () => {
+    const { user } = await createTeamWithMember(nonGlobalTeams.AUTHOR)
+
+    await expect(
+      TeamMember.query().insert({
+        userId: user.id,
+      }),
+    ).rejects.toThrow('teamId: is a required property')
   })
 })

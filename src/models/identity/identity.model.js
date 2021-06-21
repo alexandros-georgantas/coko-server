@@ -5,7 +5,9 @@ const {
   dateNullable,
   email,
   id,
+  object,
   stringNullable,
+  stringNotEmpty,
 } = require('../_helpers/types')
 
 class Identity extends BaseModel {
@@ -25,6 +27,10 @@ class Identity extends BaseModel {
       properties: {
         userId: id,
         email,
+        name: stringNotEmpty,
+        identifier: stringNullable,
+        aff: stringNullable,
+        oauth: object,
         isDefault: boolean,
         isConfirmed: boolean,
         confirmationToken: stringNullable,

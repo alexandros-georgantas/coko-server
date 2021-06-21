@@ -1,11 +1,10 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { internet, name } = require('faker')
 const range = require('lodash/range')
+const { User, Identity, Team } = require('@pubsweet/models')
+const { TeamMember } = require('..')
 
-const createUser = async () => {
-  // eslint-disable-next-line global-require
-  const { User, Identity } = require('@pubsweet/models')
-
+const createUserAndIdentity = async () => {
   const user = await User.query().insert({
     givenNames: name.firstName(),
     surname: name.lastName(),
@@ -21,9 +20,34 @@ const createUser = async () => {
   return { user, id }
 }
 
-const createUsers = async n => Promise.all(range(n).map(() => createUser()))
+const createUsersAndIdentities = async n =>
+  Promise.all(range(n).map(() => createUserAndIdentity()))
+
+const createTeamWithMember = async roleString => {
+  const user = await User.query().insert({
+    password: 'qazwsx123',
+    username: 'test',
+  })
+
+  const team = await Team.query().insert(
+    {
+      name: 'Test',
+      role: roleString,
+      global: true,
+    },
+    { relate: true },
+  )
+
+  await TeamMember.query().insert({
+    userId: user.id,
+    teamId: team.id,
+  })
+
+  return { user, team }
+}
 
 module.exports = {
-  createUser,
-  createUsers,
+  createUserAndIdentity,
+  createUsersAndIdentities,
+  createTeamWithMember,
 }

@@ -3,6 +3,7 @@ const logger = require('@pubsweet/logger')
 const { ValidationError } = require('@pubsweet/errors')
 const bcrypt = require('bcrypt')
 const config = require('config')
+
 const BaseModel = require('../BaseModel')
 
 const BCRYPT_COST = config.util.getEnv('NODE_ENV') === 'test' ? 1 : 12
@@ -60,8 +61,8 @@ class User extends BaseModel {
   }
 
   static get relationMappings() {
-    /* eslint-disable-next-line global-require, no-shadow */
-    const { Team, TeamMember, Identity } = require('@pubsweet/models')
+    // eslint-disable-next-line global-require
+    const { Identity, Team, TeamMember } = require('@pubsweet/models')
 
     return {
       identities: {

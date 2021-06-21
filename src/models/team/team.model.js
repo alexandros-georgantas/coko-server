@@ -24,6 +24,35 @@ class Team extends BaseModel {
     return 'teams'
   }
 
+  static get relationMappings() {
+    // eslint-disable-next-line global-require
+    const { TeamMember, User } = require('@pubsweet/models')
+
+    return {
+      members: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: TeamMember,
+        join: {
+          from: 'teams.id',
+          to: 'team_members.teamId',
+        },
+      },
+      users: {
+        relation: BaseModel.ManyToManyRelation,
+        modelClass: User,
+        join: {
+          from: 'teams.id',
+          through: {
+            modelClass: TeamMember,
+            from: 'team_members.teamId',
+            to: 'team_members.userId',
+          },
+          to: 'users.id',
+        },
+      },
+    }
+  }
+
   static get schema() {
     return {
       type: 'object',
@@ -94,8 +123,8 @@ class Team extends BaseModel {
    * Members should be an array of user ids
    */
   static async updateMembershipByTeamId(teamId, members, options = {}) {
-    /* eslint-disable-next-line global-require, no-shadow */
-    const { Team, TeamMember } = require('@pubsweet/models')
+    // eslint-disable-next-line global-require
+    const { TeamMember } = require('@pubsweet/models')
 
     const queries = async trx => {
       const existingMembers = await TeamMember.query(trx).where({ teamId })
@@ -118,7 +147,7 @@ class Team extends BaseModel {
   }
 
   static async addMember(teamId, userId, options = {}) {
-    /* eslint-disable-next-line global-require, no-shadow */
+    // eslint-disable-next-line global-require
     const { TeamMember } = require('@pubsweet/models')
 
     const data = {
@@ -143,7 +172,7 @@ class Team extends BaseModel {
   }
 
   static async removeMember(teamId, userId, options = {}) {
-    /* eslint-disable-next-line global-require, no-shadow */
+    // eslint-disable-next-line global-require
     const { TeamMember } = require('@pubsweet/models')
 
     const remove = async trx => {
