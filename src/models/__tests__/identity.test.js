@@ -115,11 +115,30 @@ describe('Identitty Model', () => {
       isConfirmed: true,
     })
 
-    user = await User.find(user.id, { eager: '[identities, defaultIdentity]' })
+    // user = await User.find(user.id, { eager: '[identities, defaultIdentity]' })
 
-    expect(user.identities).toContainEqual(localIdentity)
-    expect(user.identities).toContainEqual(externalIdentity)
-    expect(user.defaultIdentity).toEqual(externalIdentity)
+    user = await User.query()
+      .findOne({ id: user.id })
+      .withGraphFetched('[identities, defaultIdentity]')
+
+    expect(user.identities).toHaveLength(2)
+    expect(user.identities[0].id).toEqual(localIdentity.id)
+    expect(user.identities[0].aff).toEqual(localIdentity.aff)
+    expect(user.identities[0].name).toEqual(localIdentity.name)
+    expect(user.identities[0].email).toEqual(localIdentity.email)
+    expect(user.identities[0].isDefault).toEqual(localIdentity.isDefault)
+
+    expect(user.identities[1].id).toEqual(externalIdentity.id)
+    expect(user.identities[1].aff).toEqual(externalIdentity.aff)
+    expect(user.identities[1].name).toEqual(externalIdentity.name)
+    expect(user.identities[1].email).toEqual(externalIdentity.email)
+    expect(user.identities[1].isDefault).toEqual(externalIdentity.isDefault)
+
+    expect(user.defaultIdentity.id).toEqual(externalIdentity.id)
+    expect(user.defaultIdentity.aff).toEqual(externalIdentity.aff)
+    expect(user.defaultIdentity.name).toEqual(externalIdentity.name)
+    expect(user.defaultIdentity.email).toEqual(externalIdentity.email)
+    expect(user.defaultIdentity.isDefault).toEqual(externalIdentity.isDefault)
   })
 
   it('user can not have more than one default identities', async () => {
