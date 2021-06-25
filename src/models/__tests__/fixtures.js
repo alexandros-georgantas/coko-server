@@ -26,6 +26,7 @@ module.exports = {
     identifier: null,
     oauth: {},
     orcid: null,
+    isDefault: false,
   },
 
   externalIdentity: {
