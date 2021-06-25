@@ -282,6 +282,7 @@ describe('Team Model', () => {
       }),
     )
 
+    // Remove the first user from the global Team
     await Team.removeMember(globalCurators.id, users[0].id)
 
     const globalCuratorMembers = await TeamMember.query().where({
@@ -290,6 +291,9 @@ describe('Team Model', () => {
 
     expect(globalCuratorMembers.length).toEqual(1)
     expect(globalCuratorMembers[0].userId).toEqual(users[1].id)
+
+    // Rmove the first user from the first non global team
+    await Team.removeMember(chatTeams[0].id, users[0].id)
 
     const membersOfChatOne = await TeamMember.query().where({
       teamId: chatTeams[0].id,
