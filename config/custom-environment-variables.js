@@ -1,5 +1,6 @@
 module.exports = {
   'pubsweet-server': {
+    uploads:'uploads',
     db: {
       host: 'POSTGRES_HOST',
       port: 'POSTGRES_PORT',

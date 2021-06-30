@@ -1,6 +1,5 @@
 module.exports = [
-  // '@pubsweet/model-user',
-  // '@pubsweet/model-team',
+  './src/api',
   './src/models/chatMessage',
   './src/models/chatThread',
   './src/models/team',

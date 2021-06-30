@@ -198,6 +198,10 @@ class User extends BaseModel {
     return json
   }
 
+  static hashPassword(plaintext) {
+    return bcrypt.hash(plaintext, BCRYPT_COST)
+  }
+
   async hashPassword(plaintext) {
     this.passwordHash = await bcrypt.hash(plaintext, BCRYPT_COST)
     delete this.password
@@ -236,6 +240,14 @@ class User extends BaseModel {
 
   static findByUsername(username) {
     return this.findByField('username', username).then(users => users[0])
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  setOwners() {
+    // FIXME: this is overriden to be a no-op, because setOwners() is called by
+    // the API on create for all entity types and setting `owners` on a User is
+    // not allowed. This should instead be solved by having separate code paths
+    // in the API for different entity types.
   }
 }
 

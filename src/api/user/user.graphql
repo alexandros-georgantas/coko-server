@@ -1,0 +1,74 @@
+scalar DateTime
+
+extend type Query {
+  user(id: ID): User
+  users: [User]
+}
+
+extend type Mutation {
+  createUser(input: UserInput): User
+  deleteUser(id: ID): User
+  updateUser(id: ID, input: UserInput): User
+}
+
+type User {
+  id: ID!
+  created: DateTime!
+  updated: DateTime
+  username: String
+  email: String
+  admin: Boolean
+  identities: [Identity]
+  defaultIdentity: Identity
+}
+
+type Name {
+  surname: String
+  givenNames: String
+  title: String
+}
+
+union Identity = Local | External
+
+# local identity (not from ORCID, etc.)
+type Local {
+  name: Name
+  email: String
+  aff: String # JATS <aff>
+}
+
+type External {
+  identifier: String
+  email: String
+  aff: String # JATS <aff>
+}
+
+input UserInput {
+  username: String!
+  email: String!
+  password: String
+  rev: String
+}
+
+# Authentication
+
+extend type Query {
+  # Get the currently authenticated user based on the JWT in the HTTP headers
+  currentUser: User
+}
+
+extend type Mutation {
+  # Authenticate a user using username and password
+  loginUser(input: LoginUserInput): LoginResult
+}
+
+# User details and bearer token
+type LoginResult {
+  user: User!
+  token: String!
+}
+
+input LoginUserInput {
+  username: String!
+  password: String!
+}

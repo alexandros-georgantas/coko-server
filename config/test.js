@@ -6,6 +6,7 @@ const components = require('./components')
 
 module.exports = {
   'pubsweet-server': {
+    uploads:'uploads',
     db: {
       host: 'localhost',
       port: '5432',
@@ -13,6 +14,7 @@ module.exports = {
       user: 'test_user',
       password: 'password',
     },
+    secret: 'somesecret123',
   },
   dbManager: {
     migrationsPath: './src/models/migrations',
