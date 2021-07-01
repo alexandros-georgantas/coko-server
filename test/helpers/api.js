@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const supertest = require('supertest')
 const app = require('../../src/app')(require('express')())
 

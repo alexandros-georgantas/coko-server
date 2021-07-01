@@ -124,8 +124,8 @@ describe('User mutations', () => {
     })
 
     const oldHash = user.passwordHash
-    const newHash = await User.find(user.id).passwordHash
+    const foundUser = await User.findById(user.id)
 
-    expect(oldHash).not.toEqual(newHash)
+    expect(oldHash).not.toEqual(foundUser.passwordHash)
   })
 })

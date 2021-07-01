@@ -58,16 +58,24 @@ const resolvers = {
     },
     async updateUser(_, { id, input }, ctx) {
       if (input.password) {
+        // eslint-disable-next-line no-param-reassign
         input.passwordHash = await ctx.connectors.User.model.hashPassword(
           input.password,
         )
+        // eslint-disable-next-line no-param-reassign
         delete input.password
+      }
+
+      if (input.email) {
+        // eslint-disable-next-line no-param-reassign
+        delete input.email
       }
 
       return ctx.connectors.User.update(id, input, ctx)
     },
     // Authentication
     async loginUser(_, { input }, ctx) {
+      // eslint-disable-next-line global-require
       const authentication = require('pubsweet-server/src/authentication')
 
       let isValid = false

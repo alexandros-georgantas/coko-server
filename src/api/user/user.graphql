@@ -16,7 +16,6 @@ type User {
   created: DateTime!
   updated: DateTime
   username: String
-  email: String
   admin: Boolean
   identities: [Identity]
   defaultIdentity: Identity
