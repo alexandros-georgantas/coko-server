@@ -1,0 +1,65 @@
+extend type Query {
+  team(id: ID): Team
+  teams(where: TeamWhereInput): [Team]
+}
+
+extend type Mutation {
+  createTeam(input: TeamInput): Team
+  deleteTeam(id: ID): Team
+  updateTeam(id: ID, input: TeamInput): Team
+}
+
+extend type User {
+  teams: [Team]
+}
+
+type Team {
+  id: ID!
+  type: String!
+  role: String!
+  name: String!
+  object: TeamObject
+  members: [TeamMember!]
+  owners: [User]
+  global: Boolean
+}
+
+input TeamMemberInput {
+  id: ID
+  user: TeamMemberUserInput
+  status: String
+}
+
+input TeamMemberUserInput {
+  id: ID!
+}
+
+type TeamMember {
+  id: ID
+  user: User
+  status: String
+}
+
+type TeamObject {
+  objectId: ID!
+  objectType: String!
+}
+
+input TeamInput {
+  role: String
+  name: String
+  objectId: ID
+  objectType: String
+  members: [TeamMemberInput]
+  global: Boolean
+}
+
+input TeamWhereInput {
+  role: String
+  name: String
+  objectId: ID
+  objectType: String
+  members: [TeamMemberInput]
+  global: Boolean
+  users: [ID!]
+}
