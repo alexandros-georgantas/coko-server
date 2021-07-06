@@ -13,7 +13,7 @@ module.exports = {
   otherUser: {
     type: 'user',
     username: 'anotheruser',
-    password: 'rubgy',
+    password: 'rubgy9876',
   },
 
   localIdentity: {
@@ -42,5 +42,10 @@ module.exports = {
       accessToken: 'someAccessToken',
       refreshToken: 'someRefreshToken',
     },
+  },
+
+  chatthread: {
+    chatType: 'informal',
+    relatedObjectId: '28a5271c-5f99-4de3-91bf-cc7b0ce64d11',
   },
 }

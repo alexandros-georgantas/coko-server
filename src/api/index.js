@@ -1,19 +1,17 @@
-const fs = require('fs')
 const path = require('path')
-const resolvers = require('./resolvers')
+const { loadFilesSync } = require('@graphql-tools/load-files')
+const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge')
 
-// Read the graphql files and output them as a string
-const loadGQLFiles = paths =>
-  paths
-    .map(p => {
-      const fullPath = path.join(__dirname, p)
-      return fs.readFileSync(fullPath, 'utf-8')
-    })
-    .join('')
+// Auto load type defs by "<type>/<type>.graphql" file convention
+const typesArray = loadFilesSync(path.join(__dirname, './**/*.graphql'), {
+  extensions: ['graphql'],
+})
 
-const typeDefinitionPaths = ['./user/user.graphql']
+const typeDefs = mergeTypeDefs(typesArray)
 
-const typeDefs = loadGQLFiles(typeDefinitionPaths)
+// Auto load resolvers by "<type>/<type>.resolver.js" file convention
+const resolversArray = loadFilesSync(path.join(__dirname, './**/*.resolver.js'))
+const resolvers = mergeResolvers(resolversArray)
 
 module.exports = {
   resolvers,
