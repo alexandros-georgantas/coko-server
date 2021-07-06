@@ -391,12 +391,12 @@ describe('Team queries', () => {
       expect(body.data.teams[0].members).toHaveLength(2)
     })
 
-    it('finds a team by alias of a member', async () => {
+    it('finds a team by ID of a member', async () => {
       const body = await whereQuery({
-        role: 'test',
+        role: nonGlobalTeams.EDITOR,
         objectId: fragment.id,
         objectType: 'fragment',
-        alias: { email: 'alias@example.com' },
+        users: [user2.id],
       })
 
       expect(body.data.teams).toHaveLength(1)
@@ -404,7 +404,7 @@ describe('Team queries', () => {
 
     it('finds a team for both members', async () => {
       const body = await whereQuery({
-        role: 'test',
+        role: nonGlobalTeams.EDITOR,
         objectId: fragment.id,
         objectType: 'fragment',
         users: [user.id, user2.id],
@@ -415,7 +415,7 @@ describe('Team queries', () => {
 
     it('does not find a team for non-existent member', async () => {
       const body = await whereQuery({
-        role: 'test',
+        role: nonGlobalTeams.EDITOR,
         objectId: fragment.id,
         objectType: 'fragment',
         users: ['54513de6-b473-4b39-8f95-bcbb3ae58a2a'],
@@ -426,7 +426,7 @@ describe('Team queries', () => {
 
     it('does not find a team if one of the members is wrong', async () => {
       const body = await whereQuery({
-        role: 'test',
+        role: nonGlobalTeams.EDITOR,
         objectId: fragment.id,
         objectType: 'fragment',
         users: [user.id, user2.id, '54513de6-b473-4b39-8f95-bcbb3ae58a2a'],
