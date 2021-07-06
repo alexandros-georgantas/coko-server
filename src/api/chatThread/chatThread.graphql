@@ -1,0 +1,19 @@
+type ChatThread {
+  id: ID!
+  chatType: ChatType
+  relatedObjectId: ID
+  userId: ID
+  messages: [ChatMessage!]!
+}
+
+enum ChatType {
+  author
+  curator
+  reviewer
+  scienceOfficer
+}
+
+type RelatedObject {
+  id: ID!
+  chatThreads: [ChatThread!]!
+}

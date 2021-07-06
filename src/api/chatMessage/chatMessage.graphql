@@ -1,0 +1,16 @@
+extend type Mutation {
+  sendChatMessage(input: SendChatMessageInput!): Boolean
+}
+
+type ChatMessage {
+  id: ID!
+  chatThreadId: ID!
+  content: String!
+  timestamp: String!
+  user: User!
+}
+
+input SendChatMessageInput {
+  content: String!
+  chatThreadId: ID!
+}
