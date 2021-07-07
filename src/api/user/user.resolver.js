@@ -3,6 +3,10 @@ const { AuthorizationError, ConflictError } = require('@pubsweet/errors')
 
 const eager = undefined
 
+//
+// Pubsweet User resolvers
+//
+
 const resolvers = {
   Query: {
     user(_, { id }, ctx) {

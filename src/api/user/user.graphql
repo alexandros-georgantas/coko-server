@@ -1,3 +1,5 @@
+### From Pubsweet User
+
 scalar DateTime
 
 extend type Query {
@@ -70,4 +72,56 @@ type LoginResult {
 input LoginUserInput {
   username: String!
   password: String!
+}
+
+### From Micropublications User
+
+extend type Query {
+  validatePasswordTokenExpiry(token: String!): Boolean!
+  currentUserWithIdentity: User
+  usersWithIdentities: [User]
+}
+
+extend type Mutation {
+  login(input: LoginUserInput): LoginResult
+  signUp(input: UserInput): User!
+
+  verifyEmail(token: String!): Boolean!
+  resendVerificationEmail(token: String!): Boolean!
+  resendVerificationEmailFromLogin(
+    username: String!
+    password: String!
+  ): Boolean!
+
+  updatePassword(input: UpdatePasswordInput): ID!
+  updatePersonalInformation(input: UpdatePersonalInformationInput!): User!
+  updateUsername(input: UpdateUsernameInput!): User!
+
+  sendPasswordResetEmail(email: String!): Boolean!
+  resetPassword(token: String!, password: String!): Boolean!
+}
+
+extend type User {
+  agreedTc: Boolean
+  displayName: String!
+  givenNames: String
+  surname: String
+  orcid: String
+}
+
+input UpdatePersonalInformationInput {
+  userId: ID
+  givenNames: String!
+  surname: String!
+  orcid: String
+}
+
+input UpdateUsernameInput {
+  userId: ID
+  username: String!
+}
+
+input UpdatePasswordInput {
+  currentPassword: String!
+  newPassword: String!
 }
