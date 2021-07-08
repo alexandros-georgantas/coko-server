@@ -105,25 +105,35 @@ const resolvers = {
   Local: {
     __isTypeOf: (obj, context, info) => obj.type === 'local',
     async email(obj, args, ctx, info) {
-      // Emails stored on identity, surfaced in local identity too
-      // XXX not checking if local or external!!
-      return (
-        await ctx.connectors.User.model.find(obj.userId, {
-          eager: 'defaultIdentity',
-        })
-      ).defaultIdentity.email
+      // Emails stored on local identity
+
+      // eslint-disable-next-line global-require
+      const { Identity } = require('@pubsweet/models')
+
+      const identityLocal = await Identity.query().findOne({
+        userId: obj.userId,
+        type: 'local',
+      })
+
+      if (identityLocal) return identityLocal.email
+      return null
     },
   },
   External: {
     __isTypeOf: (obj, context, info) => obj.type === 'external',
     async email(obj, args, ctx, info) {
-      // Emails stored on identity, surfaced in external identity too
-      // XXX not checking if local or external!!
-      return (
-        await ctx.connectors.User.model.find(obj.userId, {
-          eager: 'defaultIdentity',
-        })
-      ).defaultIdentity.email
+      // Emails stored on external identity
+
+      // eslint-disable-next-line global-require
+      const { Identity } = require('@pubsweet/models')
+
+      const identityExt = await Identity.query().findOne({
+        userId: obj.userId,
+        type: 'external',
+      })
+
+      if (identityExt) return identityExt.email
+      return null
     },
   },
 }

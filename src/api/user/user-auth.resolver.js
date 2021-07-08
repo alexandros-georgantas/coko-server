@@ -12,8 +12,6 @@ const {
   ValidationError,
 } = require('@pubsweet/errors')
 
-const { Identity, User } = require('@pubsweet/models')
-
 const { createJWT } = require('../../index')
 
 // const { auth, notify } = require('../../services')
@@ -21,6 +19,8 @@ const { createJWT } = require('../../index')
 const resolvers = {
   ChatMessage: {
     async user(_, { input }, ctx) {
+      // eslint-disable-next-line global-require
+      const { User } = require('@pubsweet/models')
       const { chatMessage } = input
 
       try {
@@ -34,8 +34,9 @@ const resolvers = {
   },
 
   User: {
-    async displayName(_, { input }, ctx) {
-      const { user } = input
+    async displayName(user, { input }, ctx) {
+      // eslint-disable-next-line global-require
+      const { User } = require('@pubsweet/models')
       return User.getDisplayName(user)
     },
   },
@@ -43,6 +44,8 @@ const resolvers = {
   Query: {
     async validatePasswordTokenExpiry(_, { token }) {
       try {
+        // eslint-disable-next-line global-require
+        const { User } = require('@pubsweet/models')
         const user = await User.query().findOne({ passwordResetToken: token })
 
         if (!user) {
@@ -70,7 +73,8 @@ const resolvers = {
     async currentUserWithIdentity(_, { input }, ctx) {
       const userId = ctx.user
       if (!userId) throw new Error('Current User: No user id provided')
-
+      // eslint-disable-next-line global-require
+      const { Identity, User } = require('@pubsweet/models')
       const user = await User.findById(userId)
 
       // XXX add AUTH attribute back in later.
@@ -89,14 +93,23 @@ const resolvers = {
     },
 
     async usersWithIdentities(_, __, ctx) {
+      // eslint-disable-next-line global-require
+      const { Identity, User } = require('@pubsweet/models')
       const all = await User.query()
 
       const withIdentity = all.map(async u => {
-        const user = await User.findById(u.id)
-        const identity = await Identity.query().findOne({ userId: u.id })
-        delete identity.id
-        delete identity.userId
-        return { ...user, ...identity }
+        const identityDefault = await Identity.query().findOne({
+          userId: u.id,
+          isDefault: true,
+        })
+
+        // Just find all of them.
+        const identityAny = await Identity.query().where({ userId: u.id })
+        // eslint-disable-next-line no-param-reassign
+        u.defaultIdentity = identityDefault
+        // eslint-disable-next-line no-param-reassign
+        u.identities = identityAny
+        return { ...u }
       })
 
       return withIdentity
@@ -110,6 +123,8 @@ const resolvers = {
       let user
 
       try {
+        // eslint-disable-next-line global-require
+        const { Identity, User } = require('@pubsweet/models')
         user = await User.query().findOne({ username })
         if (!user) throw new AuthorizationError('Wrong username or password.')
 
@@ -133,6 +148,9 @@ const resolvers = {
     },
 
     async sendPasswordResetEmail(_, { email }, ctx) {
+      // eslint-disable-next-line global-require
+      const { Identity, User } = require('@pubsweet/models')
+
       // // fail early if these configs are missing
       const baseUrl = config.get('pubsweet-server.baseUrl')
 
@@ -173,6 +191,9 @@ const resolvers = {
 
     async resendVerificationEmail(_, { token }) {
       try {
+        // eslint-disable-next-line global-require
+        const { Identity } = require('@pubsweet/models')
+
         const identity = await Identity.query().findOne({
           confirmationToken: token,
         })
@@ -199,6 +220,9 @@ const resolvers = {
 
     async resendVerificationEmailFromLogin(_, { username, password }) {
       try {
+        // eslint-disable-next-line global-require
+        const { Identity, User } = require('@pubsweet/models')
+
         const user = await User.query().findOne({ username })
         if (!user)
           throw new Error(
@@ -233,6 +257,8 @@ const resolvers = {
     },
 
     async resetPassword(_, { token, password }, ctx) {
+      // eslint-disable-next-line global-require
+      const { User } = require('@pubsweet/models')
       const user = await User.query().findOne({ passwordResetToken: token })
 
       if (!user) {
@@ -256,6 +282,8 @@ const resolvers = {
     },
 
     async signUp(_, { input }, ctx) {
+      // eslint-disable-next-line global-require
+      const { Identity, User } = require('@pubsweet/models')
       const userInput = clone(input)
 
       const { email, givenNames, password, surname, username, orcid } =
@@ -350,6 +378,8 @@ const resolvers = {
     },
 
     async updatePassword(_, { input }, ctx) {
+      // eslint-disable-next-line global-require
+      const { User } = require('@pubsweet/models')
       const userId = ctx.user
       const { currentPassword, newPassword } = input
 
@@ -367,6 +397,8 @@ const resolvers = {
     },
 
     async updatePersonalInformation(_, { input }, ctx) {
+      // eslint-disable-next-line global-require
+      const { Identity, User } = require('@pubsweet/models')
       const { givenNames, surname, orcid } = input
       const userId = input.userId || ctx.user
 
@@ -382,6 +414,8 @@ const resolvers = {
     },
 
     async updateUsername(_, { input }, ctx) {
+      // eslint-disable-next-line global-require
+      const { User } = require('@pubsweet/models')
       const { username } = input
       const userId = input.userId || ctx.user
 
@@ -390,6 +424,9 @@ const resolvers = {
 
     async verifyEmail(_, { token }, ctx) {
       try {
+        // eslint-disable-next-line global-require
+        const { Identity } = require('@pubsweet/models')
+
         const identity = await Identity.query().findOne({
           confirmationToken: token,
         })
