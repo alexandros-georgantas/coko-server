@@ -19,6 +19,7 @@ const resolvers = {
       return ctx.connectors.Team.fetchAll(where, ctx, { eager })
     },
   },
+
   Mutation: {
     deleteTeam(_, { id }, ctx) {
       return ctx.connectors.Team.delete(id, ctx)
@@ -27,7 +28,7 @@ const resolvers = {
       const options = {
         relate: ['members.user'],
         unrelate: ['members.user'],
-        allowGraph: '[members, members]',
+        allowGraph: '[members]',
         eager: '[members.[user.teams]]',
       }
 

@@ -1,4 +1,6 @@
+##
 ### From Pubsweet User
+##
 
 scalar DateTime
 
@@ -60,6 +62,7 @@ extend type Query {
 
 extend type Mutation {
   # Authenticate a user using username and password
+  # This does NOT check if the identity object associated with User is confirmed
   loginUser(input: LoginUserInput): LoginResult
 }
 
@@ -74,7 +77,9 @@ input LoginUserInput {
   password: String!
 }
 
+##
 ### From Micropublications User
+##
 
 extend type Query {
   validatePasswordTokenExpiry(token: String!): Boolean!
@@ -83,6 +88,8 @@ extend type Query {
 }
 
 extend type Mutation {
+  # Authenticate a user using username and password
+  # This does check if the identity object associated with User is confirmed
   login(input: LoginUserInput): LoginResult
   signUp(input: UserInput): User!
 

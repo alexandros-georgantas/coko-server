@@ -14,8 +14,6 @@ const {
 
 const { createJWT } = require('../../index')
 
-// const { auth, notify } = require('../../services')
-
 const resolvers = {
   ChatMessage: {
     async user(_, { input }, ctx) {
@@ -77,7 +75,7 @@ const resolvers = {
       const { Identity, User } = require('@pubsweet/models')
       const user = await User.findById(userId)
 
-      // XXX add AUTH attribute back in later.
+      // XXX add AUTH attribute back in later?
       // const { createClientAuth } = auth
       // user.auth = await createClientAuth(userId)
 
@@ -86,8 +84,11 @@ const resolvers = {
         userId: user.id,
       })
 
-      user.orcid = identity.orcid
-      user.email = identity.email
+      user.defaultIdentity = identity
+
+      user.identities = await Identity.query().where({
+        userId: user.id,
+      })
 
       return user
     },

@@ -14,6 +14,7 @@ module.exports = {
       user: 'test_user',
       password: 'password',
     },
+    secret: 'somesecret123',
   },
 
   authsome: {

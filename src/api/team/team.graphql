@@ -1,3 +1,7 @@
+##
+### From Pubsweet Team
+##
+
 extend type Query {
   team(id: ID): Team
   teams(where: TeamWhereInput): [Team]
@@ -62,4 +66,25 @@ input TeamWhereInput {
   members: [TeamMemberInput]
   global: Boolean
   users: [ID!]
+}
+
+##
+### From Micropublications Team
+##
+
+extend type Query {
+  getGlobalTeams: [Team!]!
+}
+
+extend type Mutation {
+  updateGlobalTeamMembership(input: UpdateTeamMembershipInput!): Boolean!
+}
+
+input UpdateTeamMembershipInput {
+  teams: [UpdateTeamMembershipTeamInput!]!
+}
+
+input UpdateTeamMembershipTeamInput {
+  teamId: ID!
+  members: [ID!]!
 }
