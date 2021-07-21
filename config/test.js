@@ -20,4 +20,14 @@ module.exports = {
   pubsweet: {
     components,
   },
+  teams: {
+    global: {
+      EDITOR: 'editor',
+      AUTHOR: 'author',
+    },
+    nonglobal: {
+      EDITOR: 'editor',
+      AUTHOR: 'author',
+    },
+  },
 }

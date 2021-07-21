@@ -1,0 +1,226 @@
+const union = require('lodash/union')
+const { ValidationError } = require('objection')
+const { logger } = require('@pubsweet/logger')
+
+const config = require('config')
+
+const BaseModel = require('../base.model')
+
+const {
+  booleanDefaultFalse,
+  idNullable,
+  stringNullable,
+  string,
+} = require('../_helpers/types')
+
+const useTransaction = require('../../useTransaction')
+
+const globalTeams = Object.values(config.get('teams.global'))
+const nonGlobalTeams = Object.values(config.get('teams.nonglobal'))
+const allTeams = union(globalTeams, nonGlobalTeams)
+
+class Team extends BaseModel {
+  constructor(properties) {
+    super(properties)
+
+    this.type = 'team'
+  }
+
+  static get tableName() {
+    return 'teams'
+  }
+
+  static get relationMappings() {
+    // eslint-disable-next-line global-require
+    const { TeamMember, User } = require('@pubsweet/models')
+
+    return {
+      members: {
+        relation: BaseModel.HasManyRelation,
+        modelClass: TeamMember,
+        join: {
+          from: 'teams.id',
+          to: 'team_members.teamId',
+        },
+      },
+      users: {
+        relation: BaseModel.ManyToManyRelation,
+        modelClass: User,
+        join: {
+          from: 'teams.id',
+          through: {
+            modelClass: TeamMember,
+            from: 'team_members.teamId',
+            to: 'team_members.userId',
+          },
+          to: 'users.id',
+        },
+      },
+    }
+  }
+
+  static get schema() {
+    return {
+      type: 'object',
+      required: ['role'],
+      properties: {
+        objectId: idNullable,
+        objectType: stringNullable,
+        name: string,
+        role: {
+          type: 'string',
+          enum: allTeams,
+        },
+        global: booleanDefaultFalse,
+      },
+    }
+  }
+
+  /* eslint-disable-next-line class-methods-use-this */
+  $beforeValidate(jsonSchema, json) {
+    let validTeamChoice
+    const { global, role } = json
+
+    if (global) {
+      validTeamChoice = globalTeams.includes(role)
+    } else {
+      validTeamChoice = nonGlobalTeams.includes(role)
+    }
+
+    if (!validTeamChoice) {
+      const errorMessage = `Role ${role} is not valid for ${
+        global ? '' : 'non-'
+      }global teams`
+
+      throw new ValidationError({
+        type: 'ModelValidation',
+        message: errorMessage,
+      })
+    }
+
+    return jsonSchema
+  }
+
+  static async findAllGlobalTeams(options = {}) {
+    try {
+      return useTransaction(
+        async tr => {
+          return this.query(tr).where({ global: true })
+        },
+        { trx: options.trx, passedTrxOnly: true },
+      )
+    } catch (e) {
+      logger.error('Team model: findAllGlobalTeams failed', e)
+      throw new Error(e)
+    }
+  }
+
+  static async findGlobalTeamByRole(role, options = {}) {
+    try {
+      return useTransaction(
+        async tr => {
+          return this.query(tr).findOne({
+            role,
+            global: true,
+          })
+        },
+        { trx: options.trx, passedTrxOnly: true },
+      )
+    } catch (e) {
+      logger.error('Team model: findGlobalTeamByRole failed', e)
+      throw new Error(e)
+    }
+  }
+
+  static async findTeamByRoleAndObject(role, objectId, options = {}) {
+    try {
+      return useTransaction(
+        async tr => {
+          return this.query().findOne({
+            role,
+            objectId,
+          })
+        },
+        { trx: options.trx, passedTrxOnly: true },
+      )
+    } catch (e) {
+      logger.error('Team model: findTeamByRoleAndObject failed', e)
+      throw new Error(e)
+    }
+  }
+
+  /**
+   * Members should be an array of user ids
+   */
+  static async updateMembershipByTeamId(teamId, members, options = {}) {
+    // eslint-disable-next-line global-require
+    const { TeamMember } = require('@pubsweet/models')
+
+    const queries = async trx => {
+      const existingMembers = await TeamMember.query(trx).where({ teamId })
+      const existingMemberUserIds = existingMembers.map(m => m.userId)
+
+      // add members that exist in the incoming array, but not in the db
+      const toAdd = members.filter(id => !existingMemberUserIds.includes(id))
+      await Promise.all(
+        toAdd.map(userId => Team.addMember(teamId, userId, { trx })),
+      )
+
+      // delete members that exist in the db, but not in the incoming array
+      const toDelete = existingMemberUserIds.filter(id => !members.includes(id))
+      await Promise.all(
+        toDelete.map(userId => Team.removeMember(teamId, userId, { trx })),
+      )
+    }
+
+    return useTransaction(queries, { trx: options.trx })
+  }
+
+  static async addMember(teamId, userId, options = {}) {
+    // eslint-disable-next-line global-require
+    const { TeamMember } = require('@pubsweet/models')
+
+    const data = {
+      teamId,
+      userId,
+    }
+
+    if (options.status) data.status = options.status
+
+    const add = async trx => TeamMember.query(trx).insert(data)
+
+    const trxOptions = {
+      trx: options.trx,
+    }
+
+    try {
+      return useTransaction(add, trxOptions)
+    } catch (e) {
+      logger.error('Team Model: Add member: Insert failed!')
+      throw new Error(e)
+    }
+  }
+
+  static async removeMember(teamId, userId, options = {}) {
+    // eslint-disable-next-line global-require
+    const { TeamMember } = require('@pubsweet/models')
+
+    const remove = async trx => {
+      await TeamMember.query(trx).delete().where({
+        teamId,
+        userId,
+      })
+    }
+
+    try {
+      return useTransaction(remove, { trx: options.trx })
+    } catch (e) {
+      logger.error(
+        'Team model: Remove member: Transaction failed! Rolling back...',
+      )
+      throw new Error(e)
+    }
+  }
+}
+
+module.exports = Team
