@@ -6,7 +6,7 @@ const { logger } = require('@pubsweet/logger')
 const BCRYPT_COST = config.util.getEnv('NODE_ENV') === 'test' ? 1 : 12
 
 const BaseModel = require('../base.model')
-const useTransaction = require('../../useTransaction')
+const useTransaction = require('../useTransaction')
 
 const {
   alphaNumericStringNotNullable,
@@ -94,6 +94,54 @@ class User extends BaseModel {
     }
   }
 
+  static async patch(data, options = {}) {
+    const { password: providedPassword, passwordHash } = data
+
+    if (!providedPassword && !passwordHash) {
+      return super.patch(data, options)
+    }
+
+    throw new Error(
+      'if you want to change user password you should use updatePassword method',
+    )
+  }
+
+  static async patchAndFetchById(id, data, options = {}) {
+    const { password: providedPassword, passwordHash } = data
+
+    if (!providedPassword && !passwordHash) {
+      return super.patchAndFetchById(id, data, options)
+    }
+
+    throw new Error(
+      'if you want to change user password you should use updatePassword method',
+    )
+  }
+
+  static async update(data, options = {}) {
+    const { password: providedPassword, passwordHash } = data
+
+    if (!providedPassword && !passwordHash) {
+      return super.update(data, options)
+    }
+
+    throw new Error(
+      'if you want to change user password you should use updatePassword method',
+    )
+  }
+
+  static async updateAndFetchById(id, data, options = {}) {
+    const { password: providedPassword, passwordHash } = data
+
+    if (!providedPassword && !passwordHash) {
+      return super.updateAndFetchById(id, data, options)
+    }
+
+    throw new Error(
+      'if you want to change user password you should use updatePassword method',
+    )
+  }
+
   // From https://gitlab.coko.foundation/ncbi/ncbi/-/blob/develop/server/models/user/user.js#L61-101
 
   static async hasGlobalRole(userId, role, options = {}) {
@@ -156,10 +204,8 @@ class User extends BaseModel {
     return User.hasRoleOnObject(this.id, role, objectId, options)
   }
 
-  static async getDisplayName(user) {
-    if (!user) throw new Error('User model: getDisplayName: No user provided')
-
-    const { givenNames, surname, username } = user
+  async getDisplayName() {
+    const { givenNames, surname, username } = this
     if (givenNames && surname) return `${givenNames} ${surname}`
     if (username) return username
 
@@ -178,11 +224,7 @@ class User extends BaseModel {
         async tr => {
           const user = await User.query(tr).findById(userId)
 
-          const isCurrentPasswordValid = await user.isPasswordValid(
-            currentPassword,
-          )
-
-          if (!isCurrentPasswordValid) {
+          if (!(await user.isPasswordValid(currentPassword))) {
             throw new ValidationError(
               'Update password: Current password is not valid',
             )
@@ -204,6 +246,10 @@ class User extends BaseModel {
       logger.error('User model: updatePassword failed', e)
       throw new Error('User model: Cannot update password')
     }
+  }
+
+  async updatePassword(currentPassword, newPassword, options = {}) {
+    return User.updatePassword(this.id, currentPassword, newPassword, options)
   }
 
   $formatJson(json) {

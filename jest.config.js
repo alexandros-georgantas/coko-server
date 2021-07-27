@@ -2,7 +2,7 @@ module.exports = {
   collectCoverage: false,
   collectCoverageFrom: [
     '<rootDir>/src/models/**/*.model.js',
-    '<rootDir>/src/useTransaction.js',
+    '<rootDir>/src/models/useTransaction.js',
   ],
   coverageDirectory: '<rootDir>/coverage',
   projects: [

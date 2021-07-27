@@ -6,7 +6,7 @@ const {
 } = require('./helpers/users')
 
 const {
-  createTeamWithUsers,
+  createGlobalTeamWithUsers,
   createLocalTeamWithUsers,
 } = require('./helpers/teams')
 
@@ -20,7 +20,7 @@ const {
   userWithoutName,
 } = require('./fixtures/users')
 
-const { User } = require('..')
+const { User } = require('../index')
 
 describe('User model', () => {
   beforeEach(() => clearDb())
@@ -79,52 +79,6 @@ describe('User model', () => {
     expect(stringifiedUser).not.toHaveProperty('passwordHash')
   })
 
-  it('patches change of username', async () => {
-    const newUser = await User.insert(user)
-
-    const affectedRows = await User.patch({
-      id: newUser.id,
-      username: 'awesomo',
-    })
-
-    const updatedUser = await User.findById(newUser.id)
-    expect(affectedRows).toEqual(1)
-    expect(updatedUser.username).toEqual('awesomo')
-  })
-
-  it('patches change of username and fetches the modified user', async () => {
-    const newUser = await User.insert(user)
-
-    const updatedUser = await User.patchAndFetchById(newUser.id, {
-      username: 'awesomo',
-    })
-
-    expect(updatedUser.username).toEqual('awesomo')
-  })
-
-  it('updates change of username', async () => {
-    const newUser = await User.insert(user)
-
-    const affectedRows = await User.update({
-      id: newUser.id,
-      username: 'awesomo',
-    })
-
-    const updatedUser = await User.findById(newUser.id)
-    expect(affectedRows).toEqual(1)
-    expect(updatedUser.username).toEqual('awesomo')
-  })
-
-  it('updates change of username and fetches the modified user', async () => {
-    const newUser = await User.insert(user)
-
-    const updatedUser = await User.updateAndFetchById(newUser.id, {
-      username: 'awesomo',
-    })
-
-    expect(updatedUser.username).toEqual('awesomo')
-  })
-
   it('updates password', async () => {
     const newUser = await User.insert(user)
     await User.updatePassword(newUser.id, user.password, 'newPassword')
@@ -133,44 +87,122 @@ describe('User model', () => {
     expect(isValid).toEqual(true)
   })
 
-  it('deletes user', async () => {
-    const newUser = await User.insert(user)
-
-    const affectedRows = await User.deleteById(newUser.id)
-    expect(affectedRows).toEqual(1)
-    await expect(User.findById(newUser.id)).rejects.toThrow()
-  })
-
   it('hasPassword (static) provides an alphanumeric string', async () => {
     const hash = await User.hashPassword('somepassword')
     expect(hash.length).toBeGreaterThan(0)
   })
 
-  it('throws when password is invalid user', async () => {
+  it('patches entity (using base model patch)', async () => {
+    const newUser = await User.insert(user)
+    await User.patch({ id: newUser.id, surname: 'Nicolson' })
+    const fetchedUser = await User.findById(newUser.id)
+    expect(fetchedUser.surname).toEqual('Nicolson')
+  })
+
+  it('patchAndFetchById entity (using base model patchAndFetchById)', async () => {
+    const newUser = await User.insert(user)
+    await User.patchAndFetchById(newUser.id, { surname: 'Nicolson' })
+    const fetchedUser = await User.findById(newUser.id)
+    expect(fetchedUser.surname).toEqual('Nicolson')
+  })
+
+  it('updates entity (using base model update)', async () => {
+    const newUser = await User.insert(user)
+    await User.update({ id: newUser.id, surname: 'Nicolson' })
+    const fetchedUser = await User.findById(newUser.id)
+    expect(fetchedUser.surname).toEqual('Nicolson')
+  })
+
+  it('updateAndFetchById entity (using base model updateAndFetchById)', async () => {
+    const newUser = await User.insert(user)
+    await User.updateAndFetchById(newUser.id, { surname: 'Nicolson' })
+    const fetchedUser = await User.findById(newUser.id)
+    expect(fetchedUser.surname).toEqual('Nicolson')
+  })
+
+  it('throws if password is invalid when inserting a new user', async () => {
     await expect(User.insert(userWithInvalidPassword)).rejects.toThrow()
+  })
+
+  it('throws when patch data contains password', async () => {
+    const newUser = await User.insert(user)
+    await expect(
+      User.patch({ id: newUser.id, password: 'fishyPassword' }),
+    ).rejects.toThrow()
+  })
+
+  it('throws when patch data contains passwordHash', async () => {
+    const newUser = await User.insert(user)
+    await expect(
+      User.patch({ id: newUser.id, passwordHash: 'hashedFishyPassword' }),
+    ).rejects.toThrow()
+  })
+
+  it('throws when patchAndFetchById data contains password', async () => {
+    const newUser = await User.insert(user)
+    await expect(
+      User.patchAndFetchById(newUser.id, { password: 'fishyPassword' }),
+    ).rejects.toThrow()
+  })
+
+  it('throws when patchAndFetchById data contains passwordHash', async () => {
+    const newUser = await User.insert(user)
+    await expect(
+      User.patchAndFetchById(newUser.id, {
+        passwordHash: 'hashedFishyPassword',
+      }),
+    ).rejects.toThrow()
+  })
+
+  it('throws when update data contains password', async () => {
+    const newUser = await User.insert(user)
+    await expect(
+      User.update({ id: newUser.id, password: 'fishyPassword' }),
+    ).rejects.toThrow()
+  })
+
+  it('throws when update data contains passwordHash', async () => {
+    const newUser = await User.insert(user)
+    await expect(
+      User.update({ id: newUser.id, passwordHash: 'hashedFishyPassword' }),
+    ).rejects.toThrow()
+  })
+
+  it('throws when updateAndFetchById data contains password', async () => {
+    const newUser = await User.insert(user)
+    await expect(
+      User.updateAndFetchById(newUser.id, { password: 'fishyPassword' }),
+    ).rejects.toThrow()
+  })
+
+  it('throws when updateAndFetchById data contains passwordHash', async () => {
+    const newUser = await User.insert(user)
+    await expect(
+      User.updateAndFetchById(newUser.id, {
+        passwordHash: 'hashedFishyPassword',
+      }),
+    ).rejects.toThrow()
   })
 
   it('returns username as display name when givenNames and surname are not defined', async () => {
     const newUser = await User.insert(user)
-    const displayName = await User.getDisplayName(newUser)
+    const displayName = await newUser.getDisplayName()
     expect(displayName).toEqual(user.username)
   })
 
-  it('returns fullname when givenNames and surname are defined', async () => {
+  it('returns full name as display name when given names and surname are defined', async () => {
     const newUser = await User.insert(userWithFullName)
-    const displayName = await User.getDisplayName(newUser)
-    expect(displayName).toHaveLength(
-      userWithFullName.givenNames.length + userWithFullName.surname.length + 1,
-    )
+    const displayName = await newUser.getDisplayName()
+    expect(displayName).toEqual(`${newUser.givenNames} ${newUser.surname}`)
   })
 
-  it('throws error when neither username nor givenNames nor surname are defined', async () => {
+  it('throws error when neither username nor givenNames nor surname are defined (getDisplayName)', async () => {
     const newUser = await User.insert(userWithoutName)
 
-    await expect(User.getDisplayName(newUser)).rejects.toThrow()
+    await expect(newUser.getDisplayName()).rejects.toThrow()
   })
 
-  it('throws error when user tries to update hers/his password by providing an invalid one', async () => {
+  it('throws when user tries to update their password by providing a wrong current password', async () => {
     const newUser = await User.insert(user)
 
     await expect(
@@ -178,7 +210,7 @@ describe('User model', () => {
     ).rejects.toThrow()
   })
 
-  it('throws error when user tries to update hers/his password by providing the current one', async () => {
+  it('throws when user tries to update their password by providing the same password as the current one', async () => {
     const newUser = await User.insert(user)
 
     await expect(
@@ -190,21 +222,6 @@ describe('User model', () => {
     await expect(
       User.updatePassword('randomId', 'some old password', 'some new password'),
     ).rejects.toThrow()
-  })
-
-  it('throws error when findById does not contain id', async () => {
-    await expect(User.findById()).rejects.toThrow()
-  })
-
-  it('throws error when deleteById does not contain id', async () => {
-    await expect(User.deleteById()).rejects.toThrow()
-  })
-  it('throws error when patch does not contain data', async () => {
-    await expect(User.patch()).rejects.toThrow()
-  })
-
-  it('throws error when patchAndFetchById does not contain neither id nor data', async () => {
-    await expect(User.patchAndFetchById()).rejects.toThrow()
   })
 
   it('fetches user identities', async () => {
@@ -238,7 +255,7 @@ describe('User model', () => {
   })
 
   it('fetches user teams', async () => {
-    const { user: newUser, team } = await createTeamWithUsers()
+    const { user: newUser, team } = await createGlobalTeamWithUsers()
 
     const dbUser = await User.query()
       .findById(newUser.id)
@@ -249,19 +266,19 @@ describe('User model', () => {
   })
 
   it('checks if a user is member of a global team (static)', async () => {
-    const { user: newUser, team } = await createTeamWithUsers()
+    const { user: newUser, team } = await createGlobalTeamWithUsers()
     const hasGlobalRole = await User.hasGlobalRole(newUser.id, team.role)
-    expect(hasGlobalRole).toEqual(team.global)
+    expect(hasGlobalRole).toEqual(true)
   })
 
   it('checks if a user is member of a global team', async () => {
-    const { user: newUser, team } = await createTeamWithUsers()
+    const { user: newUser, team } = await createGlobalTeamWithUsers()
     const hasGlobalRole = await newUser.hasGlobalRole(team.role)
     expect(hasGlobalRole).toEqual(team.global)
   })
 
   it('throws when hasGlobalRole method does not have required params', async () => {
-    const { team } = await createTeamWithUsers()
+    const { team } = await createGlobalTeamWithUsers()
     await expect(User.hasGlobalRole(undefined, team.role)).rejects.toThrow()
   })
 
@@ -286,7 +303,7 @@ describe('User model', () => {
   })
 
   it('throws when hasRoleOnObject method does not have required params', async () => {
-    const { team } = await createTeamWithUsers()
+    const { team } = await createGlobalTeamWithUsers()
     await expect(
       User.hasRoleOnObject(undefined, team.role, team.objectId),
     ).rejects.toThrow()

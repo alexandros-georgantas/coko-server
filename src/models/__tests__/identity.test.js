@@ -1,5 +1,5 @@
 const { internet } = require('faker')
-const { Identity } = require('..')
+const { Identity } = require('../index')
 
 const { createUser } = require('./helpers/users')
 const { identityWithProfileData } = require('./fixtures/identities')
@@ -12,18 +12,6 @@ describe('Identity model', () => {
   afterAll(() => {
     const knex = Identity.knex()
     knex.destroy()
-  })
-
-  it('creates an identity', async () => {
-    const user = await createUser()
-
-    const userIdentity = await Identity.insert({
-      userId: user.id,
-      email: internet.email(),
-      isVerified: false,
-    })
-
-    expect(userIdentity.userId).toEqual(user.id)
   })
 
   it('creates multiple identities for the same user', async () => {
@@ -45,33 +33,6 @@ describe('Identity model', () => {
     expect(identities.length).toEqual(2)
   })
 
-  it('patches identity', async () => {
-    const user = await createUser()
-
-    const identity = await Identity.insert({
-      userId: user.id,
-      email: internet.email(),
-    })
-
-    await Identity.patch({ isVerified: true })
-    const patchedIdentity = await Identity.findById(identity.id)
-    expect(patchedIdentity.isVerified).toEqual(true)
-  })
-
-  it('deletes identity', async () => {
-    const user = await createUser()
-
-    const identity = await Identity.insert({
-      userId: user.id,
-      email: internet.email(),
-    })
-
-    const affectedRows = await Identity.deleteById(identity.id)
-    const identities = await Identity.query()
-    expect(affectedRows).toEqual(1)
-    expect(identities).toHaveLength(0)
-  })
-
   it('cannot create identity without an email ', async () => {
     const user = await createUser()
 
@@ -90,7 +51,7 @@ describe('Identity model', () => {
     ).rejects.toThrow()
   })
 
-  it('cannot have multiple default identities fro the same user ', async () => {
+  it('cannot have multiple default identities for the same user ', async () => {
     const user = await createUser()
 
     await Identity.insert({

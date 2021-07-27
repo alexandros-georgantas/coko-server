@@ -1,10 +1,10 @@
 const { v4: uuid } = require('uuid')
 const config = require('config')
 const { Team, TeamMember, User } = require('../index')
-const { createTeamWithUsers } = require('./helpers/teams')
+const { createGlobalTeamWithUsers } = require('./helpers/teams')
 const clearDb = require('./_clearDb')
 
-const nonGlobalTeams = config.get('teams.nonglobal')
+const nonGlobalTeams = config.get('teams.nonGlobal')
 
 describe('Team Model', () => {
   beforeEach(() => clearDb())
@@ -14,21 +14,11 @@ describe('Team Model', () => {
     knex.destroy()
   })
 
-  it('creates a local team with object type and object id', async () => {
-    const team = await Team.insert({
-      role: 'author',
-      objectId: uuid(),
-      objectType: 'someType',
-    })
-
-    expect(team).toBeDefined()
-    expect(team.role).toEqual('author')
-  })
-
   it('cannot create a global team with object type and object id', async () => {
     await expect(
       Team.insert({
         role: 'author',
+        displayName: 'Author',
         objectId: uuid(),
         objectType: 'someType',
         global: true,
@@ -38,25 +28,29 @@ describe('Team Model', () => {
     )
   })
 
-  it('creates a new global team', async () => {
-    const team = await Team.insert({
-      role: 'editor',
-      global: true,
-    })
-
-    expect(team).toBeDefined()
-    expect(team.global).toBeTruthy()
+  it('throws when displayName does not correspond to role', async () => {
+    await expect(
+      Team.insert({
+        role: 'author',
+        displayName: 'Editor',
+        objectId: uuid(),
+        objectType: 'someType',
+        global: true,
+      }),
+    ).rejects.toThrow()
   })
 
   it('ensures global teams are unique', async () => {
     await Team.insert({
       role: 'editor',
+      displayName: 'Editor',
       global: true,
     })
 
     const createDuplicate = () =>
       Team.insert({
         role: 'editor',
+        displayName: 'Editor',
         global: true,
       })
 
@@ -68,12 +62,14 @@ describe('Team Model', () => {
 
     await Team.insert({
       role: 'author',
+      displayName: 'Author',
       objectId: id,
       objectType: 'unknownObject',
     })
 
     const second = await Team.insert({
       role: 'author',
+      displayName: 'Author',
       objectId: uuid(), // different object id
       objectType: 'unknownObject',
     })
@@ -81,6 +77,7 @@ describe('Team Model', () => {
     const createDuplicate = () =>
       Team.insert({
         role: 'author',
+        displayName: 'Author',
         objectId: id, // same object id
         objectType: 'unknownObject',
       })
@@ -93,15 +90,17 @@ describe('Team Model', () => {
     const create = () =>
       Team.query().insert({
         role: 'author',
+        displayName: 'Author',
       })
 
     await expect(create()).rejects.toThrow()
   })
 
-  it('ensures only accepts valid roles', async () => {
+  it('ensures teams only accept valid roles', async () => {
     const createTeam = () =>
       Team.insert({
         role: 'lorem ipsum',
+        displayName: 'Lorem',
       })
 
     await expect(createTeam()).rejects.toThrow()
@@ -111,12 +110,14 @@ describe('Team Model', () => {
     const createValid = () =>
       Team.insert({
         role: 'editor',
+        displayName: 'Editor',
         global: true,
       })
 
     const createInvalid = () =>
       Team.insert({
         role: 'non-global-role',
+        displayName: 'Lorem',
         global: true,
       })
 
@@ -129,6 +130,7 @@ describe('Team Model', () => {
     const createValid = () =>
       Team.insert({
         role: 'author',
+        displayName: 'Author',
         objectId: uuid(),
         objectType: 'unknownObject',
       })
@@ -136,6 +138,7 @@ describe('Team Model', () => {
     const createInvalid = () =>
       Team.insert({
         role: 'global-role',
+        displayName: 'Lorem',
         objectId: uuid(),
         objectType: 'unknownObject',
       })
@@ -149,10 +152,12 @@ describe('Team Model', () => {
     await Team.insert([
       {
         role: 'editor',
+        displayName: 'Editor',
         global: true,
       },
       {
         role: 'author',
+        displayName: 'Author',
         global: true,
       },
     ])
@@ -160,18 +165,19 @@ describe('Team Model', () => {
     const teams = await Team.findAllGlobalTeams()
     expect(teams.length).toEqual(2)
 
-    const curatorTeam = teams.find(t => t.role === 'editor')
-    expect(curatorTeam).toBeDefined()
-    expect(curatorTeam.global).toBeTruthy()
+    const editorTeam = teams.find(t => t.role === 'editor')
+    expect(editorTeam).toBeDefined()
+    expect(editorTeam.global).toBeTruthy()
 
-    const sectionEditorTeam = teams.find(t => t.role === 'author')
-    expect(sectionEditorTeam).toBeDefined()
-    expect(sectionEditorTeam.global).toBeTruthy()
+    const authorTeam = teams.find(t => t.role === 'author')
+    expect(authorTeam).toBeDefined()
+    expect(authorTeam.global).toBeTruthy()
   })
 
   it('finds global teams by role', async () => {
     await Team.insert({
       role: 'editor',
+      displayName: 'Editor',
       global: true,
     })
 
@@ -186,16 +192,18 @@ describe('Team Model', () => {
     const objectId = uuid()
     const objectType = 'lorem'
 
-    const REVIEWER_ROLE = 'editor'
+    const EDITOR_ROLE = 'editor'
 
     await Team.insert({
       role: 'author',
+      displayName: 'Author',
       objectId,
       objectType,
     })
 
     await Team.insert({
-      role: REVIEWER_ROLE,
+      role: EDITOR_ROLE,
+      displayName: 'Editor',
       objectId,
       objectType,
     })
@@ -207,18 +215,19 @@ describe('Team Model', () => {
     expect(authorTeam.global).toBeFalsy()
 
     const reviewerTeam = await Team.findTeamByRoleAndObject(
-      REVIEWER_ROLE,
+      EDITOR_ROLE,
       objectId,
     )
 
     expect(reviewerTeam).toBeDefined()
-    expect(reviewerTeam.role).toEqual(REVIEWER_ROLE)
+    expect(reviewerTeam.role).toEqual(EDITOR_ROLE)
     expect(reviewerTeam.global).toBeFalsy()
   })
 
   it('adds member to team', async () => {
     const team = await Team.insert({
       role: 'editor',
+      displayName: 'Editor',
       global: true,
     })
 
@@ -233,8 +242,9 @@ describe('Team Model', () => {
 
     expect(member).toBeDefined()
   })
-  it('removes team members from a team', async () => {
-    const { user, team } = await createTeamWithUsers()
+
+  it('removes a team member from a team', async () => {
+    const { user, team } = await createGlobalTeamWithUsers()
     await Team.removeMember(team.id, user.id)
 
     const teamWithMembers = await Team.query()
@@ -245,7 +255,7 @@ describe('Team Model', () => {
   })
 
   it('fetches team members', async () => {
-    const { user, team } = await createTeamWithUsers()
+    const { user, team } = await createGlobalTeamWithUsers()
 
     const teamWithMembers = await Team.query()
       .findById(team.id)
@@ -256,7 +266,7 @@ describe('Team Model', () => {
   })
 
   it('fetches team users', async () => {
-    const { user, team } = await createTeamWithUsers()
+    const { user, team } = await createGlobalTeamWithUsers()
 
     const teamWithMembers = await Team.query()
       .findById(team.id)
@@ -266,215 +276,71 @@ describe('Team Model', () => {
     expect(teamWithMembers.users[0].id).toEqual(user.id)
   })
 
-  //   /**
-  //    * Logic here is as follows:
-  //    * - create two users
-  //    * - make them both global curators
-  //    * - make them each a curator on a different chat thread
-  //    * - remove the first user from the global team
-  //    * - first user should automatically be removed from the non-global team as well
-  //    */
-  //   test('removes member from team', async () => {
-  //     const users = await User.query().insert([{}, {}])
-
-  //     const globalCurators = await Team.query().insert({
-  //       role: 'editor',
-  //       global: true,
-  //     })
-
-  //     await TeamMember.query().insert(
-  //       users.map(user => ({
-  //         teamId: globalCurators.id,
-  //         userId: user.id,
-  //       })),
-  //     )
-
-  //     const chatTeams = []
-
-  //     await Promise.all(
-  //       [0, 1].map(async index => {
-  //         const ct = await ChatThread.query().insert({
-  //           chatType: 'reviewer',
-  //           relatedObjectId: uuid(),
-  //         })
-
-  //         const team = await Team.query().insert({
-  //           role: 'editor',
-  //           objectId: ct.id,
-  //           objectType: 'chatthread',
-  //           global: false,
-  //         })
-
-  //         chatTeams.push(team)
-
-  //         await TeamMember.query().insert({
-  //           teamId: team.id,
-  //           userId: users[index].id,
-  //         })
-  //       }),
-  //     )
-
-  //     // Remove the first user from the global Team
-  //     await Team.removeMember(globalCurators.id, users[0].id)
-
-  //     const globalCuratorMembers = await TeamMember.query().where({
-  //       teamId: globalCurators.id,
-  //     })
-
-  //     expect(globalCuratorMembers.length).toEqual(1)
-  //     expect(globalCuratorMembers[0].userId).toEqual(users[1].id)
-
-  //     // Rmove the first user from the first non global team
-  //     await Team.removeMember(chatTeams[0].id, users[0].id)
-
-  //     const membersOfChatOne = await TeamMember.query().where({
-  //       teamId: chatTeams[0].id,
-  //     })
-
-  //     expect(membersOfChatOne.length).toEqual(0)
-
-  //     const membersOfChatTwo = await TeamMember.query().where({
-  //       teamId: chatTeams[1].id,
-  //     })
-
-  //     expect(membersOfChatTwo.length).toEqual(1)
-  //     expect(membersOfChatTwo[0].userId).toEqual(users[1].id)
-  //   })
-
   it('updates team membership given an array of user ids', async () => {
     const userOne = await User.insert({})
     const userTwo = await User.insert({})
     const userThree = await User.insert({})
 
-    const curatorTeam = await Team.insert({
+    const editorTeam = await Team.insert({
       role: 'editor',
+      displayName: 'Editor',
       global: true,
     })
 
-    const sectionEditorTeam = await Team.insert({
+    const authorTeam = await Team.insert({
       role: 'author',
+      displayName: 'Author',
       global: true,
     })
 
-    // initial: curators: [userOne], sectionEditors: [userTwo]
     await TeamMember.query().insert([
       {
-        teamId: curatorTeam.id,
+        teamId: editorTeam.id,
         userId: userOne.id,
       },
       {
-        teamId: sectionEditorTeam.id,
+        teamId: authorTeam.id,
         userId: userTwo.id,
       },
     ])
 
-    // changed: curators: [userOne, userThree], sectionEditors: []
-    await Team.updateMembershipByTeamId(curatorTeam.id, [
+    await Team.updateMembershipByTeamId(editorTeam.id, [
       userOne.id,
       userThree.id,
     ])
 
-    await Team.updateMembershipByTeamId(sectionEditorTeam.id, [])
+    await Team.updateMembershipByTeamId(authorTeam.id, [])
 
-    const curators = await TeamMember.query().where({
-      teamId: curatorTeam.id,
+    const editors = await TeamMember.query().where({
+      teamId: editorTeam.id,
     })
 
-    const curatorIds = curators.map(member => member.userId)
-    expect(curatorIds.length).toEqual(2)
-    expect(curatorIds.includes(userOne.id)).toBeTruthy()
-    expect(curatorIds.includes(userThree.id)).toBeTruthy()
+    const editorIds = editors.map(member => member.userId)
+    expect(editorIds.length).toEqual(2)
+    expect(editorIds.includes(userOne.id)).toBeTruthy()
+    expect(editorIds.includes(userThree.id)).toBeTruthy()
 
-    const sectionEditors = await TeamMember.query().where({
-      teamId: sectionEditorTeam.id,
+    const authors = await TeamMember.query().where({
+      teamId: authorTeam.id,
     })
 
-    expect(sectionEditors.length).toEqual(0)
+    expect(authors.length).toEqual(0)
   })
-
-  //   test('global and non-global teams can be related to ChatThreads ', async () => {
-  //     const relatedObject = uuid()
-
-  //     const createThread = async relatedObjectId =>
-  //       ChatThread.query().insert({
-  //         chatType: 'reviewer',
-  //         relatedObjectId,
-  //       })
-
-  //     // the same relatedObject id on another chat thread should be ok
-  //     const ctOne = await createThread(relatedObject)
-  //     const ctTwo = await createThread(relatedObject)
-
-  //     const threads = await ChatThread.query()
-  //     expect(threads).toHaveLength(2)
-
-  //     await Team.query().insert({
-  //       role: nonGlobalTeams.EDITOR,
-  //       objectId: ctOne.id,
-  //       objectType: 'unknownObject',
-  //       global: false,
-  //     })
-
-  //     await Team.query().insert({
-  //       role: nonGlobalTeams.EDITOR,
-  //       objectId: ctTwo.id,
-  //       objectType: 'unknownObject',
-  //       global: false,
-  //     })
-
-  //     // We should be able to link the different chat threads to two different teams
-  //     const teams = await Team.query()
-  //     expect(teams).toHaveLength(2)
-
-  //     // a non-global team can't have the same chatThread associated with it with same role.
-
-  //     await expect(
-  //       Team.query().insert({
-  //         role: nonGlobalTeams.EDITOR,
-  //         objectId: ctTwo.id,
-  //         objectType: 'unknownObject',
-  //         global: false,
-  //       }),
-  //     ).rejects.toThrow()
-
-  //     // same chatThread but different role works.
-  //     await Team.query().insert({
-  //       role: nonGlobalTeams.AUTHOR,
-  //       objectId: ctTwo.id,
-  //       objectType: 'unknownObject',
-  //       global: false,
-  //     })
-
-  //     // We should be able to link the different chat threads to two different teams
-  //     const teams2 = await Team.query()
-  //     expect(teams2).toHaveLength(3)
-
-  //     // and have a global team can't have a chatThread associated with it at all.
-
-  //     await expect(
-  //       Team.query().insert({
-  //         role: globalTeams.AUTHOR,
-  //         objectId: ctTwo.id,
-  //         objectType: 'unknownObject',
-  //         global: true,
-  //       }),
-  //     ).rejects.toThrow()
-  //   })
 
   it('has updated set when created', async () => {
     const team = await Team.insert({
-      name: 'Test',
-      role: nonGlobalTeams.AUTHOR,
+      role: nonGlobalTeams.author.role,
+      displayName: 'Author',
       global: true,
     })
 
-    expect(team.role).toEqual(nonGlobalTeams.AUTHOR)
+    expect(team.role).toEqual(nonGlobalTeams.author.role)
     const now = new Date().toISOString()
     expect(team.updated).toHaveLength(now.length)
   })
 
   it('deletes memberships after team is deleted', async () => {
-    const { team, user } = await createTeamWithUsers()
+    const { team, user } = await createGlobalTeamWithUsers()
 
     let foundUser = await User.query()
       .findById(user.id)
@@ -487,41 +353,5 @@ describe('Team Model', () => {
     foundUser = await User.query().findById(user.id).withGraphFetched('teams')
 
     expect(foundUser.teams).toHaveLength(0)
-  })
-
-  it('creates team and related objects with one call', async () => {
-    const user = await User.query().insert({
-      password: 'some@example.com',
-      username: 'test',
-    })
-
-    const team = await Team.query().upsertGraphAndFetch(
-      {
-        role: nonGlobalTeams.EDITOR,
-        name: 'My team',
-        global: false,
-        objectId: '5989b23c-356b-4ae9-bee5-bbd11f29028b',
-        objectType: 'fragment',
-        members: [
-          {
-            user: { id: user.id },
-          },
-        ],
-      },
-      {
-        relate: true,
-        unrelate: true,
-      },
-    )
-
-    expect(team.members).toHaveLength(1)
-    expect(team.members[0].id).toBeDefined()
-    expect(team.members[0].user.id).toBe(user.id)
-
-    const userWithTeams = await User.query()
-      .findById(user.id)
-      .withGraphFetched('teams')
-
-    expect(userWithTeams.teams[0].id).toBe(team.id)
   })
 })

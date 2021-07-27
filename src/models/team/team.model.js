@@ -1,4 +1,4 @@
-const union = require('lodash/union')
+const find = require('lodash/find')
 const { ValidationError } = require('objection')
 const { logger } = require('@pubsweet/logger')
 
@@ -10,14 +10,14 @@ const {
   booleanDefaultFalse,
   idNullable,
   stringNullable,
-  string,
+  teamRoles,
+  teamDisplayNames,
 } = require('../_helpers/types')
 
-const useTransaction = require('../../useTransaction')
+const useTransaction = require('../useTransaction')
 
 const globalTeams = Object.values(config.get('teams.global'))
-const nonGlobalTeams = Object.values(config.get('teams.nonglobal'))
-const allTeams = union(globalTeams, nonGlobalTeams)
+const nonGlobalTeams = Object.values(config.get('teams.nonGlobal'))
 
 class Team extends BaseModel {
   constructor(properties) {
@@ -62,15 +62,12 @@ class Team extends BaseModel {
   static get schema() {
     return {
       type: 'object',
-      required: ['role'],
+      required: ['role', 'displayName'],
       properties: {
         objectId: idNullable,
         objectType: stringNullable,
-        name: string,
-        role: {
-          type: 'string',
-          enum: allTeams,
-        },
+        displayName: teamDisplayNames,
+        role: teamRoles,
         global: booleanDefaultFalse,
       },
     }
@@ -79,16 +76,38 @@ class Team extends BaseModel {
   /* eslint-disable-next-line class-methods-use-this */
   $beforeValidate(jsonSchema, json) {
     let validTeamChoice
-    const { global, role } = json
+    let validCombinationOfRoleAndName = true
+    const { global, role, displayName } = json
 
     if (global) {
-      validTeamChoice = globalTeams.includes(role)
+      validTeamChoice = find(globalTeams, { role })
+
+      if (displayName && validTeamChoice) {
+        validCombinationOfRoleAndName =
+          validTeamChoice.displayName === displayName
+      }
     } else {
-      validTeamChoice = nonGlobalTeams.includes(role)
+      validTeamChoice = find(nonGlobalTeams, { role })
+
+      if (displayName && validTeamChoice) {
+        validCombinationOfRoleAndName =
+          validTeamChoice.displayName === displayName
+      }
     }
 
     if (!validTeamChoice) {
       const errorMessage = `Role ${role} is not valid for ${
+        global ? '' : 'non-'
+      }global teams`
+
+      throw new ValidationError({
+        type: 'ModelValidation',
+        message: errorMessage,
+      })
+    }
+
+    if (!validCombinationOfRoleAndName) {
+      const errorMessage = `Display name ${displayName} does not correspond to the provided role ${role} of ${
         global ? '' : 'non-'
       }global teams`
 

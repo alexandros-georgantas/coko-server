@@ -54,7 +54,6 @@ storybook-static
 # Bundles
 _build/
 dist/
-coverage/
 .cache
 .parcel-cache
 

@@ -1,10 +1,11 @@
 const { v4: uuid } = require('uuid')
 const { Team, User } = require('../..')
 
-const createTeamWithUsers = async () => {
+const createGlobalTeamWithUsers = async () => {
   try {
     const team = await Team.insert({
       role: 'editor',
+      displayName: 'Editor',
       global: true,
     })
 
@@ -21,6 +22,7 @@ const createLocalTeamWithUsers = async () => {
   try {
     const team = await Team.insert({
       role: 'editor',
+      displayName: 'Editor',
       global: false,
       objectId: uuid(),
       objectType: 'someObjectType',
@@ -36,6 +38,6 @@ const createLocalTeamWithUsers = async () => {
 }
 
 module.exports = {
-  createTeamWithUsers,
+  createGlobalTeamWithUsers,
   createLocalTeamWithUsers,
 }

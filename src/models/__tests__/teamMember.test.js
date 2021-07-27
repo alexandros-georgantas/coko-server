@@ -1,6 +1,6 @@
 const { v4: uuid } = require('uuid')
 
-const { TeamMember, Team, User } = require('..')
+const { TeamMember, Team, User } = require('../index')
 const clearDb = require('./_clearDb')
 
 describe('Team Member Model', () => {
@@ -11,46 +11,10 @@ describe('Team Member Model', () => {
     knex.destroy()
   })
 
-  it('creates a new team member ', async () => {
-    const team = await Team.query().insert({
-      role: 'author',
-      objectId: uuid(),
-      objectType: 'unknownObject',
-    })
-
-    const user = await User.query().insert({})
-
-    const tm = await TeamMember.query().insert({
-      teamId: team.id,
-      userId: user.id,
-    })
-
-    expect(tm).toBeDefined()
-  })
-
-  it('removes a team member ', async () => {
-    const team = await Team.query().insert({
-      role: 'author',
-      objectId: uuid(),
-      objectType: 'unknownObject',
-    })
-
-    const user = await User.query().insert({})
-
-    const tm = await TeamMember.query().insert({
-      teamId: team.id,
-      userId: user.id,
-    })
-
-    const affectedRows = await TeamMember.deleteById(tm.id)
-
-    expect(affectedRows).toEqual(1)
-    await expect(TeamMember.findById(tm.id)).rejects.toThrow()
-  })
-
   it('can have a status ', async () => {
     const team = await Team.query().insert({
       role: 'author',
+      displayName: 'Author',
       objectId: uuid(),
       objectType: 'unknownObject',
     })

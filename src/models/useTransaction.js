@@ -6,13 +6,16 @@ Model.knex(db)
 const useTransaction = async (callback, options = {}) => {
   const { passedTrxOnly = false, trx } = options
 
+  if (!callback) {
+    throw new Error('Use transaction: Invalid arguments!')
+  }
   /**
    * Most common case (eg. useTransaction(callback))
    * No pre-defined transaction was provided.
    * Use transaction anyway.
    */
 
-  if (!trx && !passedTrxOnly && callback) {
+  if (!trx && !passedTrxOnly) {
     return Model.transaction(async newtrx => callback(newtrx))
   }
 
@@ -28,9 +31,7 @@ const useTransaction = async (callback, options = {}) => {
    * Use passed transaction on current cb.
    */
 
-  if (trx) return callback(trx)
-
-  throw new Error('Use transaction: Invalid arguments!')
+  return callback(trx)
 }
 
 module.exports = useTransaction

@@ -14,20 +14,29 @@ module.exports = {
       password: 'password',
     },
   },
-  dbManager: {
-    migrationsPath: './src/models/migrations',
-  },
   pubsweet: {
     components,
   },
   teams: {
     global: {
-      EDITOR: 'editor',
-      AUTHOR: 'author',
+      editor: {
+        displayName: 'Editor',
+        role: 'editor',
+      },
+      author: {
+        displayName: 'Author',
+        role: 'author',
+      },
     },
-    nonglobal: {
-      EDITOR: 'editor',
-      AUTHOR: 'author',
+    nonGlobal: {
+      editor: {
+        displayName: 'Editor',
+        role: 'editor',
+      },
+      author: {
+        displayName: 'Author',
+        role: 'author',
+      },
     },
   },
 }

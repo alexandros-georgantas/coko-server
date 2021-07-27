@@ -9,8 +9,7 @@ const { send: sendEmail } = require('@pubsweet/component-send-email')
 
 const app = require('./app')
 const { boss, connectToJobQueue } = require('./pgboss')
-const useTransaction = require('./useTransaction')
-const { BaseModel } = require('./models')
+const { BaseModel, useTransaction } = require('./models')
 
 const createJWT = authentication.token.create
 

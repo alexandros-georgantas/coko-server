@@ -1,3 +1,12 @@
+const config = require('config')
+const union = require('lodash/union')
+
+const globalTeams = Object.values(config.get('teams.global'))
+const nonGlobalTeams = Object.values(config.get('teams.nonGlobal'))
+const allTeams = union(globalTeams, nonGlobalTeams)
+const flattenAllTeamRoles = allTeams.map(team => team.role)
+const flattenAllTeamDisplayNames = allTeams.map(team => team.displayName)
+
 const boolean = {
   type: 'boolean',
 }
@@ -99,6 +108,16 @@ const arrayOfStrings = {
   default: [],
 }
 
+const teamRoles = {
+  type: 'string',
+  enum: flattenAllTeamRoles,
+}
+
+const teamDisplayNames = {
+  type: 'string',
+  enum: flattenAllTeamDisplayNames,
+}
+
 module.exports = {
   alphaNumericStringNotNullable,
   arrayOfIds,
@@ -121,4 +140,6 @@ module.exports = {
   string,
   stringNotEmpty,
   stringNullable,
+  teamRoles,
+  teamDisplayNames,
 }

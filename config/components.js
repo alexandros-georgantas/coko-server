@@ -3,4 +3,5 @@ module.exports = [
   './src/models/teamMember',
   './src/models/user',
   './src/models/identity',
+  './src/models/fake',
 ]

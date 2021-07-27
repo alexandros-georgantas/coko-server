@@ -1,6 +1,6 @@
 const { Team } = require('../index')
 
-const useTransaction = require('../../useTransaction')
+const useTransaction = require('../useTransaction')
 const clearDb = require('./_clearDb')
 
 const createValidTeams = async trx =>
@@ -8,10 +8,12 @@ const createValidTeams = async trx =>
     [
       {
         role: 'editor',
+        displayName: 'Editor',
         global: true,
       },
       {
         role: 'author',
+        displayName: 'Author',
         global: true,
       },
     ],
@@ -23,6 +25,7 @@ const createInvalidTeams = async trx => {
   await Team.insert(
     {
       role: 'editor',
+      displayName: 'Editor',
       global: true,
     },
     { trx },
@@ -32,6 +35,7 @@ const createInvalidTeams = async trx => {
   await Team.insert(
     {
       role: 'editor',
+      displayName: 'Editor',
       global: false,
     },
     { trx },
@@ -48,7 +52,7 @@ describe('Use transaction', () => {
   })
 
   // No transaction. First one is created, even though the second one failed.
-  it('does not use any transaction by default', async () => {
+  it('does not use any transaction if passedTrxOnly option is true', async () => {
     const options = { passedTrxOnly: true }
     const withoutTrx = () => useTransaction(createInvalidTeams, options)
     await expect(withoutTrx()).rejects.toThrow()
@@ -58,7 +62,7 @@ describe('Use transaction', () => {
   })
 
   // Transaction used. Second one fails, first is rolled back as a result.
-  it('can optionally use transaction by default', async () => {
+  it('uses a transaction by default', async () => {
     const withTrx = () => useTransaction(createInvalidTeams)
     await expect(withTrx()).rejects.toThrow()
 
@@ -78,6 +82,7 @@ describe('Use transaction', () => {
         await Team.insert(
           {
             role: 'editor',
+            displayName: 'Editor',
             global: true,
           },
           { trx },
@@ -89,6 +94,7 @@ describe('Use transaction', () => {
             Team.insert(
               {
                 role: 'editor',
+                displayName: 'Editor',
                 global: true, // ivalid option
               },
               { trx },
@@ -107,6 +113,7 @@ describe('Use transaction', () => {
       await Team.insert(
         {
           role: 'editor',
+          displayName: 'Editor',
           global: true,
         },
         { trx },
@@ -118,6 +125,7 @@ describe('Use transaction', () => {
           Team.insert(
             {
               role: 'author',
+              displayName: 'Author',
               global: true,
             },
             { trx },
@@ -129,6 +137,7 @@ describe('Use transaction', () => {
     const newTeams = await Team.query()
     expect(newTeams.length).toEqual(2)
   })
+
   it('throws with invalid params', async () => {
     await expect(useTransaction()).rejects.toThrow()
   })
