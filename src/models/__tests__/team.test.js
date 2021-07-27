@@ -214,14 +214,11 @@ describe('Team Model', () => {
     expect(authorTeam.role).toEqual('author')
     expect(authorTeam.global).toBeFalsy()
 
-    const reviewerTeam = await Team.findTeamByRoleAndObject(
-      EDITOR_ROLE,
-      objectId,
-    )
+    const editorTeam = await Team.findTeamByRoleAndObject(EDITOR_ROLE, objectId)
 
-    expect(reviewerTeam).toBeDefined()
-    expect(reviewerTeam.role).toEqual(EDITOR_ROLE)
-    expect(reviewerTeam.global).toBeFalsy()
+    expect(editorTeam).toBeDefined()
+    expect(editorTeam.role).toEqual(EDITOR_ROLE)
+    expect(editorTeam.global).toBeFalsy()
   })
 
   it('adds member to team', async () => {
