@@ -4,4 +4,6 @@ module.exports = [
   './src/models/user',
   './src/models/identity',
   './src/models/fake',
+  './src/models/chatThread',
+  './src/models/chatMessage',
 ]
