@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.15.2](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.1...v1.15.2) (2021-08-09)
+
+
+### Bug Fixes
+
+* **middleware:** allow shield errors ([b35f111](https://gitlab.coko.foundation/cokoapps/server/commit/b35f11132bf7c3221c6233e38a17844491d5a22c))
+
 ### [1.15.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.0...v1.15.1) (2021-06-11)
 
 
