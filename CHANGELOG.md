@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.15.3](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.2...v1.15.3) (2021-08-09)
+
+
+### Bug Fixes
+
+* **middleware:** server host variable should not be needed in prod ([20fac01](https://gitlab.coko.foundation/cokoapps/server/commit/20fac016145814c2657e7a4fd1c7754af003735b))
+
 ### [1.15.2](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.1...v1.15.2) (2021-08-09)
 
 
