@@ -1,0 +1,10 @@
+type Identity {
+  id: ID!
+  created: DateTime!
+  updated: DateTime
+  email: String!
+  isDefault: Boolean!
+  isSocial: Boolean!
+  isVerified: Boolean!
+  provider: String
+}

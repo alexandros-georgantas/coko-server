@@ -1,0 +1,21 @@
+type ChatThread {
+  id: ID!
+  created: DateTime!
+  updated: DateTime!
+  chatType: String!
+  relatedObjectId: ID!
+  messages: [ChatMessage!]!
+}
+
+input CreateChatThreadInput {
+  chatType: String!
+  relatedObjectId: ID!
+}
+
+extend type Mutation {
+  createChatThread(input: CreateInput!): ChatThread!
+  deleteChatThread(id: ID!): ID!
+  sendMessage(input: SendChatMessageInput!): ChatMessage!
+  editMessage(input: EditChatMessageInput!): ChatMessage!
+  deleteMessage(id: ID!): ChatMessage!
+}

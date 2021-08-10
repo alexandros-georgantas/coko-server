@@ -1,0 +1,49 @@
+type Team {
+  id: ID!
+  role: String!
+  displayName: String!
+  objectId: ID
+  objectType: String
+  members: [TeamMember!]
+  global: Boolean!
+}
+
+input TeamInput {
+  role: String!
+  displayName: String!
+  objectId: ID
+  objectType: String
+  members: [TeamMemberInput]
+  global: Boolean!
+}
+
+input TeamWhereInput {
+  role: String
+  objectId: ID
+  objectType: String
+  global: Boolean
+}
+
+input UpdateTeamMembershipInput {
+  teams: [UpdateTeamMembershipTeamInput!]!
+}
+
+input UpdateTeamMembershipTeamInput {
+  teamId: ID!
+  members: [ID!]!
+}
+
+extend type Query {
+  team(id: ID!): Team!
+  teams(where: TeamWhereInput!): [Team!]!
+  getGlobalTeams: [Team!]!
+  getObjectTeams(objectId: ID!, objectType: String!): [Team!]!
+}
+
+extend type Mutation {
+  createTeam(input: TeamInput!): Team!
+  updateTeam(id: ID!, input: TeamInput!): Team!
+  updateGlobalTeamMembership(input: UpdateTeamMembershipInput!): Boolean!
+  updateObjectTeamMembership(input: UpdateTeamMembershipInput!): Boolean!
+  deleteTeam(id: ID!): ID!
+}

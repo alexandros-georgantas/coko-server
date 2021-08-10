@@ -1,0 +1,82 @@
+scalar DateTime
+
+type User {
+  id: ID!
+  created: DateTime!
+  updated: DateTime!
+  email: String!
+  username: String
+  surname: String
+  givenNames: String
+  displayName: String
+  agreedTc: Boolean!
+  isActive: Boolean!
+  identities: [Identity!]!
+  defaultIdentity: Identity!
+  titlePre: String
+  titlePost: String
+}
+
+type LoginResult {
+  user: User!
+  token: String!
+}
+
+input SignUpInput {
+  username: String!
+  email: String!
+  password: String!
+  givenNames: String!
+  surname: String!
+  agreedTc: Boolean!
+  titlePre: String
+  titlePost: String
+}
+
+input LoginInput {
+  email: String
+  username: String
+  password: String!
+}
+
+input UpdateInput {
+  email: String
+  identityId: ID
+  username: String
+  surname: String
+  givenNames: String
+  agreedTc: Boolean
+  titlePre: String
+  titlePost: String
+}
+
+input UpdatePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+}
+
+extend type Query {
+  user(id: ID): User
+  users: [User]!
+  currentUser: User!
+}
+
+extend type Mutation {
+  deleteUser(id: ID!): ID!
+  deactivateUser(id: ID!): User!
+  updateUser(id: ID, input: UpdateInput!): User!
+  login(input: LoginInput!): LoginResult!
+  signUp(input: SignUpInput!): User!
+
+  verifyEmail(token: String!): Boolean!
+  resendVerificationEmail(token: String!): Boolean!
+  resendVerificationEmailFromLogin(
+    username: String!
+    password: String!
+  ): Boolean!
+
+  updatePassword(input: UpdatePasswordInput!): Boolean!
+
+  sendPasswordResetEmail(email: String!): Boolean!
+  resetPassword(token: String!, password: String!): Boolean!
+}

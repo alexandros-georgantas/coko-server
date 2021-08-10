@@ -1,0 +1,22 @@
+type ChatMessage {
+  id: ID!
+  chatThreadId: ID!
+  content: String!
+  timestamp: String!
+  isDeleted: Boolean!
+  mentions: [String!]!
+  user: User!
+}
+
+input SendChatMessageInput {
+  content: String!
+  chatThreadId: ID!
+  userId: ID!
+  mentions: [String!]
+}
+
+input EditChatMessageInput {
+  id: ID!
+  content: String!
+  mentions: [String!]
+}
