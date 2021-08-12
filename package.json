@@ -30,6 +30,7 @@
     "@pubsweet/logger": "^0.2.56",
     "@pubsweet/models": "^0.3.21",
     "apollo-server-express": "^2.11.0",
+    "bcrypt": "3.0.6",
     "body-parser": "^1.19.0",
     "config": "^3.3.2",
     "cookie-parser": "^1.4.5",
@@ -42,6 +43,7 @@
     "lodash": "^4.17.20",
     "morgan": "^1.10.0",
     "node-cron": "^2.0.3",
+    "objection": "^2.2.15",
     "passport": "^0.4.1",
     "pubsweet": "^5.1.25",
     "pubsweet-server": "^13.12.5",
@@ -50,6 +52,7 @@
   },
   "devDependencies": {
     "@coko/lint": "^1.4.0",
+    "faker": "^5.5.3",
     "jest": "^26.6.3",
     "standard-version": "^7.1.0"
   },
@@ -60,7 +63,7 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && lint-staged"
     }
   }
 }

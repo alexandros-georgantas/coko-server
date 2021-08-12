@@ -30,6 +30,7 @@ const configureApp = app => {
   app.use(bodyParser.json({ limit: '50mb' }))
   morgan.token('graphql', ({ body }, res, type) => {
     if (!body.operationName) return ''
+
     switch (type) {
       case 'query':
         return body.query.replace(/\s+/g, ' ')
@@ -109,6 +110,7 @@ const configureApp = app => {
   app.get('/healthcheck', healthcheck) // Server health endpoint
 
   let useGraphQLServer = true
+
   if (
     config.has('pubsweet-server.useGraphQLServer') &&
     config.get('pubsweet-server.useGraphQLServer') === false
@@ -157,6 +159,7 @@ const configureApp = app => {
   })
 
   let useJobQueue = true
+
   if (
     config.has('pubsweet-server.useJobQueue') &&
     config.get('pubsweet-server.useJobQueue') === false
@@ -170,6 +173,7 @@ const configureApp = app => {
       const {
         addSubscriptions,
       } = require('pubsweet-server/src/graphql/subscriptions')
+
       addSubscriptions(server) // Add GraphQL subscriptions
     }
 
@@ -190,6 +194,7 @@ const configureApp = app => {
       const { stopJobQueue } = require('pubsweet-server/src/jobs')
       await stopJobQueue()
     }
+
     return wait(500)
   }
 

@@ -1,7 +1,14 @@
-const BaseModel = require('@pubsweet/base-model')
+const { Model } = require('objection')
+const { db } = require('@pubsweet/db-manager')
+
+Model.knex(db)
 
 const useTransaction = async (callback, options = {}) => {
   const { passedTrxOnly = false, trx } = options
+
+  if (!callback) {
+    throw new Error('Use transaction: Invalid arguments!')
+  }
 
   /**
    * Most common case (eg. useTransaction(callback))
@@ -10,7 +17,7 @@ const useTransaction = async (callback, options = {}) => {
    */
 
   if (!trx && !passedTrxOnly) {
-    return BaseModel.transaction(async newtrx => callback(newtrx))
+    return Model.transaction(async newtrx => callback(newtrx))
   }
 
   /**
@@ -25,9 +32,7 @@ const useTransaction = async (callback, options = {}) => {
    * Use passed transaction on current cb.
    */
 
-  if (trx) return callback(trx)
-
-  throw new Error('Use transaction: Invalid arguments!')
+  return callback(trx)
 }
 
 module.exports = useTransaction
