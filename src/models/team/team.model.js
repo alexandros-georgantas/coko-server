@@ -210,6 +210,7 @@ class Team extends BaseModel {
 
     const trxOptions = {
       trx: options.trx,
+      passedTrxOnly: true,
     }
 
     try {
@@ -232,7 +233,7 @@ class Team extends BaseModel {
     }
 
     try {
-      return useTransaction(remove, { trx: options.trx })
+      return useTransaction(remove, { trx: options.trx, passedTrxOnly: true })
     } catch (e) {
       logger.error(
         'Team model: Remove member: Transaction failed! Rolling back...',

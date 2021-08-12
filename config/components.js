@@ -3,7 +3,7 @@ module.exports = [
   './src/models/teamMember',
   './src/models/user',
   './src/models/identity',
-  './src/models/fake',
   './src/models/chatThread',
   './src/models/chatMessage',
+  './src/models/__tests__/helpers/fake',
 ]

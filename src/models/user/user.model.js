@@ -94,7 +94,7 @@ class User extends BaseModel {
     }
   }
 
-  static async patch(data, options = {}) {
+  async patch(data, options = {}) {
     const { password: providedPassword, passwordHash } = data
 
     if (!providedPassword && !passwordHash) {
@@ -118,7 +118,7 @@ class User extends BaseModel {
     )
   }
 
-  static async update(data, options = {}) {
+  async update(data, options = {}) {
     const { password: providedPassword, passwordHash } = data
 
     if (!providedPassword && !passwordHash) {
@@ -145,7 +145,7 @@ class User extends BaseModel {
   // From https://gitlab.coko.foundation/ncbi/ncbi/-/blob/develop/server/models/user/user.js#L61-101
 
   static async hasGlobalRole(userId, role, options = {}) {
-    /* eslint-disable-next-line global-require, no-shadow */
+    /* eslint-disable-next-line global-require */
     const { TeamMember } = require('@pubsweet/models')
 
     try {
@@ -175,7 +175,7 @@ class User extends BaseModel {
   }
 
   static async hasRoleOnObject(userId, role, objectId, options = {}) {
-    /* eslint-disable-next-line global-require, no-shadow */
+    /* eslint-disable-next-line global-require */
     const { TeamMember } = require('@pubsweet/models')
 
     try {
@@ -222,7 +222,7 @@ class User extends BaseModel {
       const { trx } = options
       return useTransaction(
         async tr => {
-          const user = await User.query(tr).findById(userId)
+          const user = await User.findById(userId, { trx: tr })
 
           if (!(await user.isPasswordValid(currentPassword))) {
             throw new ValidationError(
@@ -240,7 +240,7 @@ class User extends BaseModel {
             password: newPassword,
           })
         },
-        { trx },
+        { trx, passedTrxOnly: true },
       )
     } catch (e) {
       logger.error('User model: updatePassword failed', e)
@@ -270,13 +270,13 @@ class User extends BaseModel {
   }
 
   async $beforeInsert(queryContext) {
-    super.$beforeInsert()
     if (this.password) await this.hashPassword(this.password)
+    super.$beforeInsert(queryContext)
   }
 
   async $beforeUpdate() {
-    super.$beforeUpdate()
     if (this.password) await this.hashPassword(this.password)
+    super.$beforeUpdate()
   }
 
   async isPasswordValid(plaintext) {

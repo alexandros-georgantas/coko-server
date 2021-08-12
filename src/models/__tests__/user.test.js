@@ -1,4 +1,5 @@
 const find = require('lodash/find')
+const clone = require('lodash/clone')
 
 const {
   createUserAndDefaultIdentity,
@@ -48,7 +49,7 @@ describe('User model', () => {
 
   it('throws error if trying to save a user with a non-unique username', async () => {
     await User.insert(user)
-    const otherUserFixture = otherUser
+    const otherUserFixture = clone(otherUser)
     otherUserFixture.username = user.username
 
     const insertOtherUser = () =>
@@ -61,7 +62,7 @@ describe('User model', () => {
 
   it('throws error if trying to save a user with a non-unique email', async () => {
     await User.insert(user)
-    const otherUserFixture = otherUser
+    const otherUserFixture = clone(otherUser)
     otherUserFixture.email = user.email
 
     const insertOtherUser = () =>
@@ -87,14 +88,15 @@ describe('User model', () => {
     expect(isValid).toEqual(true)
   })
 
-  it('hasPassword (static) provides an alphanumeric string', async () => {
+  it('hashPassword (static) provides an alphanumeric string', async () => {
     const hash = await User.hashPassword('somepassword')
     expect(hash.length).toBeGreaterThan(0)
+    expect(hash).not.toEqual('somepassword')
   })
 
   it('patches entity (using base model patch)', async () => {
     const newUser = await User.insert(user)
-    await User.patch({ id: newUser.id, surname: 'Nicolson' })
+    await newUser.patch({ surname: 'Nicolson' })
     const fetchedUser = await User.findById(newUser.id)
     expect(fetchedUser.surname).toEqual('Nicolson')
   })
@@ -108,7 +110,7 @@ describe('User model', () => {
 
   it('updates entity (using base model update)', async () => {
     const newUser = await User.insert(user)
-    await User.update({ id: newUser.id, surname: 'Nicolson' })
+    await newUser.update({ surname: 'Nicolson' })
     const fetchedUser = await User.findById(newUser.id)
     expect(fetchedUser.surname).toEqual('Nicolson')
   })
@@ -126,15 +128,13 @@ describe('User model', () => {
 
   it('throws when patch data contains password', async () => {
     const newUser = await User.insert(user)
-    await expect(
-      User.patch({ id: newUser.id, password: 'fishyPassword' }),
-    ).rejects.toThrow()
+    await expect(newUser.patch({ password: 'fishyPassword' })).rejects.toThrow()
   })
 
   it('throws when patch data contains passwordHash', async () => {
     const newUser = await User.insert(user)
     await expect(
-      User.patch({ id: newUser.id, passwordHash: 'hashedFishyPassword' }),
+      newUser.patch({ passwordHash: 'hashedFishyPassword' }),
     ).rejects.toThrow()
   })
 
@@ -157,14 +157,14 @@ describe('User model', () => {
   it('throws when update data contains password', async () => {
     const newUser = await User.insert(user)
     await expect(
-      User.update({ id: newUser.id, password: 'fishyPassword' }),
+      newUser.update({ password: 'fishyPassword' }),
     ).rejects.toThrow()
   })
 
   it('throws when update data contains passwordHash', async () => {
     const newUser = await User.insert(user)
     await expect(
-      User.update({ id: newUser.id, passwordHash: 'hashedFishyPassword' }),
+      newUser.update({ passwordHash: 'hashedFishyPassword' }),
     ).rejects.toThrow()
   })
 
@@ -196,7 +196,7 @@ describe('User model', () => {
     expect(displayName).toEqual(`${newUser.givenNames} ${newUser.surname}`)
   })
 
-  it('throws error when neither username nor givenNames nor surname are defined (getDisplayName)', async () => {
+  it('getDisplayName throws an error when neither username nor givenNames nor surname are defined', async () => {
     const newUser = await User.insert(userWithoutName)
 
     await expect(newUser.getDisplayName()).rejects.toThrow()
@@ -231,9 +231,7 @@ describe('User model', () => {
       id2: identity2,
     } = await createUserAndIdentities()
 
-    const dbUser = await User.query()
-      .findById(newUser.id)
-      .withGraphFetched('identities')
+    const dbUser = await User.findById(newUser.id, { related: 'identities' })
 
     const found1 = find(dbUser.identities, { id: identity1.id })
     const found2 = find(dbUser.identities, { id: identity2.id })
@@ -246,9 +244,9 @@ describe('User model', () => {
   it('fetches user default identity', async () => {
     const { user: newUser, id: identity } = await createUserAndDefaultIdentity()
 
-    const dbUser = await User.query()
-      .findById(newUser.id)
-      .withGraphFetched('defaultIdentity')
+    const dbUser = await User.findById(newUser.id, {
+      related: 'defaultIdentity',
+    })
 
     expect(dbUser.defaultIdentity.id).toEqual(identity.id)
     expect(dbUser.defaultIdentity.isDefault).toEqual(true)
@@ -257,9 +255,7 @@ describe('User model', () => {
   it('fetches user teams', async () => {
     const { user: newUser, team } = await createGlobalTeamWithUsers()
 
-    const dbUser = await User.query()
-      .findById(newUser.id)
-      .withGraphFetched('teams')
+    const dbUser = await User.findById(newUser.id, { related: 'teams' })
 
     expect(dbUser.teams).toHaveLength(1)
     expect(dbUser.teams[0].id).toEqual(team.id)
@@ -268,13 +264,13 @@ describe('User model', () => {
   it('checks if a user is member of a global team (static)', async () => {
     const { user: newUser, team } = await createGlobalTeamWithUsers()
     const hasGlobalRole = await User.hasGlobalRole(newUser.id, team.role)
-    expect(hasGlobalRole).toEqual(true)
+    expect(hasGlobalRole).toBe(true)
   })
 
   it('checks if a user is member of a global team', async () => {
     const { user: newUser, team } = await createGlobalTeamWithUsers()
     const hasGlobalRole = await newUser.hasGlobalRole(team.role)
-    expect(hasGlobalRole).toEqual(team.global)
+    expect(hasGlobalRole).toBe(true)
   })
 
   it('throws when hasGlobalRole method does not have required params', async () => {

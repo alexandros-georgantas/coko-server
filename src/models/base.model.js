@@ -5,34 +5,52 @@ const useTransaction = require('./useTransaction')
 class BaseModel extends PubsweetBaseModel {
   static async find(data, options = {}) {
     try {
-      const { trx, related, orderBy, limit, offset, count } = options
+      const { trx, related, orderBy, page, pageSize } = options
 
       return useTransaction(
         async tr => {
-          if (!count) {
-            return this.query(tr)
-              .skipUndefined()
-              .where(data)
-              .orderBy(orderBy)
-              .limit(limit)
-              .offset(offset)
-              .withGraphFetched(related)
+          let queryBuilder = this.query(tr)
+
+          if (orderBy) {
+            queryBuilder = queryBuilder.orderBy(orderBy)
           }
 
-          const totalCount = await this.query(tr)
-            .skipUndefined()
-            .where(data)
-            .count(count)
+          if (
+            (Number.isInteger(page) && !Number.isInteger(pageSize)) ||
+            (!Number.isInteger(page) && Number.isInteger(pageSize))
+          ) {
+            throw new Error(
+              'both page and pageSize integers needed for paginated results',
+            )
+          }
 
-          const entries = await this.query(tr)
-            .skipUndefined()
-            .where(data)
-            .orderBy(orderBy)
-            .limit(limit)
-            .offset(offset)
-            .withGraphFetched(related)
+          if (Number.isInteger(page) && Number.isInteger(pageSize)) {
+            if (page < 0) {
+              throw new Error(
+                'invalid index for page (page should be an integer and greater than or equal to 0)',
+              )
+            }
 
-          return { totalCount: parseInt(totalCount[0].count, 10), entries }
+            if (pageSize <= 0) {
+              throw new Error(
+                'invalid size for pageSize (pageSize should be an integer and greater than 0)',
+              )
+            }
+
+            queryBuilder = queryBuilder.page(page, pageSize)
+          }
+
+          if (related) {
+            queryBuilder = queryBuilder.withGraphFetched(related)
+          }
+
+          const result = await queryBuilder.where(data)
+
+          const { results, total } = result
+          return {
+            result: page !== undefined ? results : result,
+            totalCount: total,
+          }
         },
         {
           trx,
@@ -45,19 +63,38 @@ class BaseModel extends PubsweetBaseModel {
     }
   }
 
-  static async count(count, options = {}) {
+  static async findByIds(ids, options = {}) {
     try {
-      const { trx } = options
+      const { trx, related } = options
 
       return useTransaction(
-        async tr => this.query(tr).skipUndefined().where({}).count(count),
+        async tr => {
+          let queryBuilder = this.query(tr)
+
+          if (related) {
+            queryBuilder = queryBuilder.withGraphFetched(related)
+          }
+
+          const result = await queryBuilder.findByIds(ids)
+
+          if (result.length < ids.length) {
+            const delta = ids.filter(
+              id => !result.map(res => res.id).includes(id),
+            )
+
+            throw new Error(`id ${delta} not found`)
+          }
+
+          return result
+        },
+
         {
           trx,
           passedTrxOnly: true,
         },
       )
     } catch (e) {
-      logger.error('Base model: count failed', e)
+      logger.error('Base model: findByIds failed', e)
       throw new Error(e)
     }
   }
@@ -67,13 +104,15 @@ class BaseModel extends PubsweetBaseModel {
       const { trx, related } = options
 
       return useTransaction(
-        async tr =>
-          this.query(tr)
-            .skipUndefined()
-            .findById(id)
-            .withGraphFetched(related)
-            .throwIfNotFound(),
+        async tr => {
+          let queryBuilder = this.query(tr)
 
+          if (related) {
+            queryBuilder = queryBuilder.withGraphFetched(related)
+          }
+
+          return queryBuilder.findById(id).throwIfNotFound()
+        },
         {
           trx,
           passedTrxOnly: true,
@@ -90,12 +129,15 @@ class BaseModel extends PubsweetBaseModel {
       const { trx, related } = options
 
       return useTransaction(
-        async tr =>
-          this.query(tr)
-            .skipUndefined()
-            .findOne(data)
-            .withGraphFetched(related)
-            .throwIfNotFound(),
+        async tr => {
+          let queryBuilder = this.query(tr)
+
+          if (related) {
+            queryBuilder = queryBuilder.withGraphFetched(related)
+          }
+
+          return queryBuilder.findOne(data).throwIfNotFound()
+        },
         {
           trx,
           passedTrxOnly: true,
@@ -112,10 +154,19 @@ class BaseModel extends PubsweetBaseModel {
       const { trx, related } = options
 
       return useTransaction(
-        async tr =>
-          this.query(tr).skipUndefined().insert(data).withGraphFetched(related),
+        async tr => {
+          let queryBuilder = this.query(tr)
+
+          if (related) {
+            queryBuilder = queryBuilder.withGraphFetched(related)
+          }
+
+          return queryBuilder.insert(data)
+        },
+
         {
           trx,
+          passedTrxOnly: true,
         },
       )
     } catch (e) {
@@ -124,17 +175,19 @@ class BaseModel extends PubsweetBaseModel {
     }
   }
 
-  static async patch(data, options = {}) {
+  // INSTANCE METHOD
+  async patch(data, options = {}) {
     try {
       const { trx } = options
 
-      return useTransaction(
-        async tr =>
-          this.query(tr).skipUndefined().patch(data).throwIfNotFound(),
-        {
-          trx,
-        },
-      )
+      if (!data) {
+        throw new Error('Patch is empty')
+      }
+
+      return useTransaction(async tr => this.$query(tr).patch(data), {
+        trx,
+        passedTrxOnly: true,
+      })
     } catch (e) {
       logger.error('Base model: patch failed', e)
       throw new Error(e)
@@ -146,14 +199,18 @@ class BaseModel extends PubsweetBaseModel {
       const { trx, related } = options
 
       return useTransaction(
-        async tr =>
-          this.query(tr)
-            .skipUndefined()
-            .patchAndFetchById(id, data)
-            .withGraphFetched(related)
-            .throwIfNotFound(),
+        async tr => {
+          let queryBuilder = this.query(tr)
+
+          if (related) {
+            queryBuilder = queryBuilder.withGraphFetched(related)
+          }
+
+          return queryBuilder.patchAndFetchById(id, data).throwIfNotFound()
+        },
         {
           trx,
+          passedTrxOnly: true,
         },
       )
     } catch (e) {
@@ -162,21 +219,19 @@ class BaseModel extends PubsweetBaseModel {
     }
   }
 
-  static async update(data, options = {}) {
+  // INSTANCE METHOD
+  async update(data, options = {}) {
     try {
-      const { trx, related } = options
+      const { trx } = options
 
-      return useTransaction(
-        async tr =>
-          this.query(tr)
-            .skipUndefined()
-            .update(data)
-            .withGraphFetched(related)
-            .throwIfNotFound(),
-        {
-          trx,
-        },
-      )
+      if (!data) {
+        throw new Error('Patch is empty')
+      }
+
+      return useTransaction(async tr => this.$query(tr).update(data), {
+        trx,
+        passedTrxOnly: true,
+      })
     } catch (e) {
       logger.error('Base model: update failed', e)
       throw new Error(e)
@@ -188,14 +243,18 @@ class BaseModel extends PubsweetBaseModel {
       const { trx, related } = options
 
       return useTransaction(
-        async tr =>
-          this.query(tr)
-            .skipUndefined()
-            .updateAndFetchById(id, data)
-            .withGraphFetched(related)
-            .throwIfNotFound(),
+        async tr => {
+          let queryBuilder = this.query(tr)
+
+          if (related) {
+            queryBuilder = queryBuilder.withGraphFetched(related)
+          }
+
+          return queryBuilder.updateAndFetchById(id, data).throwIfNotFound()
+        },
         {
           trx,
+          passedTrxOnly: true,
         },
       )
     } catch (e) {
@@ -211,10 +270,42 @@ class BaseModel extends PubsweetBaseModel {
         async tr => this.query(tr).deleteById(id).throwIfNotFound(),
         {
           trx,
+          passedTrxOnly: true,
         },
       )
     } catch (e) {
       logger.error('Base model: deleteById failed', e)
+      throw new Error(e)
+    }
+  }
+
+  static async deleteByIds(ids, options = {}) {
+    try {
+      const { trx } = options
+      return useTransaction(
+        async tr => {
+          const result = await this.query(tr)
+            .delete()
+            .whereIn('id', ids)
+            .returning('id')
+
+          if (result.length < ids.length) {
+            const delta = ids.filter(
+              id => !result.map(res => res.id).includes(id),
+            )
+
+            throw new Error(`id ${delta} not found`)
+          }
+
+          return result.length
+        },
+        {
+          trx,
+          passedTrxOnly: true,
+        },
+      )
+    } catch (e) {
+      logger.error('Base model: deleteByIds failed', e)
       throw new Error(e)
     }
   }

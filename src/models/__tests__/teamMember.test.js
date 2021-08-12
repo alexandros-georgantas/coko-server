@@ -11,17 +11,17 @@ describe('Team Member Model', () => {
     knex.destroy()
   })
 
-  it('can have a status ', async () => {
-    const team = await Team.query().insert({
+  it('can have a status', async () => {
+    const team = await Team.insert({
       role: 'author',
       displayName: 'Author',
       objectId: uuid(),
       objectType: 'unknownObject',
     })
 
-    const user = await User.query().insert({})
+    const user = await User.insert({})
 
-    const tm = await TeamMember.query().insert({
+    const tm = await TeamMember.insert({
       teamId: team.id,
       userId: user.id,
       status: 'someStatus',

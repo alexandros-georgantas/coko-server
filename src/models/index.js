@@ -5,7 +5,7 @@ const Team = require('./team/team.model')
 const TeamMember = require('./teamMember/teamMember.model')
 const Identity = require('./identity/identity.model')
 const User = require('./user/user.model')
-const Fake = require('./fake/fake.model')
+const Fake = require('./__tests__/helpers/fake/fake.model')
 const useTransaction = require('./useTransaction')
 
 module.exports = {

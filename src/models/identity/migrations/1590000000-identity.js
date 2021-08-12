@@ -31,9 +31,6 @@ exports.up = async knex => {
           .raw(
             ' CREATE UNIQUE INDEX "is_default_idx" ON "identities" (is_default, user_id) WHERE is_default IS true;',
           )
-          .then(resp => {
-            // console.log(resp)
-          })
           .catch(err => {
             logger.error(err.stack)
           })

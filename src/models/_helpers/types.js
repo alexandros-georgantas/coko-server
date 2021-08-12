@@ -7,6 +7,11 @@ const allTeams = union(globalTeams, nonGlobalTeams)
 const flattenAllTeamRoles = allTeams.map(team => team.role)
 const flattenAllTeamDisplayNames = allTeams.map(team => team.displayName)
 
+const alphaNumericStringNotNullable = {
+  type: 'string',
+  pattern: '^[a-zA-Z0-9]+',
+}
+
 const boolean = {
   type: 'boolean',
 }
@@ -28,11 +33,6 @@ const booleanDefaultTrue = {
 const dateNotNullable = {
   type: ['string', 'object'],
   format: 'date-time',
-}
-
-const alphaNumericStringNotNullable = {
-  type: 'string',
-  pattern: '^[a-zA-Z0-9]+',
 }
 
 const dateNullable = {

@@ -29,11 +29,11 @@ describe('Identity model', () => {
       isVerified: false,
     })
 
-    const identities = await Identity.query().where({ userId: user.id })
+    const { result: identities } = await Identity.find({ userId: user.id })
     expect(identities.length).toEqual(2)
   })
 
-  it('cannot create identity without an email ', async () => {
+  it('cannot create identity without an email', async () => {
     const user = await createUser()
 
     await expect(
@@ -43,7 +43,7 @@ describe('Identity model', () => {
     ).rejects.toThrow()
   })
 
-  it('cannot create identity without a userId ', async () => {
+  it('cannot create identity without a userId', async () => {
     await expect(
       Identity.insert({
         email: internet.email(),
@@ -51,7 +51,7 @@ describe('Identity model', () => {
     ).rejects.toThrow()
   })
 
-  it('cannot have multiple default identities for the same user ', async () => {
+  it('cannot have multiple default identities for the same user', async () => {
     const user = await createUser()
 
     await Identity.insert({
@@ -69,7 +69,7 @@ describe('Identity model', () => {
     ).rejects.toThrow()
   })
 
-  it('fetches user info of an identity ', async () => {
+  it('fetches user info of an identity', async () => {
     const user = await createUser()
 
     const identity = await Identity.insert({
@@ -78,9 +78,9 @@ describe('Identity model', () => {
       isDefault: true,
     })
 
-    const identityUser = await Identity.query()
-      .findById(identity.id)
-      .withGraphFetched('user')
+    const identityUser = await Identity.findById(identity.id, {
+      related: 'user',
+    })
 
     expect(identityUser.user.surname).toEqual(user.surname)
   })
@@ -93,7 +93,7 @@ describe('Identity model', () => {
       ...identityWithProfileData,
     })
 
-    const identityUser = await Identity.query().findById(identity.id)
+    const identityUser = await Identity.findById(identity.id)
 
     expect(identityUser.profileData.displayName).toEqual(
       identityWithProfileData.profileData.displayName,

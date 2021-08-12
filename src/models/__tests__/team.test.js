@@ -1,10 +1,7 @@
 const { v4: uuid } = require('uuid')
-const config = require('config')
 const { Team, TeamMember, User } = require('../index')
 const { createGlobalTeamWithUsers } = require('./helpers/teams')
 const clearDb = require('./_clearDb')
-
-const nonGlobalTeams = config.get('teams.nonGlobal')
 
 describe('Team Model', () => {
   beforeEach(() => clearDb())
@@ -88,7 +85,7 @@ describe('Team Model', () => {
 
   it('ensures non-global teams must have an associated object', async () => {
     const create = () =>
-      Team.query().insert({
+      Team.insert({
         role: 'author',
         displayName: 'Author',
       })
@@ -244,9 +241,7 @@ describe('Team Model', () => {
     const { user, team } = await createGlobalTeamWithUsers()
     await Team.removeMember(team.id, user.id)
 
-    const teamWithMembers = await Team.query()
-      .findById(team.id)
-      .withGraphFetched('members')
+    const teamWithMembers = await Team.findById(team.id, { related: 'members' })
 
     expect(teamWithMembers.members).toHaveLength(0)
   })
@@ -254,9 +249,7 @@ describe('Team Model', () => {
   it('fetches team members', async () => {
     const { user, team } = await createGlobalTeamWithUsers()
 
-    const teamWithMembers = await Team.query()
-      .findById(team.id)
-      .withGraphFetched('members')
+    const teamWithMembers = await Team.findById(team.id, { related: 'members' })
 
     expect(teamWithMembers.members).toHaveLength(1)
     expect(teamWithMembers.members[0].userId).toEqual(user.id)
@@ -265,12 +258,10 @@ describe('Team Model', () => {
   it('fetches team users', async () => {
     const { user, team } = await createGlobalTeamWithUsers()
 
-    const teamWithMembers = await Team.query()
-      .findById(team.id)
-      .withGraphFetched('users')
+    const teamWithUsers = await Team.findById(team.id, { related: 'users' })
 
-    expect(teamWithMembers.users).toHaveLength(1)
-    expect(teamWithMembers.users[0].id).toEqual(user.id)
+    expect(teamWithUsers.users).toHaveLength(1)
+    expect(teamWithUsers.users[0].id).toEqual(user.id)
   })
 
   it('updates team membership given an array of user ids', async () => {
@@ -290,7 +281,7 @@ describe('Team Model', () => {
       global: true,
     })
 
-    await TeamMember.query().insert([
+    await TeamMember.insert([
       {
         teamId: editorTeam.id,
         userId: userOne.id,
@@ -308,46 +299,28 @@ describe('Team Model', () => {
 
     await Team.updateMembershipByTeamId(authorTeam.id, [])
 
-    const editors = await TeamMember.query().where({
-      teamId: editorTeam.id,
-    })
+    const { result: editors } = await TeamMember.find({ teamId: editorTeam.id })
 
     const editorIds = editors.map(member => member.userId)
     expect(editorIds.length).toEqual(2)
     expect(editorIds.includes(userOne.id)).toBeTruthy()
     expect(editorIds.includes(userThree.id)).toBeTruthy()
 
-    const authors = await TeamMember.query().where({
-      teamId: authorTeam.id,
-    })
+    const { result: authors } = await TeamMember.find({ teamId: authorTeam.id })
 
     expect(authors.length).toEqual(0)
-  })
-
-  it('has updated set when created', async () => {
-    const team = await Team.insert({
-      role: nonGlobalTeams.author.role,
-      displayName: 'Author',
-      global: true,
-    })
-
-    expect(team.role).toEqual(nonGlobalTeams.author.role)
-    const now = new Date().toISOString()
-    expect(team.updated).toHaveLength(now.length)
   })
 
   it('deletes memberships after team is deleted', async () => {
     const { team, user } = await createGlobalTeamWithUsers()
 
-    let foundUser = await User.query()
-      .findById(user.id)
-      .withGraphFetched('teams')
+    let foundUser = await User.findById(user.id, { related: 'teams' })
 
     expect(foundUser.teams).toHaveLength(1)
 
-    await Team.query().deleteById(team.id)
+    await Team.deleteById(team.id)
 
-    foundUser = await User.query().findById(user.id).withGraphFetched('teams')
+    foundUser = await User.findById(user.id, { related: 'teams' })
 
     expect(foundUser.teams).toHaveLength(0)
   })
