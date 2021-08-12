@@ -9,7 +9,6 @@ const useTransaction = async (callback, options = {}) => {
   if (!callback) {
     throw new Error('Use transaction: Invalid arguments!')
   }
-
   /**
    * Most common case (eg. useTransaction(callback))
    * No pre-defined transaction was provided.
