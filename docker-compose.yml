@@ -9,3 +9,5 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-test_db}
       - POSTGRES_USER=${POSTGRES_USER:-test_user}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+    volumes:
+      - ./scripts/init-pgboss.sql:/docker-entrypoint-initdb.d/init-pgboss.sql
