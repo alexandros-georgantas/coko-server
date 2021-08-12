@@ -181,8 +181,7 @@ describe('ChatMessage model', () => {
     })
 
     await expect(
-      ChatMessage.patch({
-        id: message.Id,
+      message.patch({
         mentions: [user2.id],
       }),
     ).rejects.toThrow()
