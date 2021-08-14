@@ -1,13 +1,17 @@
 const config = require('config')
 const crypto = require('crypto')
 const moment = require('moment')
+const find = require('lodash/find')
 
-const { AuthorizationError, ValidationError } = require('@pubsweet/errors')
+const {
+  AuthorizationError,
+  ValidationError,
+  ConflictError,
+} = require('@pubsweet/errors')
 
 const { User } = require('../index')
 const { logger, createJWT, useTransaction } = require('../../index')
 const Identity = require('../identity/identity.model')
-const { cleanUndefined } = require('../_helpers/utilities')
 
 const {
   identityVerification,
@@ -16,25 +20,80 @@ const {
   requestResetPasswordEmailNotFound,
 } = require('../_helpers/emailTemplates')
 
-const { sendEmail } = require('../../services/email')
+const {
+  notify,
+  notificationTypes: { EMAIL },
+} = require('../../services')
+
 const { labels: USER_CONTROLLER } = require('./constants')
+
+const activateUser = async (id, options = {}) => {
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `${USER_CONTROLLER} activateUser: activating user with id ${id}`,
+        )
+        return User.activateUsers([id], { trx: tr })
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} activateUser: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
+const activateUsers = async (ids, options = {}) => {
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `${USER_CONTROLLER} activateUsers: activating users with ids ${ids}`,
+        )
+
+        return User.activateUsers(ids, { trx: tr })
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} activateUsers: ${e.message}`)
+    throw new Error(e)
+  }
+}
 
 const getUser = async (id, options = {}) => {
   try {
-    logger.info(`${USER_CONTROLLER} getUser: fetching user with id ${id}`)
-    return User.findById(id, options)
+    const { trx, ...restOptions } = options
+    return useTransaction(
+      async tr => {
+        logger.info(`${USER_CONTROLLER} getUser: fetching user with id ${id}`)
+        return User.findById(id, { trx: tr, ...restOptions })
+      },
+      { trx, passedTrxOnly: true },
+    )
   } catch (e) {
     logger.error(`${USER_CONTROLLER} getUser: ${e.message}`)
     throw new Error(e)
   }
 }
 
+const getDisplayName = async user => user.getDisplayName()
+
 const getUsers = async (options = {}) => {
   try {
-    logger.info(
-      `${USER_CONTROLLER} getUsers: fetching all users based on provided options ${options}`,
+    const { trx, ...restOptions } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `${USER_CONTROLLER} getUsers: fetching all users based on provided options ${restOptions}`,
+        )
+        return User.find({}, { trx: tr, ...restOptions })
+      },
+      { trx, passedTrxOnly: true },
     )
-    return User.find({}, options)
   } catch (e) {
     logger.error(`${USER_CONTROLLER} getUsers: ${e.message}`)
     throw new Error(e)
@@ -43,30 +102,79 @@ const getUsers = async (options = {}) => {
 
 const deleteUser = async (id, options = {}) => {
   try {
-    logger.info(`${USER_CONTROLLER} deleteUser: removing user with id ${id}`)
-    return User.deleteById(id, options)
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `${USER_CONTROLLER} deleteUser: removing user with id ${id}`,
+        )
+        return User.deleteById(id, { trx: tr })
+      },
+      { trx, passedTrxOnly: true },
+    )
   } catch (e) {
     logger.error(`${USER_CONTROLLER} deleteUser: ${e.message}`)
     throw new Error(e)
   }
 }
 
+const deleteUsers = async (ids, options = {}) => {
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `${USER_CONTROLLER} deleteUser: removing users with ids ${ids}`,
+        )
+        return User.deleteByIds(ids, { trx: tr })
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} deleteUsers: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 const deactivateUser = async (id, options = {}) => {
   try {
-    logger.info(
-      `${USER_CONTROLLER} deactivateUser: deactivating user with id ${id}`,
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `${USER_CONTROLLER} deactivateUser: deactivating user with id ${id}`,
+        )
+        return User.deactivateUsers([id], { trx: tr })
+      },
+      { trx, passedTrxOnly: true },
     )
-    return User.patchAndFetchById(id, { isActive: false })
   } catch (e) {
     logger.error(`${USER_CONTROLLER} deactivateUser: ${e.message}`)
     throw new Error(e)
   }
 }
 
+const deactivateUsers = async (ids, options = {}) => {
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        logger.info(
+          `${USER_CONTROLLER} deactivateUsers: deactivating users with id ${ids}`,
+        )
+        return User.deactivateUsers(ids, { trx: tr })
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} deactivateUsers: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 const updateUser = async (id, data, options = {}) => {
   try {
-    const cleanedData = cleanUndefined(data)
-    const { email, identityId, ...restData } = cleanedData
+    const { email, identityId, ...restData } = data
     const { trx, ...restOptions } = options
     logger.info(`${USER_CONTROLLER} updateUser: updating user with id ${id}`)
 
@@ -159,29 +267,99 @@ const login = async (password, email = undefined, username = undefined) => {
 
 const signUp = async (data, options = {}) => {
   try {
-    const cleanedData = cleanUndefined(data)
-    const { email, ...restData } = cleanedData
+    const { email, ...restData } = data
     const { trx } = options
     return useTransaction(
       async tr => {
-        if (!email) {
-          logger.info(`${USER_CONTROLLER} signUp: creating user`)
-          return User.insert({ ...restData }, { trx: tr })
+        const usernameExists = await User.findOne(
+          { username: restData.username },
+          { trx: tr },
+        )
+
+        if (usernameExists) {
+          logger.error(`${USER_CONTROLLER} signUp: username already exists`)
+          throw new ConflictError('Username already exists')
+        }
+
+        const existingIdentity = await Identity.findOne({ email }, { trx: tr })
+
+        if (existingIdentity) {
+          const user = await User.findById(existingIdentity.userId, { trx: tr })
+
+          if (user.agreedTc) {
+            logger.error(
+              `${USER_CONTROLLER} signUp: a user with this email already exists`,
+            )
+            throw new ConflictError('A user with this email already exists')
+          }
+
+          // If not agreed to tc, user's been invited but is now signing up
+          logger.info(
+            `${USER_CONTROLLER} signUp: connecting user with identity`,
+          )
+
+          const updatedUser = await User.patchAndFetchById(
+            existingIdentity.userId,
+            {
+              ...restData,
+            },
+            { trx: tr },
+          )
+
+          const verificationToken = crypto.randomBytes(64).toString('hex')
+          const verificationTokenTimestamp = new Date()
+
+          existingIdentity.patch(
+            { verificationToken, verificationTokenTimestamp },
+            { trx: tr },
+          )
+
+          const emailData = identityVerification({
+            verificationToken,
+            email: existingIdentity.email,
+          })
+
+          notify(EMAIL, emailData)
+          return updatedUser.id
         }
 
         logger.info(`${USER_CONTROLLER} signUp: creating user`)
 
-        const user = await User.insert({ ...restData }, { trx: tr })
+        const newUser = await User.insert(
+          {
+            ...restData,
+          },
+          { trx: tr },
+        )
+
+        const verificationToken = crypto.randomBytes(64).toString('hex')
+        const verificationTokenTimestamp = new Date()
 
         logger.info(
           `${USER_CONTROLLER} signUp: creating user local identity with provided email`,
         )
+
         await Identity.insert(
-          { userId: user.id, email, isSocial: false },
+          {
+            userId: newUser.id,
+            email,
+            isSocial: false,
+            verificationTokenTimestamp,
+            verificationToken,
+            isVerified: false,
+            isDefault: true,
+          },
           { trx: tr },
         )
 
-        return user
+        const emailData = identityVerification({
+          verificationToken,
+          email,
+        })
+
+        notify(EMAIL, emailData)
+
+        return newUser.id
       },
       { trx },
     )
@@ -237,13 +415,14 @@ const verifyEmail = async (token, options = {}) => {
           throw new Error(`${USER_CONTROLLER} verifyEmail: Token expired`)
         }
 
-        await Identity.patch(
-          { column: 'id', value: identity.id },
+        await identity.patch(
           {
             isVerified: true,
           },
           { trx: tr },
         )
+
+        await activateUser(identity.userId, { trx: tr })
 
         return true
       },
@@ -278,8 +457,7 @@ const resendVerificationEmail = async (token, options = {}) => {
         const verificationToken = crypto.randomBytes(64).toString('hex')
         const verificationTokenTimestamp = new Date()
 
-        await Identity.patch(
-          { column: 'id', value: identity.id },
+        await identity.patch(
           {
             verificationToken,
             verificationTokenTimestamp,
@@ -292,11 +470,11 @@ const resendVerificationEmail = async (token, options = {}) => {
           email: identity.email,
         })
 
-        sendEmail(emailData)
+        notify(EMAIL, emailData)
 
         return true
       },
-      { trx },
+      { trx, passedTrxOnly: true },
     )
   } catch (e) {
     logger.error(`${USER_CONTROLLER} resendVerificationEmail: ${e.message}`)
@@ -334,8 +512,7 @@ const resendVerificationEmailFromLogin = async (username, options = {}) => {
         const verificationToken = crypto.randomBytes(64).toString('hex')
         const verificationTokenTimestamp = new Date()
 
-        await Identity.patch(
-          { column: 'id', value: identity.id },
+        await identity.patch(
           {
             verificationToken,
             verificationTokenTimestamp,
@@ -348,11 +525,11 @@ const resendVerificationEmailFromLogin = async (username, options = {}) => {
           email: identity.email,
         })
 
-        sendEmail(emailData)
+        notify(EMAIL, emailData)
 
         return true
       },
-      { trx },
+      { trx, passedTrxOnly: true },
     )
   } catch (e) {
     logger.error(
@@ -365,6 +542,7 @@ const resendVerificationEmailFromLogin = async (username, options = {}) => {
 const updatePassword = async (id, currentPassword, newPassword) => {
   try {
     logger.info(`${USER_CONTROLLER} updatePassword: updating user password`)
+
     await User.updatePassword(id, currentPassword, newPassword)
     const identity = await Identity.findOne({ isDefault: true, userId: id })
 
@@ -372,7 +550,7 @@ const updatePassword = async (id, currentPassword, newPassword) => {
       email: identity.email,
     })
 
-    sendEmail(emailData)
+    notify(EMAIL, emailData)
 
     return true
   } catch (e) {
@@ -403,7 +581,7 @@ const sendPasswordResetEmail = async (email, options = {}) => {
             email: email.toLowerCase(),
           })
 
-          sendEmail(emailData)
+          notify(EMAIL, emailData)
           return true
         }
 
@@ -411,8 +589,7 @@ const sendPasswordResetEmail = async (email, options = {}) => {
 
         const resetToken = crypto.randomBytes(tokenLength).toString('hex')
 
-        await User.patch(
-          { column: 'id', value: user.id },
+        await user.patch(
           {
             passwordResetTimestamp: new Date(),
             passwordResetToken: resetToken,
@@ -429,11 +606,11 @@ const sendPasswordResetEmail = async (email, options = {}) => {
           token: resetToken,
         })
 
-        sendEmail(emailData)
+        notify(EMAIL, emailData)
 
         return true
       },
-      { trx },
+      { trx, passedTrxOnly: true },
     )
   } catch (e) {
     logger.error(`${USER_CONTROLLER} sendPasswordResetEmail: ${e.message}`)
@@ -479,8 +656,7 @@ const resetPassword = async (token, password, options = {}) => {
           )
         }
 
-        await User.patch(
-          { column: 'id', value: user.id },
+        await user.patch(
           {
             password,
             passwordResetTimestamp: null,
@@ -493,11 +669,11 @@ const resetPassword = async (token, password, options = {}) => {
           email: user.defaultIdentity.email,
         })
 
-        sendEmail(emailData)
+        notify(EMAIL, emailData)
 
         return true
       },
-      { trx },
+      { trx, passedTrxOnly: true },
     )
   } catch (e) {
     logger.error(`${USER_CONTROLLER} resetPassword: ${e.message}`)
@@ -505,18 +681,67 @@ const resetPassword = async (token, password, options = {}) => {
   }
 }
 
+const setDefaultIdentity = async (userId, identityId, options = {}) => {
+  try {
+    const { trx } = options
+    return useTransaction(
+      async tr => {
+        const user = await User.findByIdId(
+          userId,
+          {
+            related: 'identities',
+          },
+          { trx: tr },
+        )
+
+        const { identities } = user
+        const previouslyDefault = find(identities, { isDefault: true })
+
+        if (previouslyDefault && previouslyDefault.id === identityId) {
+          return user
+        }
+
+        if (previouslyDefault) {
+          await Identity.patchAndFetchById(
+            previouslyDefault.id,
+            { isDefault: false },
+            { trx: tr },
+          )
+        }
+
+        await Identity.patchAndFetchById(
+          identityId,
+          { isDefault: true },
+          { trx: tr },
+        )
+        return user
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} setDefaultIdentity: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
 module.exports = {
+  activateUser,
+  activateUsers,
+  deactivateUser,
+  deactivateUsers,
+  deleteUser,
+  deleteUsers,
+  getDisplayName,
   getUser,
   getUsers,
-  deleteUser,
-  deactivateUser,
-  updateUser,
   login,
-  signUp,
-  verifyEmail,
+  updateUser,
+  updatePassword,
+  resetPassword,
   resendVerificationEmail,
   resendVerificationEmailFromLogin,
-  updatePassword,
+  setDefaultIdentity,
   sendPasswordResetEmail,
-  resetPassword,
+  signUp,
+  verifyEmail,
 }

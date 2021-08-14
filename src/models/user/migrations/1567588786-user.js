@@ -17,7 +17,7 @@ exports.up = async knex => {
       table.text('password_reset_token')
       table.timestamp('password_reset_timestamp', { useTz: true })
       table.boolean('agreed_tc').notNullable().defaultTo(false)
-      table.boolean('is_active').defaultTo(true)
+      table.boolean('is_active').notNullable().defaultTo(false)
       table.text('invitation_token')
       table.timestamp('invitation_token_timestamp', { useTz: true })
       table.text('given_names')

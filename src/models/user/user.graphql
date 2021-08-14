@@ -62,12 +62,16 @@ extend type Query {
 }
 
 extend type Mutation {
+  activateUser(id: ID!): User!
+  activateUsers(id: [ID!]!): [User!]!
   deleteUser(id: ID!): ID!
+  deleteUsers(id: [ID!]!): [ID!]!
   deactivateUser(id: ID!): User!
+  deactivateUsers(id: [ID!]!): [User!]!
   updateUser(id: ID, input: UpdateInput!): User!
   login(input: LoginInput!): LoginResult!
-  signUp(input: SignUpInput!): User!
-
+  signUp(input: SignUpInput!): ID!
+  setDefaultIdentity(userId: ID!, identityId: ID!): User!
   verifyEmail(token: String!): Boolean!
   resendVerificationEmail(token: String!): Boolean!
   resendVerificationEmailFromLogin(

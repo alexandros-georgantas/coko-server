@@ -1,5 +1,8 @@
 module.exports = {
   labels: {
-    EMAIL_SERVICE: '[EMAIL SERVICE] -',
+    NOTIFY_SERVICE: '[NOTIFY SERVICE] -',
+  },
+  notificationTypes: {
+    EMAIL: 'email',
   },
 }

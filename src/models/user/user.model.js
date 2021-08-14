@@ -10,7 +10,7 @@ const useTransaction = require('../useTransaction')
 
 const {
   alphaNumericStringNotNullable,
-  booleanDefaultTrue,
+  booleanDefaultFalse,
   dateNullable,
   password,
   string,
@@ -40,8 +40,8 @@ class User extends BaseModel {
         passwordHash: stringNotEmpty,
         passwordResetToken: stringNullable,
         passwordResetTimestamp: dateNullable,
-        agreedTc: booleanDefaultTrue,
-        isActive: booleanDefaultTrue,
+        agreedTc: booleanDefaultFalse,
+        isActive: booleanDefaultFalse,
         invitationToken: stringNotEmpty,
         invitationTokenTimestamp: dateNullable,
         password,
@@ -283,6 +283,42 @@ class User extends BaseModel {
     return plaintext && this.passwordHash
       ? bcrypt.compare(plaintext, this.passwordHash)
       : false
+  }
+
+  static async activateUsers(ids, options = {}) {
+    try {
+      const { trx } = options
+      return useTransaction(
+        async tr => {
+          return User.query(tr)
+            .patch({ isActive: true })
+            .whereIn('id', ids)
+            .returning('*')
+        },
+        { trx, passedTrxOnly: true },
+      )
+    } catch (e) {
+      logger.error('User model: activateUsers failed', e)
+      throw new Error('User model: Cannot update isActive')
+    }
+  }
+
+  static async deactivateUsers(ids, options = {}) {
+    try {
+      const { trx } = options
+      return useTransaction(
+        async tr => {
+          return User.query(tr)
+            .patch({ isActive: false })
+            .whereIn('id', ids)
+            .returning('*')
+        },
+        { trx, passedTrxOnly: true },
+      )
+    } catch (e) {
+      logger.error('User model: deactivateUsers failed', e)
+      throw new Error('User model: Cannot update isActive')
+    }
   }
 }
 
