@@ -4,12 +4,12 @@ type TeamMember {
   status: String
 }
 
-input TeamMemberInput {
-  id: ID
-  user: TeamMemberUserInput
-  status: String
-}
+# input TeamMemberInput {
+#   id: ID
+#   user: TeamMemberUserInput
+#   status: String
+# }
 
-input TeamMemberUserInput {
-  id: ID!
-}
+# input TeamMemberUserInput {
+#   id: ID!
+# }

@@ -12,7 +12,7 @@ const sendEmail = async data => {
 
   const emailData = {
     from: config.get('mailer.from'),
-    html: `<p>${content}</p>`,
+    html: `<div>${content}</div>`,
     subject: `${subject}`,
     text: content,
     to,

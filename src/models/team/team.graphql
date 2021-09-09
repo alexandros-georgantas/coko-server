@@ -8,14 +8,14 @@ type Team {
   global: Boolean!
 }
 
-input TeamInput {
-  role: String!
-  displayName: String!
-  objectId: ID
-  objectType: String
-  members: [TeamMemberInput]
-  global: Boolean!
-}
+# input TeamInput {
+#   role: String!
+#   displayName: String!
+#   objectId: ID
+#   objectType: String
+#   members: [TeamMemberInput!]
+#   global: Boolean!
+# }
 
 input TeamWhereInput {
   role: String
@@ -24,26 +24,27 @@ input TeamWhereInput {
   global: Boolean
 }
 
-input UpdateTeamMembershipInput {
-  teams: [UpdateTeamMembershipTeamInput!]!
-}
+# input UpdateTeamMembershipInput {
+#   teams: [UpdateTeamMembershipTeamInput!]!
+# }
 
-input UpdateTeamMembershipTeamInput {
-  teamId: ID!
-  members: [ID!]!
-}
+# input UpdateTeamMembershipTeamInput {
+#   teamId: ID!
+#   members: [ID!]!
+# }
 
 extend type Query {
   team(id: ID!): Team!
-  teams(where: TeamWhereInput!): [Team!]!
+  teams(where: TeamWhereInput): [Team!]!
   getGlobalTeams: [Team!]!
   getObjectTeams(objectId: ID!, objectType: String!): [Team!]!
 }
 
 extend type Mutation {
-  createTeam(input: TeamInput!): Team!
-  updateTeam(id: ID!, input: TeamInput!): Team!
-  updateGlobalTeamMembership(input: UpdateTeamMembershipInput!): Boolean!
-  updateObjectTeamMembership(input: UpdateTeamMembershipInput!): Boolean!
-  deleteTeam(id: ID!): ID!
+  # createTeam(input: TeamInput!): Team!
+  # updateTeam(id: ID!, input: TeamInput!): Team!
+  updateTeamMembership(teamId: ID!, members: [ID!]!): Team!
+  addTeamMember(teamId: ID!, userId: ID!): Team!
+  removeTeamMember(teamId: ID!, userId: ID!): Team!
+  # deleteTeam(id: ID!): ID!
 }
