@@ -1,6 +1,9 @@
 const { ChatMessage } = require('../index')
 const { logger, useTransaction } = require('../../index')
-const { labels: CHAT_MESSAGE_CONTROLLER } = require('./constants')
+
+const {
+  labels: { CHAT_MESSAGE_CONTROLLER },
+} = require('./constants')
 
 const sendMessage = async (
   chatThreadId,

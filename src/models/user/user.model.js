@@ -214,19 +214,29 @@ class User extends BaseModel {
 
   static async updatePassword(
     userId,
-    currentPassword,
+    currentPassword = undefined,
     newPassword,
+    passwordResetToken = undefined,
     options = {},
   ) {
     try {
       const { trx } = options
       return useTransaction(
         async tr => {
-          const user = await User.findById(userId, { trx: tr })
+          const user = await User.findById(userId, {
+            trx: tr,
+            related: 'defaultIdentity',
+          })
 
-          if (!(await user.isPasswordValid(currentPassword))) {
+          if (currentPassword && !passwordResetToken) {
+            if (!(await user.isPasswordValid(currentPassword))) {
+              throw new ValidationError(
+                'Update password: Current password is not valid',
+              )
+            }
+          } else if (user.passwordResetToken !== passwordResetToken) {
             throw new ValidationError(
-              'Update password: Current password is not valid',
+              'Update password: passwordResetToken is not valid',
             )
           }
 
@@ -248,8 +258,19 @@ class User extends BaseModel {
     }
   }
 
-  async updatePassword(currentPassword, newPassword, options = {}) {
-    return User.updatePassword(this.id, currentPassword, newPassword, options)
+  async updatePassword(
+    currentPassword,
+    newPassword,
+    passwordResetToken,
+    options = {},
+  ) {
+    return User.updatePassword(
+      this.id,
+      currentPassword,
+      newPassword,
+      passwordResetToken,
+      options,
+    )
   }
 
   $formatJson(json) {

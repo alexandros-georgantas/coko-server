@@ -1,6 +1,9 @@
 const { ChatThread } = require('../index')
 const { logger, useTransaction } = require('../../index')
-const { labels: CHAT_THREAD_CONTROLLER } = require('./constants')
+
+const {
+  labels: { CHAT_THREAD_CONTROLLER },
+} = require('./constants')
 
 const getChatThread = async (id, options = {}) => {
   try {
@@ -23,6 +26,7 @@ const getChatThread = async (id, options = {}) => {
 const getChatThreads = async (where = {}, options = {}) => {
   try {
     const { trx, ...restOptions } = options
+
     return useTransaction(
       async tr => {
         logger.info(

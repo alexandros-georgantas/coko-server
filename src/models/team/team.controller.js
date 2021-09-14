@@ -1,6 +1,9 @@
 const { Team } = require('../index')
 const { logger, useTransaction } = require('../../index')
-const { labels: TEAM_CONTROLLER } = require('./constants')
+
+const {
+  labels: { TEAM_CONTROLLER },
+} = require('./constants')
 
 const getTeam = async (id, options = {}) => {
   try {
@@ -88,7 +91,7 @@ const removeTeamMember = async (teamId, userId, options = {}) => {
         logger.info(
           `${TEAM_CONTROLLER} removeTeamMember: removing user with id ${userId} from team with id ${teamId}`,
         )
-        return Team.addMember(teamId, userId, { trx: tr })
+        return Team.removeMember(teamId, userId, { trx: tr })
       },
       { trx, passedTrxOnly: true },
     )

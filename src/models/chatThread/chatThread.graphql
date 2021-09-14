@@ -7,6 +7,11 @@ type ChatThread {
   messages: [ChatMessage!]!
 }
 
+type ChatThreadsResponse {
+  result: [ChatThread!]!
+  totalCount: Int
+}
+
 input CreateChatThreadInput {
   chatType: String
   relatedObjectId: ID
@@ -14,5 +19,5 @@ input CreateChatThreadInput {
 
 extend type Query {
   chatThread(id: ID!): ChatThread!
-  chatThreads(where: CreateChatThreadInput): [ChatThread!]!
+  chatThreads(where: CreateChatThreadInput): ChatThreadsResponse!
 }

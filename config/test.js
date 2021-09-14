@@ -22,6 +22,7 @@ module.exports = {
       amount: 24,
       unit: 'hours',
     },
+    secret: 'whatASecret',
     passwordResetTokenExpiry: {
       amount: 24,
       unit: 'hours',

@@ -1,6 +1,3 @@
-const find = require('lodash/find')
-const forEach = require('lodash/forEach')
-const { ValidationError } = require('objection')
 const BaseModel = require('../base.model')
 
 const {
@@ -9,29 +6,6 @@ const {
   booleanDefaultFalse,
   arrayOfIds,
 } = require('../_helpers/types')
-
-const checkUserIsMemberOfTeam = async (mentions, chatThreadId, transaction) => {
-  /* eslint-disable-next-line global-require */
-  const { Team } = require('../index')
-
-  const team = await Team.findOne(
-    { objectId: chatThreadId, objectType: 'chatThread' },
-    { trx: transaction, related: 'users' },
-  )
-
-  forEach(mentions, userId => {
-    const found = find(team.users, { id: userId })
-
-    if (!found) {
-      throw new ValidationError({
-        type: 'ModelValidation',
-        message: `User with id ${userId} is not a member of this chat thread team`,
-      })
-    }
-  })
-
-  return true
-}
 
 class ChatMessage extends BaseModel {
   constructor(properties) {
@@ -70,30 +44,6 @@ class ChatMessage extends BaseModel {
           to: 'users.id',
         },
       },
-    }
-  }
-
-  async $beforeInsert(queryContext) {
-    await super.$beforeInsert(queryContext)
-
-    if (this.mentions.length > 0) {
-      await checkUserIsMemberOfTeam(
-        this.mentions,
-        this.chatThreadId,
-        queryContext.transaction,
-      )
-    }
-  }
-
-  async $beforeUpdate(queryContext) {
-    await super.$beforeUpdate(queryContext)
-
-    if (this.mentions.length > 0) {
-      await checkUserIsMemberOfTeam(
-        this.mentions,
-        this.chatThreadId,
-        queryContext.transaction,
-      )
     }
   }
 }

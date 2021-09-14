@@ -136,7 +136,7 @@ class BaseModel extends PubsweetBaseModel {
             queryBuilder = queryBuilder.withGraphFetched(related)
           }
 
-          return queryBuilder.findOne(data).throwIfNotFound()
+          return queryBuilder.findOne(data)
         },
         {
           trx,

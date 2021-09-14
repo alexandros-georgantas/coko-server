@@ -52,8 +52,53 @@ const createUserAndIdentities = async () => {
   return { user, id, id2 }
 }
 
+const createUserWithPasswordAndIdentities = async password => {
+  const user = await User.query().insert({
+    givenNames: name.firstName(),
+    surname: name.lastName(),
+    password,
+    username: internet.userName(),
+  })
+
+  const id = await Identity.query().insert({
+    userId: user.id,
+    email: internet.email().toLowerCase(),
+    isVerified: true,
+    isDefault: false,
+  })
+
+  const id2 = await Identity.query().insert({
+    userId: user.id,
+    email: internet.email().toLowerCase(),
+    isVerified: true,
+    isDefault: false,
+  })
+
+  return { user, id, id2 }
+}
+
+const createUserWithPasswordAndDefaultIdentity = async password => {
+  const user = await User.query().insert({
+    givenNames: name.firstName(),
+    surname: name.lastName(),
+    password,
+    username: internet.userName(),
+  })
+
+  const id = await Identity.query().insert({
+    userId: user.id,
+    email: internet.email().toLowerCase(),
+    isVerified: true,
+    isDefault: true,
+  })
+
+  return { user, id }
+}
+
 module.exports = {
   createUser,
   createUserAndIdentities,
   createUserAndDefaultIdentity,
+  createUserWithPasswordAndIdentities,
+  createUserWithPasswordAndDefaultIdentity,
 }

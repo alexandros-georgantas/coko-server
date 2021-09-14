@@ -8,6 +8,10 @@ type Team {
   global: Boolean!
 }
 
+type TeamsResponse {
+  result: [Team!]!
+  totalCount: Int
+}
 # input TeamInput {
 #   role: String!
 #   displayName: String!
@@ -35,7 +39,7 @@ input TeamWhereInput {
 
 extend type Query {
   team(id: ID!): Team!
-  teams(where: TeamWhereInput): [Team!]!
+  teams(where: TeamWhereInput): TeamsResponse!
   getGlobalTeams: [Team!]!
   getObjectTeams(objectId: ID!, objectType: String!): [Team!]!
 }

@@ -9,9 +9,8 @@ const {
   ConflictError,
 } = require('@pubsweet/errors')
 
-const { User } = require('../index')
+const { User, Identity } = require('../index')
 const { logger, createJWT, useTransaction } = require('../../index')
-const Identity = require('../identity/identity.model')
 
 const {
   identityVerification,
@@ -25,7 +24,9 @@ const {
   notificationTypes: { EMAIL },
 } = require('../../services')
 
-const { labels: USER_CONTROLLER } = require('./constants')
+const {
+  labels: { USER_CONTROLLER },
+} = require('./constants')
 
 const activateUser = async (id, options = {}) => {
   try {
@@ -236,11 +237,13 @@ const login = async (password, email = undefined, username = undefined) => {
         `${USER_CONTROLLER} login: searching for user with email ${email}`,
       )
       const identity = await Identity.findOne({ email })
-      user = User.findById(identity.userId)
+
+      user = await User.findById(identity.userId)
     } else {
       logger.info(
         `${USER_CONTROLLER} login: searching for user with username ${username}`,
       )
+
       user = await User.findOne({ username })
     }
 
@@ -248,7 +251,7 @@ const login = async (password, email = undefined, username = undefined) => {
       `${USER_CONTROLLER} login: checking password validity for user with id ${user.id}`,
     )
 
-    isValid = await user.validPassword(password)
+    isValid = await user.isPasswordValid(password)
 
     if (!isValid) {
       throw new AuthorizationError('Wrong username or password.')
@@ -543,7 +546,8 @@ const updatePassword = async (id, currentPassword, newPassword) => {
   try {
     logger.info(`${USER_CONTROLLER} updatePassword: updating user password`)
 
-    await User.updatePassword(id, currentPassword, newPassword)
+    await User.updatePassword(id, currentPassword, newPassword, undefined)
+
     const identity = await Identity.findOne({ isDefault: true, userId: id })
 
     const emailData = passwordUpdate({
@@ -636,11 +640,11 @@ const resetPassword = async (token, password, options = {}) => {
         }
 
         const passwordResetTokenExpiryAmount = config.get(
-          'pubsweet-server.passwordResetTokenTokenExpiry.amount',
+          'pubsweet-server.passwordResetTokenExpiry.amount',
         )
 
         const passwordResetTokenExpiryUnit = config.get(
-          'pubsweet-server.passwordResetTokenTokenExpiry.unit',
+          'pubsweet-server.passwordResetTokenExpiry.unit',
         )
 
         if (
@@ -656,9 +660,15 @@ const resetPassword = async (token, password, options = {}) => {
           )
         }
 
+        await user.updatePassword(
+          undefined,
+          password,
+          user.passwordResetToken,
+          { trx: tr },
+        )
+
         await user.patch(
           {
-            password,
             passwordResetTimestamp: null,
             passwordResetToken: null,
           },
@@ -686,7 +696,7 @@ const setDefaultIdentity = async (userId, identityId, options = {}) => {
     const { trx } = options
     return useTransaction(
       async tr => {
-        const user = await User.findByIdId(
+        const user = await User.findById(
           userId,
           {
             related: 'identities',

@@ -190,6 +190,7 @@ class Team extends BaseModel {
       await Promise.all(
         toDelete.map(userId => Team.removeMember(teamId, userId, { trx })),
       )
+      return Team.findById(teamId, { trx })
     }
 
     return useTransaction(queries, { trx: options.trx })
@@ -206,7 +207,10 @@ class Team extends BaseModel {
 
     if (options.status) data.status = options.status
 
-    const add = async trx => TeamMember.query(trx).insert(data)
+    const add = async trx => {
+      await TeamMember.query(trx).insert(data)
+      return Team.findById(teamId, { trx })
+    }
 
     const trxOptions = {
       trx: options.trx,
@@ -226,10 +230,14 @@ class Team extends BaseModel {
     const { TeamMember } = require('@pubsweet/models')
 
     const remove = async trx => {
-      await TeamMember.query(trx).delete().where({
-        teamId,
-        userId,
-      })
+      await TeamMember.query(trx)
+        .delete()
+        .where({
+          teamId,
+          userId,
+        })
+        .throwIfNotFound()
+      return Team.findById(teamId, { trx })
     }
 
     try {

@@ -2,6 +2,7 @@ module.exports = {
   collectCoverage: false,
   collectCoverageFrom: [
     '<rootDir>/src/models/**/*.model.js',
+    '<rootDir>/src/models/**/*.controller.js',
     '<rootDir>/src/models/useTransaction.js',
     '!<rootDir>/src/models/__tests__/helpers/**',
   ],
@@ -10,7 +11,14 @@ module.exports = {
     {
       displayName: 'models',
       testEnvironment: 'node',
-      testRegex: 'src/models/__tests__/.+test.js$',
+      testRegex: 'src/models/__tests__/.+model.test.js$',
+      globalSetup: '<rootDir>/src/models/__tests__/_setup.js',
+      // globalTeardown: '<rootDir>/src/models/__tests__/_teardown.js',
+    },
+    {
+      displayName: 'controllers',
+      testEnvironment: 'node',
+      testRegex: 'src/models/__tests__/.+controller.test.js$',
       globalSetup: '<rootDir>/src/models/__tests__/_setup.js',
       // globalTeardown: '<rootDir>/src/models/__tests__/_teardown.js',
     },
