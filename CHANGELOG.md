@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.15.4](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.3...v1.15.4) (2021-09-20)
+
 ### [1.15.3](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.2...v1.15.3) (2021-08-09)
 
 
