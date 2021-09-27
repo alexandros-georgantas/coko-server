@@ -9,6 +9,6 @@ module.exports = {
   modelLoaders: {
     messagesBasedOnChatThreadIdsLoader,
   },
-  typeDefs: gqlLoader('./chatMessage.graphql'),
+  typeDefs: gqlLoader('chatMessage/chatMessage.graphql'),
   resolvers: chatMessageResolvers,
 }

@@ -13,5 +13,5 @@ module.exports = {
     identitiesBasedOnUserIdsLoader,
     defaultIdentityBasedOnUserIdsLoader,
   },
-  typeDefs: gqlLoader('./identity.graphql'),
+  typeDefs: gqlLoader('identity/identity.graphql'),
 }

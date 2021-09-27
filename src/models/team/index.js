@@ -5,6 +5,6 @@ const teamResolvers = require('./team.resolvers')
 module.exports = {
   model,
   modelName: 'Team',
-  typeDefs: gqlLoader('./team.graphql'),
+  typeDefs: gqlLoader('team/team.graphql'),
   resolvers: teamResolvers,
 }

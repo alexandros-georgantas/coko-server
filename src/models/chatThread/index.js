@@ -5,6 +5,6 @@ const chatThreadResolvers = require('./chatThread.resolvers')
 module.exports = {
   model,
   modelName: 'ChatThread',
-  typeDefs: gqlLoader('./chatThread.graphql'),
+  typeDefs: gqlLoader('chatThread/chatThread.graphql'),
   resolvers: chatThreadResolvers,
 }

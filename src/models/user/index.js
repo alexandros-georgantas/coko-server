@@ -9,6 +9,6 @@ module.exports = {
   modelLoaders: {
     usersBasedOnTeamMemberIdsLoader,
   },
-  typeDefs: gqlLoader('./user.graphql'),
+  typeDefs: gqlLoader('user/user.graphql'),
   resolvers: userResolvers,
 }
