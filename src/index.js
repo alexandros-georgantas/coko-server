@@ -10,6 +10,7 @@ const { send: sendEmail } = require('@pubsweet/component-send-email')
 const app = require('./app')
 const { boss, connectToJobQueue } = require('./pgboss')
 const { BaseModel, useTransaction } = require('./models')
+const modelTypes = require('./models/_helpers/types')
 
 const createJWT = authentication.token.create
 
@@ -18,6 +19,7 @@ module.exports = {
   createJWT,
   pubsubManager,
   startServer,
+  modelTypes,
 
   sendEmail,
 
