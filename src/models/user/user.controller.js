@@ -485,7 +485,11 @@ const resendVerificationEmail = async (token, options = {}) => {
   }
 }
 
-const resendVerificationEmailFromLogin = async (username, options = {}) => {
+const resendVerificationEmailFromLogin = async (
+  username,
+  password,
+  options = {},
+) => {
   try {
     const { trx } = options
     logger.info(
@@ -499,6 +503,11 @@ const resendVerificationEmailFromLogin = async (username, options = {}) => {
             `${USER_CONTROLLER} resendVerificationEmailFromLogin: no user with username ${username} found`,
           )
 
+        if (!user.isPasswordValid(password)) {
+          throw new Error(
+            `${USER_CONTROLLER} resendVerificationEmailFromLogin: wrong credentials`,
+          )
+        }
         const identity = await Identity.findOne(
           {
             isDefault: true,

@@ -1,5 +1,7 @@
 const model = require('./user.model')
+const gqlLoader = require('../graphqlLoaderUtil')
 const { usersBasedOnTeamMemberIdsLoader } = require('./user.loaders')
+const userResolvers = require('./user.resolvers')
 
 module.exports = {
   model,
@@ -7,4 +9,6 @@ module.exports = {
   modelLoaders: {
     usersBasedOnTeamMemberIdsLoader,
   },
+  typeDefs: gqlLoader('./user.graphql'),
+  resolvers: userResolvers,
 }

@@ -1,4 +1,5 @@
 const model = require('./identity.model')
+const gqlLoader = require('../graphqlLoaderUtil')
 
 const {
   identitiesBasedOnUserIdsLoader,
@@ -12,4 +13,5 @@ module.exports = {
     identitiesBasedOnUserIdsLoader,
     defaultIdentityBasedOnUserIdsLoader,
   },
+  typeDefs: gqlLoader('./identity.graphql'),
 }

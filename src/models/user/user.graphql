@@ -1,5 +1,11 @@
 scalar DateTime
 
+# find a better place to inject that
+input PageInput {
+  pageSize: Int!
+  pageNumber: Int!
+}
+#
 type User {
   id: ID!
   created: DateTime!
@@ -51,6 +57,7 @@ input UpdateInput {
 }
 
 input UpdatePasswordInput {
+  id: ID!
   currentPassword: String!
   newPassword: String!
 }
@@ -63,11 +70,11 @@ extend type Query {
 
 extend type Mutation {
   activateUser(id: ID!): User!
-  activateUsers(id: [ID!]!): [User!]!
+  activateUsers(ids: [ID!]!): [User!]!
   deleteUser(id: ID!): ID!
-  deleteUsers(id: [ID!]!): [ID!]!
+  deleteUsers(ids: [ID!]!): [ID!]!
   deactivateUser(id: ID!): User!
-  deactivateUsers(id: [ID!]!): [User!]!
+  deactivateUsers(ids: [ID!]!): [User!]!
   updateUser(id: ID, input: UpdateInput!): User!
   login(input: LoginInput!): LoginResult!
   signUp(input: SignUpInput!): ID!
