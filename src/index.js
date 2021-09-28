@@ -11,6 +11,7 @@ const app = require('./app')
 const { boss, connectToJobQueue } = require('./pgboss')
 const { BaseModel, useTransaction } = require('./models')
 const modelTypes = require('./models/_helpers/types')
+const graphqlLoaderUtil = require('./models/graphqlLoaderUtil')
 
 const createJWT = authentication.token.create
 
@@ -20,7 +21,7 @@ module.exports = {
   pubsubManager,
   startServer,
   modelTypes,
-
+  graphqlLoaderUtil,
   sendEmail,
 
   BaseModel,
