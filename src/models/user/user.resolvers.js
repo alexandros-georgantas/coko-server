@@ -257,9 +257,9 @@ module.exports = {
       const { id } = user
       return ctx.loaders.Identity.defaultIdentityBasedOnUserIdsLoader.load(id)
     },
-    async teams(user, _, ctx) {
-      // TODO loader
-    },
+    // async teams(user, _, ctx) {
+    //   // TODO loader
+    // },
     displayName(user, _, ctx) {
       return getDisplayName(user)
     },
