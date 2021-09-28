@@ -1,5 +1,5 @@
+const fs = require('fs')
 const model = require('./identity.model')
-const gqlLoader = require('../graphqlLoaderUtil')
 
 const {
   identitiesBasedOnUserIdsLoader,
@@ -13,5 +13,5 @@ module.exports = {
     identitiesBasedOnUserIdsLoader,
     defaultIdentityBasedOnUserIdsLoader,
   },
-  typeDefs: gqlLoader('identity/identity.graphql'),
+  typeDefs: fs.readFileSync(`${__dirname}/identity.graphql`, 'utf-8'),
 }

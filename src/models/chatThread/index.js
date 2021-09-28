@@ -1,10 +1,10 @@
+const fs = require('fs')
 const model = require('./chatThread.model')
-const gqlLoader = require('../graphqlLoaderUtil')
 const chatThreadResolvers = require('./chatThread.resolvers')
 
 module.exports = {
   model,
   modelName: 'ChatThread',
-  typeDefs: gqlLoader('chatThread/chatThread.graphql'),
+  typeDefs: fs.readFileSync(`${__dirname}/chatThread.graphql`, 'utf-8'),
   resolvers: chatThreadResolvers,
 }

@@ -1,5 +1,5 @@
+const fs = require('fs')
 const model = require('./teamMember.model')
-const gqlLoader = require('../graphqlLoaderUtil')
 const teamMemberResolvers = require('./teamMember.resolvers')
 
 const { teamMembersBasedOnTeamIdsLoader } = require('./teamMember.loaders')
@@ -10,6 +10,6 @@ module.exports = {
   modelLoaders: {
     teamMembersBasedOnTeamIdsLoader,
   },
-  typeDefs: gqlLoader('teamMember/teamMember.graphql'),
+  typeDefs: fs.readFileSync(`${__dirname}/teamMember.graphql`, 'utf-8'),
   resolvers: teamMemberResolvers,
 }
