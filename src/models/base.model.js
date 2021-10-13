@@ -47,9 +47,10 @@ class BaseModel extends PubsweetBaseModel {
           const result = await queryBuilder.where(data)
 
           const { results, total } = result
+
           return {
             result: page !== undefined ? results : result,
-            totalCount: total,
+            totalCount: total || result.length,
           }
         },
         {
