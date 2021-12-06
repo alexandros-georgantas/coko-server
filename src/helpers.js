@@ -43,9 +43,11 @@ const convertFileStreamIntoBuffer = async fileStream => {
 
 const getFileExtension = (filename, includingDot = false) => {
   const { ext } = path.parse(filename)
+
   if (!includingDot) {
     return ext.split('.')[1]
   }
+
   return ext
 }
 

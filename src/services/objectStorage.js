@@ -45,6 +45,7 @@ const createImageVersions = async (
       tempDirRoot,
       `${filenameWithoutExtension}_small.${isSVG ? 'svg' : 'pmg'}`,
     )
+
     const mediumFilePath = path.join(
       tempDirRoot,
       `${filenameWithoutExtension}_medium.${isSVG ? 'svg' : 'pmg'}`,
@@ -127,6 +128,7 @@ const uploadFileHandler = (fileStream, filename, mimetype) => {
       if (err) {
         reject(err)
       }
+
       const { Key, Bucket, ETag, Location } = data
       resolve({ key: Key, bucket: Bucket, eTag: ETag, location: Location })
     })
@@ -144,6 +146,7 @@ const handleImageUpload = async (fileStream, hashedFilename, mimetype) => {
 
     // Don't store original file into disk as it could be huge.
     const originalFileBuffer = await convertFileStreamIntoBuffer(fileStream)
+
     const {
       width,
       height,
@@ -189,9 +192,11 @@ const handleImageUpload = async (fileStream, hashedFilename, mimetype) => {
       path.basename(tempMediumFile),
       mime.lookup(tempMediumFile),
     )
+
     const mediumFileBuffer = await convertFileStreamIntoBuffer(
       mediumImageStream,
     )
+
     const {
       width: mWidth,
       height: mHeight,
@@ -219,6 +224,7 @@ const handleImageUpload = async (fileStream, hashedFilename, mimetype) => {
     )
 
     const smallFileBuffer = await convertFileStreamIntoBuffer(smallImageStream)
+
     const {
       width: sWidth,
       height: sHeight,
@@ -280,6 +286,7 @@ const uploadFile = async (
         hashedFilename,
         mimetype,
       )
+
       const { ContentLength } = await getFileInfo(storedObject.key)
       storedObject.type = 'original'
       storedObject.size = ContentLength
@@ -305,11 +312,13 @@ const getFileInfo = key => {
     Bucket: bucket,
     Key: key,
   }
+
   return new Promise((resolve, reject) => {
     s3.getObject(params, (err, data) => {
       if (err) {
         reject(err)
       }
+
       resolve(data)
     })
   })
@@ -319,11 +328,13 @@ const listFiles = () => {
   const params = {
     Bucket: bucket,
   }
+
   return new Promise((resolve, reject) => {
     s3.listObjects(params, (err, data) => {
       if (err) {
         reject(err)
       }
+
       resolve(data)
     })
   })
@@ -348,6 +359,7 @@ const deleteFiles = keys => {
       if (err) {
         reject(err)
       }
+
       resolve(data)
     })
   })
