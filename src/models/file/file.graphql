@@ -1,0 +1,46 @@
+type File {
+  id: ID!
+  name: String!
+  alt: String
+  storedObjects: [StoredObjects!]!
+  updated: Date
+  created: Date
+}
+
+type Metadata {
+  width: Int
+  height: Int
+  space: String
+  density: Int
+}
+
+input SortingParams {
+  key: String!
+  order: Order!
+}
+
+type StoredObjects {
+  type: ImageSize!
+  key: String!
+  size: Int
+  mimetype: String!
+  extension: String!
+  metadata: Metadata
+}
+
+enum ImageSize {
+  original
+  medium
+  small
+}
+
+input UpdateFileInput {
+  id: ID!
+  name: String
+  alt: String
+  description: String
+}
+
+type SignedURLPayload {
+  url: String!
+}

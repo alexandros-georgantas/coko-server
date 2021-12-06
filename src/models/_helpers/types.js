@@ -60,6 +60,15 @@ const integerPositive = {
   minimum: 1,
 }
 
+const mimetype = {
+  type: 'string',
+  pattern:
+    '^(application|audio|font|image|model|multipart|text|video)/[a-z0-9]+([-+.][a-z0-9]+)*$',
+  // if you want to know why this is default, look at
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Complete_list_of_MIME_types
+  default: 'application/octet-stream',
+}
+
 const object = {
   type: 'object',
 }
@@ -102,6 +111,29 @@ const arrayOfObjectsNullable = {
   items: object,
 }
 
+const arrayOfStoredObjects = {
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      type: { type: 'string', enum: ['original', 'small', 'medium'] },
+      key: stringNotEmpty,
+      mimetype,
+      extension: stringNotEmpty,
+      metadata: {
+        type: 'object',
+        properties: {
+          density: integerPositive,
+          height: integerPositive,
+          space: stringNotEmpty,
+          width: integerPositive,
+        },
+      },
+      size: integerPositive,
+    },
+  },
+}
+
 const arrayOfStrings = {
   type: 'array',
   items: stringNotEmpty,
@@ -123,6 +155,7 @@ module.exports = {
   arrayOfIds,
   arrayOfObjects,
   arrayOfObjectsNullable,
+  arrayOfStoredObjects,
   arrayOfStrings,
   boolean,
   booleanNullable,
@@ -134,6 +167,7 @@ module.exports = {
   id,
   idNullable,
   integerPositive,
+  mimetype,
   object,
   objectNullable,
   password,
