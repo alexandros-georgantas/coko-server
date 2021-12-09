@@ -1,4 +1,7 @@
+const { logger } = require('@pubsweet/logger')
+
 const BaseModel = require('../base.model')
+const useTransaction = require('../useTransaction')
 
 const {
   arrayOfStoredObjects,
@@ -32,6 +35,29 @@ class File extends BaseModel {
         referenceId: id,
         tags: arrayOfStringsNotEmpty,
       },
+    }
+  }
+
+  static async getEntityFiles(objectId, objectType, options = {}) {
+    try {
+      const { trx, ...rest } = options
+      return useTransaction(
+        async tr => {
+          return File.find(
+            { objectId, objectType },
+            {
+              trx: tr,
+              ...rest,
+            },
+          )
+        },
+        { trx, passedTrxOnly: true },
+      )
+    } catch (e) {
+      logger.error('File model: getEntityFiles failed', e)
+      throw new Error(
+        `File model: Cannot get files for entity with id ${objectId} and type ${objectType}`,
+      )
     }
   }
 }

@@ -2,6 +2,7 @@
  * Only used by jest, not part of the distributed package
  */
 const { deferConfig } = require('config/defer')
+const path = require('path')
 
 const components = require('./components')
 
@@ -27,6 +28,7 @@ module.exports = {
       amount: 24,
       unit: 'hours',
     },
+    tempFolderPath: path.join(process.cwd(), 'temp'),
   },
   pubsweet: {
     components,
@@ -52,5 +54,14 @@ module.exports = {
         role: 'author',
       },
     },
+  },
+  'file-server': {
+    rootUser: 'admin',
+    rootUserPassword: 'superSecretAdminPassword',
+    bucket: 'uploads',
+    protocol: 'http',
+    host: 'localhost',
+    port: '9000',
+    consolePort: '9001',
   },
 }

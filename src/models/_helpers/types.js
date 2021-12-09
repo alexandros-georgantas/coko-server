@@ -122,6 +122,7 @@ const arrayOfStoredObjects = {
       extension: stringNotEmpty,
       metadata: {
         type: 'object',
+        default: null,
         properties: {
           density: integerPositive,
           height: integerPositive,

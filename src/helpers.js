@@ -1,6 +1,7 @@
 const { rule } = require('graphql-shield')
 const path = require('path')
 const sharp = require('sharp')
+const fs = require('fs-extra')
 
 const isAuthenticated = rule()(async (parent, args, ctx, info) => {
   return !!ctx.user
@@ -23,12 +24,12 @@ const convertFileStreamIntoBuffer = async fileStream => {
     const chunks = []
 
     // Throw if error occurred
-    fileStream.once('error', err => {
+    fileStream.on('error', err => {
       reject(err)
     })
 
     // File is done being read
-    fileStream.once('end', () => {
+    fileStream.on('end', () => {
       // create the final data Buffer from data chunks;
       resolve(Buffer.concat(chunks))
     })
@@ -61,10 +62,30 @@ const getImageFileMetadata = async fileBuffer => {
   }
 }
 
+const writeFileFromStream = async (inputStream, filePath) => {
+  try {
+    return new Promise((resolve, reject) => {
+      const outputStream = fs.createWriteStream(filePath)
+
+      inputStream.pipe(outputStream)
+      outputStream.on('error', error => {
+        reject(error.message)
+      })
+
+      outputStream.on('finish', () => {
+        resolve()
+      })
+    })
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   isAuthenticated,
   isAdmin,
   convertFileStreamIntoBuffer,
   getFileExtension,
   getImageFileMetadata,
+  writeFileFromStream,
 }
