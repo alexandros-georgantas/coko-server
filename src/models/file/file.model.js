@@ -5,10 +5,10 @@ const useTransaction = require('../useTransaction')
 
 const {
   arrayOfStoredObjects,
-  arrayOfStringsNotEmpty,
-  id,
+  arrayOfStrings,
+  stringNullable,
   stringNotEmpty,
-  string,
+  idNullable,
 } = require('../_helpers/types')
 
 class File extends BaseModel {
@@ -24,16 +24,16 @@ class File extends BaseModel {
   static get schema() {
     return {
       type: 'object',
-      required: ['name', 'objectKey'],
+      required: ['name', 'storedObjects'],
       properties: {
-        alt: string,
-        description: string,
+        alt: stringNullable,
+        description: stringNullable,
         name: stringNotEmpty,
-        objectId: id,
+        objectId: idNullable,
         storedObjects: arrayOfStoredObjects,
-        objectType: string,
-        referenceId: id,
-        tags: arrayOfStringsNotEmpty,
+        objectType: stringNullable,
+        referenceId: idNullable,
+        tags: arrayOfStrings,
       },
     }
   }

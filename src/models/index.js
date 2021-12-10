@@ -5,6 +5,8 @@ const Team = require('./team/team.model')
 const TeamMember = require('./teamMember/teamMember.model')
 const Identity = require('./identity/identity.model')
 const User = require('./user/user.model')
+const File = require('./file/file.model')
+const ServiceCredential = require('./serviceCredential/serviceCredential.model')
 const Fake = require('./__tests__/helpers/fake/fake.model')
 const useTransaction = require('./useTransaction')
 
@@ -17,5 +19,7 @@ module.exports = {
   TeamMember,
   Identity,
   User,
+  File,
+  ServiceCredential,
   useTransaction,
 }

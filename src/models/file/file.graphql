@@ -39,6 +39,7 @@ input UpdateFileInput {
   name: String
   alt: String
   description: String
+  tags: [String!]!
 }
 
 type SignedURLPayload {

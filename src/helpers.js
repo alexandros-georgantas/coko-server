@@ -1,7 +1,14 @@
+const axios = require('axios')
 const { rule } = require('graphql-shield')
 const path = require('path')
 const sharp = require('sharp')
 const fs = require('fs-extra')
+const config = require('config')
+const get = require('lodash/get')
+
+const { ServiceCredential } = require('./models')
+
+const services = config.get('services')
 
 const isAuthenticated = rule()(async (parent, args, ctx, info) => {
   return !!ctx.user
@@ -81,6 +88,83 @@ const writeFileFromStream = async (inputStream, filePath) => {
   }
 }
 
+const serviceHandshake = async (which, renew = false) => {
+  if (!services) {
+    throw new Error('services are undefined')
+  }
+
+  const service = get(services, `${which}`)
+
+  if (!service) {
+    throw new Error(`service ${which} configuration is undefined `)
+  }
+
+  const foundServiceCredential = await ServiceCredential.findOne({
+    name: which,
+  })
+
+  const { clientId, clientSecret, port, protocol, host } = service
+  const buff = Buffer.from(`${clientId}:${clientSecret}`, 'utf8')
+  const base64data = buff.toString('base64')
+
+  const serviceURL = `${protocol}://${host}${port ? `:${port}` : ''}`
+
+  const serviceHealthCheck = await axios({
+    method: 'get',
+    url: `${serviceURL}/healthcheck`,
+  })
+
+  const { data: healthCheckData } = serviceHealthCheck
+  const { message } = healthCheckData
+
+  if (message !== 'Coolio') {
+    throw new Error(`service ${which} is down`)
+  }
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: 'post',
+      url: `${serviceURL}/api/auth`,
+      headers: { authorization: `Basic ${base64data}` },
+    })
+      .then(async ({ data }) => {
+        const { accessToken } = data
+
+        if (!renew && !foundServiceCredential) {
+          await ServiceCredential.insert({
+            name: which,
+            accessToken,
+          })
+          resolve()
+        }
+
+        await ServiceCredential.patchAndFetchById(foundServiceCredential.id, {
+          accessToken,
+        })
+        resolve()
+      })
+      .catch(async err => {
+        const { response } = err
+
+        if (foundServiceCredential) {
+          await ServiceCredential.patchAndFetchById(foundServiceCredential.id, {
+            accessToken: null,
+          })
+        }
+
+        if (!response) {
+          return reject(new Error(`Request failed with message: ${err.code}`))
+        }
+
+        const { status, data } = response
+        const { msg } = data
+        return reject(
+          new Error(`Request failed with status ${status} and message: ${msg}`),
+        )
+      })
+  })
+}
+
 module.exports = {
   isAuthenticated,
   isAdmin,
@@ -88,4 +172,5 @@ module.exports = {
   getFileExtension,
   getImageFileMetadata,
   writeFileFromStream,
+  serviceHandshake,
 }

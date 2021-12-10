@@ -31,6 +31,7 @@
     "@pubsweet/models": "^0.3.21",
     "apollo-server-express": "^2.11.0",
     "aws-sdk": "^2.1042.0",
+    "axios": "^0.24.0",
     "bcrypt": "3.0.6",
     "body-parser": "^1.19.0",
     "config": "^3.3.2",
