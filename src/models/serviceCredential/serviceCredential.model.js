@@ -9,7 +9,7 @@ class ServiceCredential extends BaseModel {
   }
 
   static get tableName() {
-    return 'serviceCredential'
+    return 'serviceCredentials'
   }
 
   static get schema() {

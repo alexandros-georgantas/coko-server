@@ -121,8 +121,7 @@ const arrayOfStoredObjects = {
       mimetype,
       extension: stringNotEmpty,
       metadata: {
-        type: 'object',
-        default: null,
+        type: ['object', 'null'],
         properties: {
           density: integerPositive,
           height: integerPositive,

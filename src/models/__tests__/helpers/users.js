@@ -2,7 +2,7 @@
 const { internet, name } = require('faker')
 const { User, Identity } = require('../../index')
 
-const createUser = async => {
+const createUser = async () => {
   try {
     return User.insert({
       givenNames: name.firstName(),

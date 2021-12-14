@@ -9,6 +9,22 @@ module.exports = {
     },
     tempFolderPath: 'TEMP_FOLDER_PATH',
   },
+  services: {
+    pagedjs: {
+      clientId: 'SERVICE_PAGEDJS_CLIENT_ID',
+      clientSecret: 'SERVICE_PAGEDJS_SECRET',
+      protocol: 'SERVICE_PAGEDJS_PROTOCOL',
+      host: 'SERVICE_PAGEDJS_HOST',
+      port: 'SERVICE_PAGEDJS_PORT',
+    },
+    xsweet: {
+      clientId: 'SERVICE_XSWEET_CLIENT_ID',
+      clientSecret: 'SERVICE_XSWEET_SECRET',
+      protocol: 'SERVICE_XSWEET_PROTOCOL',
+      host: 'SERVICE_XSWEET_HOST',
+      port: 'SERVICE_XSWEET_PORT',
+    },
+  },
   'file-server': {
     rootUser: 'FILE_SERVER_ROOT_USER',
     rootUserPassword: 'FILE_SERVER_ROOT_USER_PASSWORD',

@@ -64,4 +64,5 @@ module.exports = {
     port: '9000',
     consolePort: '9001',
   },
+  services: {},
 }

@@ -105,11 +105,11 @@ const healthCheck = () =>
   })
 
 // getObject, putObject
-const signURL = async (operation, key) => {
+const signURL = async (key, operation = 'getObject', expiresIn = 86400) => {
   const s3Params = {
     Bucket: bucket,
     Key: key,
-    Expires: 86400, // 1 day lease
+    Expires: parseInt(expiresIn, 10), // 1 day lease
   }
 
   return s3.getSignedUrl(operation, s3Params)
@@ -354,6 +354,10 @@ const listFiles = () => {
 
 // Accepts an array of file keys
 const deleteRemoteFiles = keys => {
+  if (keys.length === 0) {
+    throw new Error('the provided array of keys if empty')
+  }
+
   const params = {
     Bucket: bucket,
     Delete: {
@@ -406,7 +410,6 @@ module.exports = {
   signURL,
   uploadFile,
   deleteRemoteFiles,
-  getFileInfo,
   listFiles,
   locallyDownloadFile,
 }

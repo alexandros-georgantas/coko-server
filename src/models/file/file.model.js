@@ -18,7 +18,7 @@ class File extends BaseModel {
   }
 
   static get tableName() {
-    return 'File'
+    return 'files'
   }
 
   static get schema() {
