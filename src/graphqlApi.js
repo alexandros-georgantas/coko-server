@@ -8,6 +8,7 @@ const {
 
 const isEmpty = require('lodash/isEmpty')
 const config = require('config')
+const { graphqlUploadExpress } = require('graphql-upload')
 
 const logger = require('@pubsweet/logger')
 const errors = require('@pubsweet/errors')
@@ -25,6 +26,7 @@ const extraApolloConfig = config.has('pubsweet-server.apollo')
   : {}
 
 const apolloServerConfig = {
+  uploads: false,
   schema,
   context: ({ req, res }) => ({
     helpers,
@@ -95,6 +97,8 @@ const api = app => {
       session: false,
     }),
   )
+
+  app.use(graphqlUploadExpress())
 
   const server = new ApolloServer(apolloServerConfig)
   server.applyMiddleware({ app })
