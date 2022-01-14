@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.4...v2.0.0-beta.0) (2022-01-14)
+
+
+### Features
+
+* **server:** use graphql-upload to allow node > 12 ([01d6df9](https://gitlab.coko.foundation/cokoapps/server/commit/01d6df93868fc93a7adead379e561f33378c0a4a))
+
 ### [1.15.4](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.3...v1.15.4) (2021-09-20)
 
 ### [1.15.3](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.2...v1.15.3) (2021-08-09)
