@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.16.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.4...v1.16.0) (2022-01-24)
+
+
+### Features
+
+* object storage and service handshake ([e2485ac](https://gitlab.coko.foundation/cokoapps/server/commit/e2485acc622d47fd795bc5efbc02557df279640c))
+
 ### [1.15.4](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.3...v1.15.4) (2021-09-20)
 
 ### [1.15.3](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.2...v1.15.3) (2021-08-09)
