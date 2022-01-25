@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta.1](https://gitlab.coko.foundation/cokoapps/server/compare/v2.0.0-beta.0...v2.0.0-beta.1) (2022-01-25)
+
+
+### Bug Fixes
+
+* **server:** fix Upload scalar resolver ([622a64c](https://gitlab.coko.foundation/cokoapps/server/commit/622a64cbac8646e98c058f251ee801ca74930d36))
+
 ## [2.0.0-beta.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.4...v2.0.0-beta.0) (2022-01-14)
 
 
