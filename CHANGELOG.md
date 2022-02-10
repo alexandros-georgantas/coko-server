@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.16.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.16.0...v1.16.1) (2022-02-10)
+
+
+### Bug Fixes
+
+* **server:** fix file controller circular dependencies ([bd54f9d](https://gitlab.coko.foundation/cokoapps/server/commit/bd54f9d3f257286b3c92860c7a60bdcd272be7d9))
+
 ## [1.16.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.15.4...v1.16.0) (2022-01-24)
 
 
