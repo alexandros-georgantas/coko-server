@@ -9,6 +9,24 @@ const mime = require('mime-types')
 const logger = require('@pubsweet/logger')
 
 const {
+  convertFileStreamIntoBuffer,
+  getFileExtension,
+  getImageFileMetadata,
+  writeFileFromStream,
+} = require('../helpers')
+
+if (
+  config.has('pubsweet-server.useFileStorage') &&
+  config.get('pubsweet-server.useFileStorage')
+) {
+  if (!config.has('fileStorage')) {
+    throw new Error(
+      'you have declared that you will use file storage but fileStorage configuration is missing',
+    )
+  }
+}
+
+const {
   accessKeyId,
   secretAccessKey,
   bucket,
@@ -18,13 +36,6 @@ const {
   maximumWidthForSmallImages,
   maximumWidthForMediumImages,
 } = config.get('fileStorage')
-
-const {
-  convertFileStreamIntoBuffer,
-  getFileExtension,
-  getImageFileMetadata,
-  writeFileFromStream,
-} = require('../helpers')
 
 const { tempFolderPath } = config.get('pubsweet-server')
 

@@ -7,6 +7,7 @@ module.exports = {
       user: 'POSTGRES_USER',
       password: 'POSTGRES_PASSWORD',
     },
+    useFileStorage: 'USE_FILE_STORAGE',
     tempFolderPath: 'TEMP_FOLDER_PATH',
   },
   fileStorage: {
