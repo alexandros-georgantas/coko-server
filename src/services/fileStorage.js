@@ -15,28 +15,6 @@ const {
   writeFileFromStream,
 } = require('../helpers')
 
-if (
-  config.has('pubsweet-server.useFileStorage') &&
-  config.get('pubsweet-server.useFileStorage')
-) {
-  if (!config.has('fileStorage')) {
-    throw new Error(
-      'you have declared that you will use file storage but fileStorage configuration is missing',
-    )
-  }
-}
-
-const {
-  accessKeyId,
-  secretAccessKey,
-  bucket,
-  protocol,
-  host,
-  port,
-  maximumWidthForSmallImages,
-  maximumWidthForMediumImages,
-} = config.get('fileStorage')
-
 const { tempFolderPath } = config.get('pubsweet-server')
 
 // Initializing Storage Interface
@@ -44,6 +22,14 @@ let s3
 
 const healthCheck = () => {
   try {
+    if (!s3) {
+      throw new Error(
+        's3 does not exist! Probably configuration is missing/invalid',
+      )
+    }
+
+    const { bucket } = config.get('fileStorage')
+
     return new Promise((resolve, reject) => {
       s3.getBucketLogging({ Bucket: bucket }, (err, data) => {
         if (err) {
@@ -65,6 +51,21 @@ if (
   config.has('pubsweet-server.useFileStorage') &&
   config.get('pubsweet-server.useFileStorage')
 ) {
+  if (!config.has('fileStorage')) {
+    throw new Error(
+      'you have declared that you will use file storage but fileStorage configuration is missing',
+    )
+  }
+
+  const {
+    accessKeyId,
+    secretAccessKey,
+    bucket,
+    protocol,
+    host,
+    port,
+  } = config.get('fileStorage')
+
   if (!protocol) {
     throw new Error(
       'missing required protocol param for initializing file storage',
@@ -111,6 +112,11 @@ const createImageVersions = async (
   isSVG,
 ) => {
   try {
+    const {
+      maximumWidthForSmallImages,
+      maximumWidthForMediumImages,
+    } = config.get('fileStorage')
+
     const mediumWidth = maximumWidthForMediumImages
       ? parseInt(maximumWidthForMediumImages, 10)
       : 640
@@ -162,6 +168,13 @@ const createImageVersions = async (
 }
 
 const getURL = async (objectKey, options = {}) => {
+  if (!s3) {
+    throw new Error(
+      's3 does not exist! Probably configuration is missing/invalid',
+    )
+  }
+
+  const { bucket } = config.get('fileStorage')
   const { expiresIn } = options
 
   const s3Params = {
@@ -174,6 +187,13 @@ const getURL = async (objectKey, options = {}) => {
 }
 
 const uploadFileHandler = (fileStream, filename, mimetype) => {
+  if (!s3) {
+    throw new Error(
+      's3 does not exist! Probably configuration is missing/invalid',
+    )
+  }
+
+  const { bucket } = config.get('fileStorage')
   const params = {
     Bucket: bucket,
     Key: filename, // file name you want to save as
@@ -376,6 +396,13 @@ const upload = async (fileStream, filename, options = {}) => {
 }
 
 const getFileInfo = key => {
+  if (!s3) {
+    throw new Error(
+      's3 does not exist! Probably configuration is missing/invalid',
+    )
+  }
+
+  const { bucket } = config.get('fileStorage')
   const params = {
     Bucket: bucket,
     Key: key,
@@ -393,6 +420,13 @@ const getFileInfo = key => {
 }
 
 const list = () => {
+  if (!s3) {
+    throw new Error(
+      's3 does not exist! Probably configuration is missing/invalid',
+    )
+  }
+
+  const { bucket } = config.get('fileStorage')
   const params = {
     Bucket: bucket,
   }
@@ -410,6 +444,14 @@ const list = () => {
 
 // Accepts an array of object keys
 const deleteFiles = objectKeys => {
+  if (!s3) {
+    throw new Error(
+      's3 does not exist! Probably configuration is missing/invalid',
+    )
+  }
+
+  const { bucket } = config.get('fileStorage')
+
   if (objectKeys.length === 0) {
     throw new Error('the provided array of keys if empty')
   }
@@ -438,6 +480,13 @@ const deleteFiles = objectKeys => {
 }
 
 const download = (key, localPath) => {
+  if (!s3) {
+    throw new Error(
+      's3 does not exist! Probably configuration is missing/invalid',
+    )
+  }
+
+  const { bucket } = config.get('fileStorage')
   const fileStream = fs.createWriteStream(localPath)
   const s3Stream = s3.getObject({ Bucket: bucket, Key: key }).createReadStream()
 
