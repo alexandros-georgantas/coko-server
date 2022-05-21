@@ -238,13 +238,13 @@ const login = async (password, email = undefined, username = undefined) => {
       )
       const identity = await Identity.findOne({ email })
 
-      user = await User.findById(identity.userId).throwIfNotFound()
+      user = await User.findById(identity.userId)
     } else {
       logger.info(
         `${USER_CONTROLLER} login: searching for user with username ${username}`,
       )
 
-      user = await User.findOne({ username }).throwIfNotFound()
+      user = await User.findOne({ username })
     }
 
     logger.info(
