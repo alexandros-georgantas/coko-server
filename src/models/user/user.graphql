@@ -23,6 +23,11 @@ type User {
   titlePost: String
 }
 
+type Users {
+  result: [User!]!
+  totalCount: Int!
+}
+
 type LoginResult {
   user: User!
   token: String!
@@ -64,7 +69,7 @@ input UpdatePasswordInput {
 
 extend type Query {
   user(id: ID): User
-  users: [User]!
+  users: Users!
   currentUser: User!
 }
 
