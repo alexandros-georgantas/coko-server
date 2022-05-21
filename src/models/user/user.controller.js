@@ -227,10 +227,12 @@ const updateUser = async (id, data, options = {}) => {
   }
 }
 
-const login = async (password, email = undefined, username = undefined) => {
+const login = async input => {
   try {
     let isValid = false
     let user
+
+    const { username, email, password } = input
 
     if (!username) {
       logger.info(

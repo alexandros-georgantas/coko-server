@@ -44,11 +44,11 @@ input SignUpInput {
   titlePost: String
 }
 
-# input LoginInput {
-#   email: String
-#   username: String
-#   password: String!
-# }
+input LoginInput {
+  email: String
+  username: String
+  password: String!
+}
 
 input UpdateInput {
   email: String
@@ -81,7 +81,7 @@ extend type Mutation {
   deactivateUser(id: ID!): User!
   deactivateUsers(ids: [ID!]!): [User!]!
   updateUser(id: ID, input: UpdateInput!): User!
-  login(email: String, username: String, password: String!): LoginResult!
+  login(input: LoginInput!): LoginResult!
   signUp(input: SignUpInput!): ID!
   setDefaultIdentity(userId: ID!, identityId: ID!): User!
   verifyEmail(token: String!): Boolean!

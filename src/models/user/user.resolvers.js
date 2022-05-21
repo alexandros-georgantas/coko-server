@@ -128,10 +128,10 @@ const updateUserResolver = async (_, { id, input }, ctx) => {
   }
 }
 
-const loginResolver = async (_, { email, username, password }, ctx) => {
+const loginResolver = async (_, { input }, ctx) => {
   try {
     logger.error(`${USER_RESOLVER} login`)
-    return login(email, username, password)
+    return login(input)
   } catch (e) {
     logger.error(`${USER_RESOLVER} login: ${e.message}`)
     throw new Error(e)
