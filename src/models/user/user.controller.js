@@ -508,6 +508,7 @@ const resendVerificationEmailFromLogin = async (
             `${USER_CONTROLLER} resendVerificationEmailFromLogin: wrong credentials`,
           )
         }
+
         const identity = await Identity.findOne(
           {
             isDefault: true,
