@@ -34,7 +34,7 @@ type LoginResult {
 }
 
 input SignUpInput {
-  username: String!
+  username: String
   email: String!
   password: String!
   givenNames: String!
