@@ -274,16 +274,19 @@ const signUp = async (data, options = {}) => {
   try {
     const { email, ...restData } = data
     const { trx } = options
+
     return useTransaction(
       async tr => {
-        const usernameExists = await User.findOne(
-          { username: restData.username },
-          { trx: tr },
-        )
+        if (restData.username) {
+          const usernameExists = await User.findOne(
+            { username: restData.username },
+            { trx: tr },
+          )
 
-        if (usernameExists) {
-          logger.error(`${USER_CONTROLLER} signUp: username already exists`)
-          throw new ConflictError('Username already exists')
+          if (usernameExists) {
+            logger.error(`${USER_CONTROLLER} signUp: username already exists`)
+            throw new ConflictError('Username already exists')
+          }
         }
 
         const existingIdentity = await Identity.findOne({ email }, { trx: tr })
