@@ -497,11 +497,17 @@ const resendVerificationEmailAfterLogin = async (userId, options = {}) => {
   try {
     const { trx } = options
     logger.info(
-      `${USER_CONTROLLER} resendVerificationEmail: resending verification email to user`,
+      `${USER_CONTROLLER} resendVerificationEmailAfterLogin: resending verification email to user`,
     )
     return useTransaction(
       async tr => {
-        const identity = await Identity.findById(userId, { trx: tr })
+        const identity = await Identity.findOne(
+          {
+            userId,
+            isDefault: true,
+          },
+          { trx: tr },
+        )
 
         const verificationToken = crypto.randomBytes(64).toString('hex')
         const verificationTokenTimestamp = new Date()
