@@ -490,6 +490,46 @@ const resendVerificationEmail = async (token, options = {}) => {
   }
 }
 
+// TO DO - refactor resend controllers
+const resendVerificationEmailAfterLogin = async (userId, options = {}) => {
+  try {
+    const { trx } = options
+    logger.info(
+      `${USER_CONTROLLER} resendVerificationEmail: resending verification email to user`,
+    )
+    return useTransaction(
+      async tr => {
+        const identity = await Identity.findById(userId, { trx: tr })
+
+        const verificationToken = crypto.randomBytes(64).toString('hex')
+        const verificationTokenTimestamp = new Date()
+
+        await identity.patch(
+          {
+            verificationToken,
+            verificationTokenTimestamp,
+          },
+          { trx: tr },
+        )
+
+        const emailData = identityVerification({
+          verificationToken,
+          email: identity.email,
+        })
+
+        notify(EMAIL, emailData)
+
+        return true
+      },
+      { trx, passedTrxOnly: true },
+    )
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} resendVerificationEmail: ${e.message}`)
+    throw new Error(e)
+  }
+}
+
+// TO DO -- needed?
 const resendVerificationEmailFromLogin = async (
   username,
   password,
@@ -765,6 +805,7 @@ module.exports = {
   resetPassword,
   resendVerificationEmail,
   resendVerificationEmailFromLogin,
+  resendVerificationEmailAfterLogin,
   setDefaultIdentity,
   sendPasswordResetEmail,
   signUp,

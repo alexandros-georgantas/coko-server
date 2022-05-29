@@ -20,6 +20,7 @@ const {
   verifyEmail,
   resendVerificationEmail,
   resendVerificationEmailFromLogin,
+  resendVerificationEmailAfterLogin,
   updatePassword,
   sendPasswordResetEmail,
   resetPassword,
@@ -194,6 +195,18 @@ const resendVerificationEmailFromLoginResolver = async (
   }
 }
 
+const resendVerificationEmailAfterLoginResolver = async (_, __, ctx) => {
+  try {
+    logger.error(`${USER_RESOLVER} resendVerificationEmailAfterLogin`)
+    return resendVerificationEmailAfterLogin(ctx.user)
+  } catch (e) {
+    logger.error(
+      `${USER_RESOLVER} resendVerificationEmailAfterLogin: ${e.message}`,
+    )
+    throw new Error(e)
+  }
+}
+
 const updatePasswordResolver = async (_, { input }, ctx) => {
   try {
     logger.error(`${USER_RESOLVER} updatePassword`)
@@ -244,6 +257,7 @@ module.exports = {
     verifyEmail: verifyEmailResolver,
     resendVerificationEmail: resendVerificationEmailResolver,
     resendVerificationEmailFromLogin: resendVerificationEmailFromLoginResolver,
+    resendVerificationEmailAfterLogin: resendVerificationEmailAfterLoginResolver,
     updatePassword: updatePasswordResolver,
     sendPasswordResetEmail: sendPasswordResetEmailResolver,
     resetPassword: resetPasswordResolver,
