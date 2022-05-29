@@ -239,6 +239,7 @@ const login = async input => {
         `${USER_CONTROLLER} login: searching for user with email ${email}`,
       )
       const identity = await Identity.findOne({ email })
+      if (!identity) throw new AuthorizationError('Wrong username or password.')
 
       user = await User.findById(identity.userId)
     } else {
@@ -247,6 +248,7 @@ const login = async input => {
       )
 
       user = await User.findOne({ username })
+      if (!user) throw new AuthorizationError('Wrong username or password.')
     }
 
     logger.info(
