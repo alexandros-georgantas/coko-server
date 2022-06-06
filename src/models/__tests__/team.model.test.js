@@ -324,4 +324,56 @@ describe('Team Model', () => {
 
     expect(foundUser.teams).toHaveLength(0)
   })
+
+  it('adds member to global team by role', async () => {
+    const editorTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    const user = await User.insert({})
+
+    let members = await TeamMember.find({
+      teamId: editorTeam.id,
+    })
+
+    expect(members.result).toEqual([])
+
+    await Team.addMemberToGlobalTeam(user.id, 'editor')
+
+    members = await TeamMember.find({
+      teamId: editorTeam.id,
+    })
+
+    expect(members.result.length).toEqual(1)
+    expect(members.result[0].userId).toEqual(user.id)
+  })
+
+  it('removes member from global team by role', async () => {
+    const editorTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    const user = await User.insert({})
+
+    await Team.addMemberToGlobalTeam(user.id, 'editor')
+
+    let members = await TeamMember.find({
+      teamId: editorTeam.id,
+    })
+
+    expect(members.result.length).toEqual(1)
+    expect(members.result[0].userId).toEqual(user.id)
+
+    await Team.removeMemberFromGlobalTeam(user.id, 'editor')
+
+    members = await TeamMember.find({
+      teamId: editorTeam.id,
+    })
+
+    expect(members.result).toEqual([])
+  })
 })

@@ -249,6 +249,44 @@ class Team extends BaseModel {
       throw new Error(e)
     }
   }
+
+  static async addMemberToGlobalTeam(userId, role, options = {}) {
+    try {
+      const { trx } = options
+
+      const team = await Team.findOne(
+        {
+          role,
+          global: true,
+        },
+        { trx },
+      )
+
+      return Team.addMember(team.id, userId, options)
+    } catch (e) {
+      logger.error(`Team model: Add member to global team: ${e.message}`)
+      throw new Error(e)
+    }
+  }
+
+  static async removeMemberFromGlobalTeam(userId, role, options = {}) {
+    try {
+      const { trx } = options
+
+      const team = await Team.findOne(
+        {
+          role,
+          global: true,
+        },
+        { trx },
+      )
+
+      return Team.removeMember(team.id, userId, options)
+    } catch (e) {
+      logger.error(`Team model: Remove member from global team: ${e.message}`)
+      throw new Error(e)
+    }
+  }
 }
 
 module.exports = Team

@@ -119,14 +119,22 @@ describe('User Controller', () => {
   it('can allow user to login with email and password', async () => {
     const { id } = await createUserWithPasswordAndIdentities('password1')
 
-    const res = await login('password1', id.email)
+    const res = await login({
+      email: id.email,
+      password: 'password1',
+    })
+
     expect(res.token).toBeDefined()
   })
 
   it('can allow user to login with username and password', async () => {
     const { user } = await createUserWithPasswordAndIdentities('password1')
 
-    const res = await login('password1', undefined, user.username)
+    const res = await login({
+      username: user.username,
+      password: 'password1',
+    })
+
     expect(res.token).toBeDefined()
   })
 
