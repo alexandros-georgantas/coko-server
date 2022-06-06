@@ -21,6 +21,7 @@ type User {
   defaultIdentity: Identity!
   titlePre: String
   titlePost: String
+  teams: [Team!]!
 }
 
 type Users {

@@ -204,6 +204,26 @@ class User extends BaseModel {
     return User.hasRoleOnObject(this.id, role, objectId, options)
   }
 
+  static async getTeams(userId, options = {}) {
+    try {
+      const { trx } = options
+
+      const userWithTeams = await User.query(trx)
+        .findById(userId)
+        .withGraphFetched('teams')
+        .throwIfNotFound()
+
+      return userWithTeams.teams
+    } catch (e) {
+      logger.error(`User model: getTeams: ${e.message}`)
+      throw new Error(e)
+    }
+  }
+
+  async getTeams() {
+    return User.getTeams(this.id)
+  }
+
   async getDisplayName() {
     const { givenNames, surname, username } = this
     if (givenNames && surname) return `${givenNames} ${surname}`

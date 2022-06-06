@@ -22,6 +22,7 @@ const {
 } = require('./fixtures/users')
 
 const { User } = require('../index')
+const Team = require('../team/team.model')
 
 describe('User model', () => {
   beforeEach(() => clearDb())
@@ -303,5 +304,26 @@ describe('User model', () => {
     await expect(
       User.hasRoleOnObject(undefined, team.role, team.objectId),
     ).rejects.toThrow()
+  })
+
+  it("gets user's teams", async () => {
+    const myUser = await User.insert({})
+
+    const team = await Team.insert({
+      global: true,
+      role: 'editor',
+      displayName: 'Editor',
+    })
+
+    await Team.addMember(team.id, myUser.id)
+
+    const userTeams = await User.getTeams(myUser.id)
+
+    expect(userTeams.length).toBe(1)
+    expect(userTeams[0].id).toEqual(team.id)
+
+    const instanceTeams = await myUser.getTeams()
+    expect(instanceTeams.length).toBe(1)
+    expect(instanceTeams[0].id).toEqual(team.id)
   })
 })

@@ -797,6 +797,8 @@ const setDefaultIdentity = async (userId, identityId, options = {}) => {
   }
 }
 
+const getUserTeams = user => user.getTeams()
+
 module.exports = {
   activateUser,
   activateUsers,
@@ -807,6 +809,7 @@ module.exports = {
   getDisplayName,
   getUser,
   getUsers,
+  getUserTeams,
   login,
   updateUser,
   updatePassword,

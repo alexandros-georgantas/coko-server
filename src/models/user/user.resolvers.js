@@ -25,6 +25,7 @@ const {
   sendPasswordResetEmail,
   resetPassword,
   getDisplayName,
+  getUserTeams,
 } = require('./user.controller')
 
 const userResolver = async (_, { id }, ctx) => {
@@ -274,8 +275,11 @@ module.exports = {
     // async teams(user, _, ctx) {
     //   // TODO loader
     // },
-    displayName(user, _, ctx) {
+    async displayName(user) {
       return getDisplayName(user)
+    },
+    async teams(user) {
+      return getUserTeams(user)
     },
   },
 }
