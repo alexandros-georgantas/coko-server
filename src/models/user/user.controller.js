@@ -109,6 +109,12 @@ const deleteUser = async (id, options = {}) => {
         logger.info(
           `${USER_CONTROLLER} deleteUser: removing user with id ${id}`,
         )
+        // find all identities for user
+        const identities = await Identity.find({ userId: id }, { trx: tr })
+        const ids = identities.result.map(identity => identity.id)
+        // delete identities by the ids we found above
+        await Identity.deleteByIds(ids, { trx: tr })
+        // then delete user
         return User.deleteById(id, { trx: tr })
       },
       { trx, passedTrxOnly: true },
@@ -127,6 +133,18 @@ const deleteUsers = async (ids, options = {}) => {
         logger.info(
           `${USER_CONTROLLER} deleteUser: removing users with ids ${ids}`,
         )
+        // for each user id in ids, find related identities and delete them
+        await Promise.all(
+          ids.map(async userId => {
+            const identities = await Identity.find(
+              { userId: userId },
+              { trx: tr },
+            )
+            const identityIds = identities.result.map(({ id }) => id)
+            await Identity.deleteByIds(identityIds, { trx: tr })
+          }),
+        )
+        // then delete the users
         return User.deleteByIds(ids, { trx: tr })
       },
       { trx, passedTrxOnly: true },
