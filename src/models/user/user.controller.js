@@ -136,10 +136,8 @@ const deleteUsers = async (ids, options = {}) => {
         // for each user id in ids, find related identities and delete them
         await Promise.all(
           ids.map(async userId => {
-            const identities = await Identity.find(
-              { userId: userId },
-              { trx: tr },
-            )
+            const identities = await Identity.find({ userId }, { trx: tr })
+
             const identityIds = identities.result.map(({ id }) => id)
             await Identity.deleteByIds(identityIds, { trx: tr })
           }),
