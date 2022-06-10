@@ -3,7 +3,7 @@ scalar DateTime
 # find a better place to inject that
 input PageInput {
   pageSize: Int!
-  pageNumber: Int!
+  page: Int!
 }
 #
 type User {
@@ -70,7 +70,7 @@ input UpdatePasswordInput {
 
 extend type Query {
   user(id: ID): User
-  users: Users!
+  users(options: PageInput): Users!
   currentUser: User!
 }
 
