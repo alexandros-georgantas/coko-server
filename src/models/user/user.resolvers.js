@@ -38,10 +38,10 @@ const userResolver = async (_, { id }, ctx) => {
   }
 }
 
-const usersResolver = async (_, { options }, ctx) => {
+const usersResolver = async (_, { data, options }, ctx) => {
   try {
     logger.error(`${USER_RESOLVER} users`)
-    return getUsers(options)
+    return getUsers(data, options)
   } catch (e) {
     logger.error(`${USER_RESOLVER} users: ${e.message}`)
     throw new Error(e)
