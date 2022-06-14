@@ -83,7 +83,7 @@ const getUser = async (id, options = {}) => {
 
 const getDisplayName = async user => user.getDisplayName()
 
-const getUsers = async (data = {}, options = {}) => {
+const getUsers = async (queryParams = {}, options = {}) => {
   try {
     const { trx, ...restOptions } = options
     return useTransaction(
@@ -91,7 +91,7 @@ const getUsers = async (data = {}, options = {}) => {
         logger.info(
           `${USER_CONTROLLER} getUsers: fetching all users based on provided options ${restOptions}`,
         )
-        return User.find(data, { trx: tr, ...restOptions })
+        return User.find(queryParams, { trx: tr, ...restOptions })
       },
       { trx, passedTrxOnly: true },
     )

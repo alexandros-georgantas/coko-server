@@ -68,13 +68,13 @@ input UpdatePasswordInput {
   newPassword: String!
 }
 
-input UsersQueryOptions {
+input UsersQueryParams {
   isActive: Boolean
 }
 
 extend type Query {
   user(id: ID): User
-  users(data: UsersQueryOptions, options: PageInput): Users!
+  users(queryParams: UsersQueryParams, options: PageInput): Users!
   currentUser: User!
 }
 
