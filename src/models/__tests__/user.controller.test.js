@@ -95,16 +95,16 @@ describe('User Controller', () => {
   })
 
   it('can delete an existing user', async () => {
-    const user = await createUserAndDefaultIdentity()
-    await deleteUser(user.user.id)
+    const { user } = await createUserAndDefaultIdentity()
+    await deleteUser(user.id)
     const { result: fetchedUsers } = await getUsers()
     expect(fetchedUsers).toHaveLength(0)
   })
 
   it('can delete  multiple users', async () => {
-    const user1 = await createUserAndDefaultIdentity()
-    const user2 = await createUserAndDefaultIdentity()
-    await deleteUsers([user1.user.id, user2.user.id])
+    const { user: user1 } = await createUserAndDefaultIdentity()
+    const { user: user2 } = await createUserAndDefaultIdentity()
+    await deleteUsers([user1.id, user2.id])
     const { result: fetchedUsers } = await getUsers()
     expect(fetchedUsers).toHaveLength(0)
   })
