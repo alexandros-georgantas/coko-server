@@ -298,7 +298,7 @@ class BaseModel extends PubsweetBaseModel {
             throw new Error(`id ${delta} not found`)
           }
 
-          return result.length
+          return result.map(u => u.id)
         },
         {
           trx,
