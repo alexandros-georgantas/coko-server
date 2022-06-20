@@ -1,4 +1,4 @@
-const { User } = require('../index')
+const { User, Identity } = require('../index')
 
 const {
   createUser,
@@ -25,10 +25,6 @@ const {
   updateUser,
   updatePassword,
 } = require('../user/user.controller')
-
-const {
-  identitiesBasedOnUserIdsLoader,
-} = require('../identity/identity.loaders')
 
 const clearDb = require('./_clearDb')
 
@@ -116,8 +112,8 @@ describe('User Controller', () => {
   it('can delete user identities when deleting a user', async () => {
     const { user } = await createUserAndDefaultIdentity()
     await deleteUser(user.id)
-    const [userIdentity] = await identitiesBasedOnUserIdsLoader([user.id])
-    expect(userIdentity).toEqual(undefined)
+    const { result: userIdentities } = await Identity.find({ userId: user.id })
+    expect(userIdentities).toHaveLength(0)
   })
 
   it("can delete users' identities when deleting multiple users", async () => {
@@ -125,13 +121,16 @@ describe('User Controller', () => {
     const { user: user2 } = await createUserAndDefaultIdentity()
     await deleteUsers([user1.id, user2.id])
 
-    const [
-      user1Identity,
-      user2Identity,
-    ] = await identitiesBasedOnUserIdsLoader([user1.id, user2.id])
+    const { result: identitiesUser1 } = await Identity.find({
+      userId: user1.id,
+    })
 
-    expect(user1Identity).toEqual(undefined)
-    expect(user2Identity).toEqual(undefined)
+    const { result: identitiesUser2 } = await Identity.find({
+      userId: user2.id,
+    })
+
+    expect(identitiesUser1).toHaveLength(0)
+    expect(identitiesUser2).toHaveLength(0)
   })
 
   it('can update user current password', async () => {
