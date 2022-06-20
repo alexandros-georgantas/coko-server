@@ -26,6 +26,10 @@ const {
   updatePassword,
 } = require('../user/user.controller')
 
+const {
+  identitiesBasedOnUserIdsLoader,
+} = require('../identity/identity.loaders')
+
 const clearDb = require('./_clearDb')
 
 jest.mock('../../services/notify.js')
@@ -107,6 +111,27 @@ describe('User Controller', () => {
     await deleteUsers([user1.id, user2.id])
     const { result: fetchedUsers } = await getUsers()
     expect(fetchedUsers).toHaveLength(0)
+  })
+
+  it('can delete user identities when deleting a user', async () => {
+    const { user } = await createUserAndDefaultIdentity()
+    await deleteUser(user.id)
+    const [userIdentity] = await identitiesBasedOnUserIdsLoader([user.id])
+    expect(userIdentity).toEqual(undefined)
+  })
+
+  it("can delete users' identities when deleting multiple users", async () => {
+    const { user: user1 } = await createUserAndDefaultIdentity()
+    const { user: user2 } = await createUserAndDefaultIdentity()
+    await deleteUsers([user1.id, user2.id])
+
+    const [
+      user1Identity,
+      user2Identity,
+    ] = await identitiesBasedOnUserIdsLoader([user1.id, user2.id])
+
+    expect(user1Identity).toEqual(undefined)
+    expect(user2Identity).toEqual(undefined)
   })
 
   it('can update user current password', async () => {
