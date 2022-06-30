@@ -9,9 +9,13 @@ const {
 const teamMembersBasedOnTeamIdsLoader = async teamIds => {
   try {
     const teamTeamMembers = await TeamMember.query().whereIn('teamId', teamIds)
-    return teamIds.map(teamId =>
-      teamTeamMembers.find(teamMember => teamMember.teamId === teamId),
-    )
+    return teamIds.map(async teamId => {
+      const queryResult = await teamTeamMembers.find(
+        teamMember => teamMember.teamId === teamId,
+      )
+
+      return queryResult.result
+    })
   } catch (e) {
     logger.error(
       `${TEAM_MEMBER_LOADER} teamMembersBasedOnTeamIdsLoader: ${e.message}`,
