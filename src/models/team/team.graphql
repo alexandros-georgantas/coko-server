@@ -40,8 +40,8 @@ input TeamWhereInput {
 extend type Query {
   team(id: ID!): Team!
   teams(where: TeamWhereInput): TeamsResponse!
-  getGlobalTeams: [Team!]!
-  getObjectTeams(objectId: ID!, objectType: String!): [Team!]!
+  getGlobalTeams: TeamsResponse!
+  getObjectTeams(objectId: ID!, objectType: String!): TeamsResponse!
 }
 
 extend type Mutation {
