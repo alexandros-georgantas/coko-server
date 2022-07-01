@@ -17,7 +17,7 @@ const {
 
 const teamResolver = async (_, { id }, ctx) => {
   try {
-    logger.error(`${TEAM_RESOLVER} team`)
+    logger.info(`${TEAM_RESOLVER} team`)
     return getTeam(id)
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} team: ${e.message}`)
@@ -27,7 +27,7 @@ const teamResolver = async (_, { id }, ctx) => {
 
 const teamsResolver = async (_, { where }, ctx) => {
   try {
-    logger.error(`${TEAM_RESOLVER} teams`)
+    logger.info(`${TEAM_RESOLVER} teams`)
     return getTeams(where)
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} teams: ${e.message}`)
@@ -37,7 +37,7 @@ const teamsResolver = async (_, { where }, ctx) => {
 
 const getGlobalTeamsResolver = async (_, { where }, ctx) => {
   try {
-    logger.error(`${TEAM_RESOLVER} getGlobalTeams`)
+    logger.info(`${TEAM_RESOLVER} getGlobalTeams`)
     return getGlobalTeams()
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} getGlobalTeams: ${e.message}`)
@@ -47,7 +47,7 @@ const getGlobalTeamsResolver = async (_, { where }, ctx) => {
 
 const getObjectTeamsResolver = async (_, { objectId, objectType }, ctx) => {
   try {
-    logger.error(`${TEAM_RESOLVER} getObjectTeams`)
+    logger.info(`${TEAM_RESOLVER} getObjectTeams`)
     return getObjectTeams(objectId, objectType)
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} getObjectTeams: ${e.message}`)
@@ -57,7 +57,7 @@ const getObjectTeamsResolver = async (_, { objectId, objectType }, ctx) => {
 
 const updateTeamMembershipResolver = async (_, { teamId, members }, ctx) => {
   try {
-    logger.error(`${TEAM_RESOLVER} updateTeamMembership`)
+    logger.info(`${TEAM_RESOLVER} updateTeamMembership`)
     return updateTeamMembership(teamId, members)
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} updateTeamMembership: ${e.message}`)
@@ -67,7 +67,7 @@ const updateTeamMembershipResolver = async (_, { teamId, members }, ctx) => {
 
 const addTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
   try {
-    logger.error(`${TEAM_RESOLVER} addTeamMember`)
+    logger.info(`${TEAM_RESOLVER} addTeamMember`)
     return addTeamMember(teamId, userId)
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} addTeamMember: ${e.message}`)
@@ -77,7 +77,7 @@ const addTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
 
 const removeTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
   try {
-    logger.error(`${TEAM_RESOLVER} removeTeamMember`)
+    logger.info(`${TEAM_RESOLVER} removeTeamMember`)
     return removeTeamMember(teamId, userId)
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} removeTeamMember: ${e.message}`)
@@ -87,13 +87,18 @@ const removeTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
 
 // const deleteTeamResolver = async (_, { id }, ctx) => {
 //   try {
-//     logger.error(`${TEAM_RESOLVER} deleteTeam`)
+//     logger.info(`${TEAM_RESOLVER} deleteTeam`)
 //     return deleteTeam(id)
 //   } catch (e) {
 //     logger.error(`${TEAM_RESOLVER} deleteTeam: ${e.message}`)
 //     throw new Error(e)
 //   }
 // }
+
+const teamMemberResolver = async (team, _, ctx) => {
+  const { id } = team
+  return ctx.loaders.TeamMember.teamMembersBasedOnTeamIdsLoader.load(id)
+}
 
 module.exports = {
   Query: {
@@ -109,9 +114,6 @@ module.exports = {
     // deleteTeam:deleteTeamResolver,
   },
   Team: {
-    async members(team, _, ctx) {
-      const { id } = team
-      return ctx.loaders.TeamMember.teamMembersBasedOnTeamIdsLoader.load(id)
-    },
+    members: teamMemberResolver,
   },
 }

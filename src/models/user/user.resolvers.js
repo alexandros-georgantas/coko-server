@@ -30,7 +30,7 @@ const {
 
 const userResolver = async (_, { id }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} user`)
+    logger.info(`${USER_RESOLVER} user`)
     return getUser(id)
   } catch (e) {
     logger.error(`${USER_RESOLVER} user: ${e.message}`)
@@ -40,7 +40,7 @@ const userResolver = async (_, { id }, ctx) => {
 
 const usersResolver = async (_, { queryParams, options }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} users`)
+    logger.info(`${USER_RESOLVER} users`)
     return getUsers(queryParams, options)
   } catch (e) {
     logger.error(`${USER_RESOLVER} users: ${e.message}`)
@@ -51,7 +51,7 @@ const usersResolver = async (_, { queryParams, options }, ctx) => {
 const currentUserResolver = async (_, __, ctx) => {
   try {
     const { user: userId } = ctx
-    logger.error(`${USER_RESOLVER} currentUser`)
+    logger.info(`${USER_RESOLVER} currentUser`)
     if (!userId) return null
     return getUser(userId)
   } catch (e) {
@@ -62,7 +62,7 @@ const currentUserResolver = async (_, __, ctx) => {
 
 const activateUserResolver = async (_, { id }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} activateUser`)
+    logger.info(`${USER_RESOLVER} activateUser`)
     return activateUser(id)
   } catch (e) {
     logger.error(`${USER_RESOLVER} activateUser: ${e.message}`)
@@ -72,7 +72,7 @@ const activateUserResolver = async (_, { id }, ctx) => {
 
 const activateUsersResolver = async (_, { ids }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} activateUsers`)
+    logger.info(`${USER_RESOLVER} activateUsers`)
     return activateUsers(ids)
   } catch (e) {
     logger.error(`${USER_RESOLVER} activateUsers: ${e.message}`)
@@ -82,7 +82,7 @@ const activateUsersResolver = async (_, { ids }, ctx) => {
 
 const deleteUserResolver = async (_, { id }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} deleteUser`)
+    logger.info(`${USER_RESOLVER} deleteUser`)
     return deleteUser(id)
   } catch (e) {
     logger.error(`${USER_RESOLVER} deleteUser: ${e.message}`)
@@ -92,7 +92,7 @@ const deleteUserResolver = async (_, { id }, ctx) => {
 
 const deleteUsersResolver = async (_, { ids }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} deleteUsers`)
+    logger.info(`${USER_RESOLVER} deleteUsers`)
     return deleteUsers(ids)
   } catch (e) {
     logger.error(`${USER_RESOLVER} deleteUsers: ${e.message}`)
@@ -102,7 +102,7 @@ const deleteUsersResolver = async (_, { ids }, ctx) => {
 
 const deactivateUserResolver = async (_, { id }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} deactivateUser`)
+    logger.info(`${USER_RESOLVER} deactivateUser`)
     return deactivateUser(id)
   } catch (e) {
     logger.error(`${USER_RESOLVER} deactivateUser: ${e.message}`)
@@ -112,7 +112,7 @@ const deactivateUserResolver = async (_, { id }, ctx) => {
 
 const deactivateUsersResolver = async (_, { ids }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} deactivateUsers`)
+    logger.info(`${USER_RESOLVER} deactivateUsers`)
     return deactivateUsers(ids)
   } catch (e) {
     logger.error(`${USER_RESOLVER} deactivateUsers: ${e.message}`)
@@ -122,7 +122,7 @@ const deactivateUsersResolver = async (_, { ids }, ctx) => {
 
 const updateUserResolver = async (_, { id, input }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} updateUser`)
+    logger.info(`${USER_RESOLVER} updateUser`)
     return updateUser(id, input)
   } catch (e) {
     logger.error(`${USER_RESOLVER} updateUser: ${e.message}`)
@@ -132,7 +132,7 @@ const updateUserResolver = async (_, { id, input }, ctx) => {
 
 const loginResolver = async (_, { input }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} login`)
+    logger.info(`${USER_RESOLVER} login`)
     return login(input)
   } catch (e) {
     logger.error(`${USER_RESOLVER} login: ${e.message}`)
@@ -142,7 +142,7 @@ const loginResolver = async (_, { input }, ctx) => {
 
 const signUpResolver = async (_, { input }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} signUp`)
+    logger.info(`${USER_RESOLVER} signUp`)
     return signUp(input)
   } catch (e) {
     logger.error(`${USER_RESOLVER} signUp: ${e.message}`)
@@ -152,7 +152,7 @@ const signUpResolver = async (_, { input }, ctx) => {
 
 const setDefaultIdentityResolver = async (_, { userId, identityId }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} setDefaultIdentity`)
+    logger.info(`${USER_RESOLVER} setDefaultIdentity`)
     return setDefaultIdentity(userId, identityId)
   } catch (e) {
     logger.error(`${USER_RESOLVER} setDefaultIdentity: ${e.message}`)
@@ -162,7 +162,7 @@ const setDefaultIdentityResolver = async (_, { userId, identityId }, ctx) => {
 
 const verifyEmailResolver = async (_, { token }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} verifyEmail`)
+    logger.info(`${USER_RESOLVER} verifyEmail`)
     return verifyEmail(token)
   } catch (e) {
     logger.error(`${USER_RESOLVER} verifyEmail: ${e.message}`)
@@ -172,7 +172,7 @@ const verifyEmailResolver = async (_, { token }, ctx) => {
 
 const resendVerificationEmailResolver = async (_, { token }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} resendVerificationEmail`)
+    logger.info(`${USER_RESOLVER} resendVerificationEmail`)
     return resendVerificationEmail(token)
   } catch (e) {
     logger.error(`${USER_RESOLVER} resendVerificationEmail: ${e.message}`)
@@ -186,7 +186,7 @@ const resendVerificationEmailFromLoginResolver = async (
   ctx,
 ) => {
   try {
-    logger.error(`${USER_RESOLVER} resendVerificationEmailFromLogin`)
+    logger.info(`${USER_RESOLVER} resendVerificationEmailFromLogin`)
     return resendVerificationEmailFromLogin(username, password)
   } catch (e) {
     logger.error(
@@ -198,7 +198,7 @@ const resendVerificationEmailFromLoginResolver = async (
 
 const resendVerificationEmailAfterLoginResolver = async (_, __, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} resendVerificationEmailAfterLogin`)
+    logger.info(`${USER_RESOLVER} resendVerificationEmailAfterLogin`)
     return resendVerificationEmailAfterLogin(ctx.user)
   } catch (e) {
     logger.error(
@@ -210,7 +210,7 @@ const resendVerificationEmailAfterLoginResolver = async (_, __, ctx) => {
 
 const updatePasswordResolver = async (_, { input }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} updatePassword`)
+    logger.info(`${USER_RESOLVER} updatePassword`)
     return updatePassword(input)
   } catch (e) {
     logger.error(`${USER_RESOLVER} updatePassword: ${e.message}`)
@@ -220,7 +220,7 @@ const updatePasswordResolver = async (_, { input }, ctx) => {
 
 const sendPasswordResetEmailResolver = async (_, { email }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} sendPasswordResetEmail`)
+    logger.info(`${USER_RESOLVER} sendPasswordResetEmail`)
     return sendPasswordResetEmail(email)
   } catch (e) {
     logger.error(`${USER_RESOLVER} sendPasswordResetEmail: ${e.message}`)
@@ -230,12 +230,31 @@ const sendPasswordResetEmailResolver = async (_, { email }, ctx) => {
 
 const resetPasswordResolver = async (_, { token, password }, ctx) => {
   try {
-    logger.error(`${USER_RESOLVER} resetPassword`)
+    logger.info(`${USER_RESOLVER} resetPassword`)
     return resetPassword(token, password)
   } catch (e) {
     logger.error(`${USER_RESOLVER} resetPassword: ${e.message}`)
     throw new Error(e)
   }
+}
+
+const identitiesResolver = async (user, _, ctx) => {
+  const { id } = user
+  return ctx.loaders.Identity.identitiesBasedOnUserIdsLoader.load(id)
+}
+
+const defaultIdentityResolver = async (user, _, ctx) => {
+  const { id } = user
+  return ctx.loaders.Identity.defaultIdentityBasedOnUserIdsLoader.load(id)
+}
+
+const displayNameResolver = async user => {
+  return getDisplayName(user)
+}
+
+//   // TODO loader
+const teamsResolver = async user => {
+  return getUserTeams(user)
 }
 
 module.exports = {
@@ -264,22 +283,9 @@ module.exports = {
     resetPassword: resetPasswordResolver,
   },
   User: {
-    async identities(user, _, ctx) {
-      const { id } = user
-      return ctx.loaders.Identity.identitiesBasedOnUserIdsLoader.load(id)
-    },
-    async defaultIdentity(user, _, ctx) {
-      const { id } = user
-      return ctx.loaders.Identity.defaultIdentityBasedOnUserIdsLoader.load(id)
-    },
-    // async teams(user, _, ctx) {
-    //   // TODO loader
-    // },
-    async displayName(user) {
-      return getDisplayName(user)
-    },
-    async teams(user) {
-      return getUserTeams(user)
-    },
+    identities: identitiesResolver,
+    defaultIdentity: defaultIdentityResolver,
+    displayName: displayNameResolver,
+    teams: teamsResolver,
   },
 }

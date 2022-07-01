@@ -9,6 +9,7 @@ const {
 const usersBasedOnTeamMemberIdsLoader = async userIds => {
   try {
     const teamMemberUsers = await User.query().whereIn('id', userIds)
+
     return userIds.map(userId =>
       teamMemberUsers.find(user => user.id === userId),
     )

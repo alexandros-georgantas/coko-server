@@ -14,7 +14,7 @@ const messagesBasedOnChatThreadIdsLoader = async chatThreadIds => {
     )
 
     return chatThreadIds.map(chatThreadId =>
-      chatThreadMessages.find(
+      chatThreadMessages.filter(
         chatMessage => chatMessage.chatThreadId === chatThreadId,
       ),
     )

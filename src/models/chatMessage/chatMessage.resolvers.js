@@ -3,6 +3,7 @@ const { logger } = require('../../index')
 const {
   labels: { CHAT_MESSAGE_RESOLVER },
 } = require('./constants')
+
 const {
   sendMessage,
   deleteMessage,
@@ -12,7 +13,7 @@ const {
 const sendMessageResolver = async (_, { input }, ctx) => {
   try {
     const { chatThreadId, content, userId, mentions } = input
-    logger.error(`${CHAT_MESSAGE_RESOLVER} sendMessage`)
+    logger.info(`${CHAT_MESSAGE_RESOLVER} sendMessage`)
     return sendMessage(chatThreadId, content, userId, mentions)
   } catch (e) {
     logger.error(`${CHAT_MESSAGE_RESOLVER} sendMessage: ${e.message}`)
@@ -23,7 +24,7 @@ const sendMessageResolver = async (_, { input }, ctx) => {
 const editMessageResolver = async (_, { input }, ctx) => {
   try {
     const { id, content, mentions } = input
-    logger.error(`${CHAT_MESSAGE_RESOLVER} editMessage`)
+    logger.info(`${CHAT_MESSAGE_RESOLVER} editMessage`)
     return editMessage(id, content, mentions)
   } catch (e) {
     logger.error(`${CHAT_MESSAGE_RESOLVER} editMessage: ${e.message}`)
@@ -33,7 +34,7 @@ const editMessageResolver = async (_, { input }, ctx) => {
 
 const deleteMessageResolver = async (_, { id }, ctx) => {
   try {
-    logger.error(`${CHAT_MESSAGE_RESOLVER} deleteMessage`)
+    logger.info(`${CHAT_MESSAGE_RESOLVER} deleteMessage`)
     return deleteMessage(id)
   } catch (e) {
     logger.error(`${CHAT_MESSAGE_RESOLVER} deleteMessage: ${e.message}`)

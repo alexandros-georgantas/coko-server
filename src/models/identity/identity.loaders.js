@@ -10,7 +10,7 @@ const identitiesBasedOnUserIdsLoader = async userIds => {
   try {
     const userIdentities = await Identity.query().whereIn('userId', userIds)
     return userIds.map(userId =>
-      userIdentities.find(identity => identity.userId === userId),
+      userIdentities.filter(identity => identity.userId === userId),
     )
   } catch (e) {
     logger.error(

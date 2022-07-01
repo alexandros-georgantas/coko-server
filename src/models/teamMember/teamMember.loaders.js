@@ -8,13 +8,17 @@ const {
 
 const teamMembersBasedOnTeamIdsLoader = async teamIds => {
   try {
-    const teamTeamMembers = await TeamMember.query().whereIn('teamId', teamIds)
-    return teamIds.map(async teamId => {
-      const queryResult = await teamTeamMembers.find(
-        teamMember => teamMember.teamId === teamId,
+    const membersOfAllTeams = await TeamMember.query().whereIn(
+      'teamId',
+      teamIds,
+    )
+
+    return teamIds.map(teamId => {
+      const membersOfThisTeam = membersOfAllTeams.filter(
+        member => member.teamId === teamId,
       )
 
-      return queryResult.result
+      return membersOfThisTeam
     })
   } catch (e) {
     logger.error(

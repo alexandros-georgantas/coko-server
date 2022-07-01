@@ -3,11 +3,12 @@ const { logger } = require('../../index')
 const {
   labels: { CHAT_THREAD_RESOLVER },
 } = require('./constants')
+
 const { getChatThread, getChatThreads } = require('./chatThread.controller')
 
 const chatThreadResolver = async (_, { id }, ctx) => {
   try {
-    logger.error(`${CHAT_THREAD_RESOLVER} getChatThread`)
+    logger.info(`${CHAT_THREAD_RESOLVER} getChatThread`)
     return getChatThread(id)
   } catch (e) {
     logger.error(`${CHAT_THREAD_RESOLVER} getChatThread: ${e.message}`)
@@ -17,7 +18,7 @@ const chatThreadResolver = async (_, { id }, ctx) => {
 
 const chatThreadsResolver = async (_, { where }, ctx) => {
   try {
-    logger.error(`${CHAT_THREAD_RESOLVER} getChatThreads`)
+    logger.info(`${CHAT_THREAD_RESOLVER} getChatThreads`)
     return getChatThreads(where)
   } catch (e) {
     logger.error(`${CHAT_THREAD_RESOLVER} getChatThreads: ${e.message}`)
