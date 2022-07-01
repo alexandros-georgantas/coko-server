@@ -32,13 +32,15 @@ const createGraphQLServer = testUserContext => {
     )
   }
 
+  const createdLoaders = loaders()
+
   return new ApolloServer({
     schema,
     context: ({ req, res }) => ({
       helpers,
       connectors,
       user: testUserContext || req.user,
-      loaders: loaders(),
+      loaders: createdLoaders,
     }),
     formatError: err => {
       const error = isEmpty(err.originalError) ? err : err.originalError
