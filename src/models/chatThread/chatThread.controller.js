@@ -1,5 +1,7 @@
-const { ChatThread } = require('../index')
-const { logger, useTransaction } = require('../../index')
+const logger = require('@pubsweet/logger')
+
+const ChatThread = require('./chatThread.model')
+const useTransaction = require('../useTransaction')
 
 const {
   labels: { CHAT_THREAD_CONTROLLER },

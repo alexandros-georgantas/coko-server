@@ -33,7 +33,7 @@ class ChatMessage extends BaseModel {
 
   static get relationMappings() {
     /* eslint-disable-next-line global-require */
-    const { User } = require('../index')
+    const User = require('../user/user.model')
 
     return {
       user: {

@@ -1,6 +1,6 @@
 const { logger } = require('@pubsweet/logger')
 
-const { ChatMessage } = require('../index')
+const ChatMessage = require('./chatMessage.model')
 
 const {
   labels: { CHAT_MESSAGE_LOADER },

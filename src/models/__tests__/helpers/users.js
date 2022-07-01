@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { internet, name } = require('faker')
+
 const { User, Identity } = require('../../index')
 
 const createUser = async => {

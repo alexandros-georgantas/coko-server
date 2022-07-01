@@ -1,5 +1,7 @@
-const { Team } = require('../index')
-const { logger, useTransaction } = require('../../index')
+const logger = require('@pubsweet/logger')
+
+const Team = require('./team.model')
+const useTransaction = require('../useTransaction')
 
 const {
   labels: { TEAM_CONTROLLER },

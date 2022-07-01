@@ -1,6 +1,6 @@
 const { logger } = require('@pubsweet/logger')
 
-const { User } = require('../index')
+const User = require('./user.model')
 
 const {
   labels: { USER_LOADER },

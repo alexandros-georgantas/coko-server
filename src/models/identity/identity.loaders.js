@@ -1,6 +1,6 @@
 const { logger } = require('@pubsweet/logger')
 
-const { Identity } = require('../index')
+const { Identity } = require('./identity.model')
 
 const {
   labels: { IDENTITY_LOADER },

@@ -1,5 +1,7 @@
-const { ChatMessage } = require('../index')
-const { logger, useTransaction } = require('../../index')
+const logger = require('@pubsweet/logger')
+
+const ChatMessage = require('./chatMessage.model')
+const useTransaction = require('../useTransaction')
 
 const {
   labels: { CHAT_MESSAGE_CONTROLLER },

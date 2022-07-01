@@ -3,14 +3,20 @@ const crypto = require('crypto')
 const moment = require('moment')
 const find = require('lodash/find')
 
+const logger = require('@pubsweet/logger')
+const authentication = require('pubsweet-server/src/authentication')
+
 const {
   AuthorizationError,
   ValidationError,
   ConflictError,
 } = require('@pubsweet/errors')
 
-const { User, Identity } = require('../index')
-const { logger, createJWT, useTransaction } = require('../../index')
+const User = require('./user.model')
+const Identity = require('../identity/identity.model')
+const useTransaction = require('../useTransaction')
+
+const createJWT = authentication.token.create
 
 const {
   identityVerification,

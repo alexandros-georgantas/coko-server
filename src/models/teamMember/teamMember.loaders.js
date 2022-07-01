@@ -1,6 +1,6 @@
-const { logger } = require('@pubsweet/logger')
+const logger = require('@pubsweet/logger')
 
-const { TeamMember } = require('../index')
+const TeamMember = require('./teamMember.model')
 
 const {
   labels: { TEAM_MEMBER_LOADER },

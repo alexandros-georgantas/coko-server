@@ -1,4 +1,4 @@
-const { logger } = require('../../index')
+const logger = require('@pubsweet/logger')
 
 const {
   labels: { TEAM_RESOLVER },

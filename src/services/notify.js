@@ -1,6 +1,7 @@
+const logger = require('@pubsweet/logger')
+
 const config = require('config')
 const mailer = require('@pubsweet/component-send-email')
-const { logger } = require('../index')
 
 const {
   labels: { NOTIFY_SERVICE },
