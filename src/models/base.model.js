@@ -1,5 +1,5 @@
 const PubsweetBaseModel = require('@pubsweet/base-model')
-const { logger } = require('@pubsweet/logger')
+const logger = require('@pubsweet/logger')
 const useTransaction = require('./useTransaction')
 
 class BaseModel extends PubsweetBaseModel {

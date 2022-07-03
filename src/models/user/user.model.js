@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const config = require('config')
 const { ValidationError } = require('@pubsweet/errors')
-const { logger } = require('@pubsweet/logger')
+const logger = require('@pubsweet/logger')
 
 const BCRYPT_COST = config.util.getEnv('NODE_ENV') === 'test' ? 1 : 12
 
@@ -54,8 +54,11 @@ class User extends BaseModel {
   }
 
   static get relationMappings() {
-    // eslint-disable-next-line global-require
-    const { Identity, Team, TeamMember } = require('@pubsweet/models')
+    /* eslint-disable global-require */
+    const Identity = require('../identity/identity.model')
+    const Team = require('../team/team.model')
+    const TeamMember = require('../teamMember/teamMember.model')
+    /* eslint-enable global-require */
 
     return {
       identities: {
@@ -146,7 +149,7 @@ class User extends BaseModel {
 
   static async hasGlobalRole(userId, role, options = {}) {
     /* eslint-disable-next-line global-require */
-    const { TeamMember } = require('@pubsweet/models')
+    const TeamMember = require('../teamMember/teamMember.model')
 
     try {
       const { trx } = options
@@ -176,7 +179,7 @@ class User extends BaseModel {
 
   static async hasRoleOnObject(userId, role, objectId, options = {}) {
     /* eslint-disable-next-line global-require */
-    const { TeamMember } = require('@pubsweet/models')
+    const TeamMember = require('../teamMember/teamMember.model')
 
     try {
       const { trx } = options

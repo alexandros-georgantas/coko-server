@@ -27,7 +27,7 @@ class ChatThread extends BaseModel {
 
   static get relationMappings() {
     /* eslint-disable-next-line global-require */
-    const { ChatMessage } = require('@pubsweet/models')
+    const ChatMessage = require('../chatMessage/chatMessage.model')
 
     return {
       messages: {

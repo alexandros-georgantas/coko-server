@@ -1,6 +1,6 @@
 const find = require('lodash/find')
 const { ValidationError } = require('objection')
-const { logger } = require('@pubsweet/logger')
+const logger = require('@pubsweet/logger')
 
 const config = require('config')
 
@@ -31,8 +31,10 @@ class Team extends BaseModel {
   }
 
   static get relationMappings() {
-    // eslint-disable-next-line global-require
-    const { TeamMember, User } = require('@pubsweet/models')
+    /* eslint-disable global-require */
+    const TeamMember = require('../teamMember/teamMember.model')
+    const User = require('../user/user.model')
+    /* eslint-enable global-require */
 
     return {
       members: {
@@ -173,7 +175,7 @@ class Team extends BaseModel {
    */
   static async updateMembershipByTeamId(teamId, members, options = {}) {
     // eslint-disable-next-line global-require
-    const { TeamMember } = require('@pubsweet/models')
+    const TeamMember = require('../teamMember/teamMember.model')
 
     const queries = async trx => {
       const existingMembers = await TeamMember.query(trx).where({ teamId })
@@ -198,7 +200,7 @@ class Team extends BaseModel {
 
   static async addMember(teamId, userId, options = {}) {
     // eslint-disable-next-line global-require
-    const { TeamMember } = require('@pubsweet/models')
+    const TeamMember = require('../teamMember/teamMember.model')
 
     const data = {
       teamId,
@@ -227,7 +229,7 @@ class Team extends BaseModel {
 
   static async removeMember(teamId, userId, options = {}) {
     // eslint-disable-next-line global-require
-    const { TeamMember } = require('@pubsweet/models')
+    const TeamMember = require('../teamMember/teamMember.model')
 
     const remove = async trx => {
       await TeamMember.query(trx)

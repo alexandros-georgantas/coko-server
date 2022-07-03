@@ -1,4 +1,4 @@
-const { logger } = require('@pubsweet/logger')
+const logger = require('@pubsweet/logger')
 
 const User = require('./user.model')
 
