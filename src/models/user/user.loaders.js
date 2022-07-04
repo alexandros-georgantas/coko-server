@@ -14,7 +14,7 @@ const usersBasedOnTeamMemberIdsLoader = async userIds => {
       teamMemberUsers.find(user => user.id === userId),
     )
   } catch (e) {
-    logger.error(`${USER_LOADER} teamMembersBasedOnTeamIdsLoader: ${e.message}`)
+    logger.error(`${USER_LOADER} usersBasedOnTeamMemberIdsLoader: ${e.message}`)
     throw new Error(e)
   }
 }
