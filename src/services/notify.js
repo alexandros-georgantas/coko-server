@@ -9,13 +9,13 @@ const {
 } = require('./constants')
 
 const sendEmail = async data => {
-  const { content, subject, to } = data
+  const { subject, to, content, text } = data
 
   const emailData = {
     from: config.get('mailer.from'),
     html: `<div>${content}</div>`,
     subject: `${subject}`,
-    text: content,
+    text: text || content,
     to,
   }
 

@@ -15,10 +15,23 @@ const identityVerification = context => {
     const content = `
         <p>Thank you for signing up!</p>
         <p>Click on <a href="${link}">this link</a> to verify your account.</p>
+        <p></p>
+        <p>
+          If you cannot see the link, copy and paste the following link into your browser to verify your account.
+          <br/>
+          ${link}
+        </p>
       `
+
+    const text = `
+      Thank you for signing up! \n
+      Copy and paste the following link into your browser to verify your account. \n
+      ${link}
+    `
 
     const data = {
       content,
+      text,
       subject: 'Account Verification',
       to: email,
     }
