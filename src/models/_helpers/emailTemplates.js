@@ -24,10 +24,7 @@ const identityVerification = context => {
       `
 
     const text = `
-      Thank you for signing up! \n
-      Copy and paste the following link into your browser to verify your account. \n
-      ${link}
-    `
+      Thank you for signing up!\nCopy and paste the following link into your browser to verify your account.\n\n${link}`
 
     const data = {
       content,
