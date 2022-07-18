@@ -101,8 +101,7 @@ const requestResetPassword = context => {
 
   const content = `
       <p>
-        Follow the link below to reset your password in the microPublication
-        platform.
+        Follow the link below to reset your password.
   
         <br/>
   
@@ -112,11 +111,19 @@ const requestResetPassword = context => {
       <p>
         <a href="${link}">Reset your password</a>
       </p>
+
+      <p>
+        If you cannot click the link above, paste the following into your
+        browser to continue: ${link}  
+      </p>
     `
+
+  const text = `Paste the following link into your browser to reset your password.\n${link}\nThe link will be valid for 24 hours.`
 
   const data = {
     subject: 'Password reset',
     content,
+    text,
     to: email,
   }
 
