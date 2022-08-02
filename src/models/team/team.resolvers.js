@@ -15,6 +15,8 @@ const {
   // deleteTeam,
 } = require('./team.controller')
 
+const TeamMember = require('../teamMember/teamMember.model')
+
 const teamResolver = async (_, { id }, ctx) => {
   try {
     logger.info(`${TEAM_RESOLVER} team`)
@@ -96,8 +98,11 @@ const removeTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
 // }
 
 const teamMemberResolver = async (team, _, ctx) => {
-  const { id } = team
-  return ctx.loaders.TeamMember.teamMembersBasedOnTeamIdsLoader.load(id)
+  // const { id } = team
+  // return ctx.loaders.TeamMember.teamMembersBasedOnTeamIdsLoader.load(id)
+
+  const members = await TeamMember.find({ teamId: team.id })
+  return members.result
 }
 
 module.exports = {
