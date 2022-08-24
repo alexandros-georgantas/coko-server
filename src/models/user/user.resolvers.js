@@ -211,7 +211,8 @@ const resendVerificationEmailAfterLoginResolver = async (_, __, ctx) => {
 const updatePasswordResolver = async (_, { input }, ctx) => {
   try {
     logger.info(`${USER_RESOLVER} updatePassword`)
-    return updatePassword(input)
+    const { id, currentPassword, newPassword } = input
+    return updatePassword(id, currentPassword, newPassword)
   } catch (e) {
     logger.error(`${USER_RESOLVER} updatePassword: ${e.message}`)
     throw new Error(e)
