@@ -1,12 +1,12 @@
-const axios = require('axios')
+// const axios = require('axios')
 const { rule } = require('graphql-shield')
 const path = require('path')
 const sharp = require('sharp')
 const fs = require('fs-extra')
-const config = require('config')
-const get = require('lodash/get')
+// const config = require('config')
+// const get = require('lodash/get')
 
-const { ServiceCredential } = require('./models')
+// const { ServiceCredential } = require('./models')
 
 // const services = config.get('services')
 

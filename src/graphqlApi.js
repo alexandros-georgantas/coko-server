@@ -1,92 +1,4 @@
-const {
-  ApolloServer,
-  ForbiddenError,
-  UserInputError,
-  AuthenticationError,
-  ApolloError,
-} = require('apollo-server-express')
-
-const isEmpty = require('lodash/isEmpty')
-const config = require('config')
-
-const logger = require('@pubsweet/logger')
-const errors = require('@pubsweet/errors')
-
-const connectors = require('pubsweet-server/src/connectors')
-const loaders = require('pubsweet-server/src/graphql/loaders')
-const helpers = require('pubsweet-server/src/helpers/authorization')
-
-const schema = require('./graphqlSchema')
-
-const isDevelopment = process.env.NODE_ENV === 'development'
-
-const extraApolloConfig = config.has('pubsweet-server.apollo')
-  ? config.get('pubsweet-server.apollo')
-  : {}
-
-const apolloServerConfig = {
-  schema,
-  context: ({ req, res }) => ({
-    helpers,
-    connectors,
-    user: req.user,
-    loaders: loaders(),
-
-    req,
-    res,
-  }),
-  formatError: err => {
-    const error = isEmpty(err.originalError) ? err : err.originalError
-
-    logger.error(error.message, { error })
-
-    const isPubsweetDefinedError = Object.values(errors).some(
-      pubsweetError => error instanceof pubsweetError,
-    )
-
-    const isGraphqlDefinedError = [
-      ForbiddenError,
-      UserInputError,
-      AuthenticationError,
-      ApolloError,
-    ].some(graphqlError => error instanceof graphqlError)
-
-    // err is always a GraphQLError which should be passed to the client
-    if (
-      !isEmpty(err.originalError) &&
-      !isPubsweetDefinedError &&
-      !isGraphqlDefinedError
-    )
-      return {
-        name: 'Server Error',
-        message: 'Something went wrong! Please contact your administrator',
-      }
-
-    if (isGraphqlDefinedError) return error
-
-    return {
-      name: error.name || 'GraphQLError',
-      message: error.message,
-      extensions: {
-        code: err.extensions.code,
-      },
-    }
-  },
-  introspection: process.env.NODE_ENV === 'development',
-  ...extraApolloConfig,
-}
-
-if (isDevelopment) {
-  const host = `${config.get('pubsweet-server.host')}${
-    config.get('pubsweet-server.port')
-      ? `:${config.get('pubsweet-server.port')}`
-      : ''
-  }`
-
-  apolloServerConfig.playground = {
-    subscriptionEndpoint: `ws://${host}/subscriptions`,
-  }
-}
+const createGraphQLServer = require('./graphqlServer')
 
 const api = app => {
   app.use(
@@ -96,7 +8,7 @@ const api = app => {
     }),
   )
 
-  const server = new ApolloServer(apolloServerConfig)
+  const server = createGraphQLServer()
   server.applyMiddleware({ app })
 }
 
