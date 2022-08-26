@@ -54,8 +54,10 @@ const configureApp = app => {
 
   if (config.has('pubsweet-server.uploads')) {
     app.use(
+      cors({
+        origin: '*',
+      }),
       '/uploads',
-      cors(),
       express.static(path.resolve(config.get('pubsweet-server.uploads'))),
     )
   }
