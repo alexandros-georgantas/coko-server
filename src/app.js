@@ -49,9 +49,19 @@ const configureApp = app => {
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(cookieParser())
   app.use(helmet())
+  app.use(express.static(path.resolve('.', '_build')))
+  app.use(express.static(path.resolve('.', 'static')))
+
+  if (config.has('pubsweet-server.uploads')) {
+    app.use(
+      '/uploads',
+      cors(),
+      express.static(path.resolve(config.get('pubsweet-server.uploads'))),
+    )
+  }
+
   // Allow CORS from client if host / port is different
   if (config.has('pubsweet-client.host')) {
-    console.log('in here')
     const clientProtocol =
       (config.has('pubsweet-client.protocol') &&
         config.get('pubsweet-client.protocol')) ||
@@ -73,7 +83,7 @@ const configureApp = app => {
     const clientUrl = `${clientProtocol}://${clientHost}${
       clientPort ? `:${clientPort}` : ''
     }`
-    console.log('in here2', clientUrl)
+
     app.use(
       cors({
         origin: clientUrl,
@@ -81,16 +91,6 @@ const configureApp = app => {
       }),
     )
   }
-  app.use(express.static(path.resolve('.', '_build')))
-  app.use(express.static(path.resolve('.', 'static')))
-
-  if (config.has('pubsweet-server.uploads')) {
-    app.use(
-      '/uploads',
-      express.static(path.resolve(config.get('pubsweet-server.uploads'))),
-    )
-  }
-
 
   // Register passport authentication strategies
   app.use(passport.initialize())
