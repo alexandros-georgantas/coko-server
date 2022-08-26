@@ -1,4 +1,7 @@
-const BaseModel = require('@pubsweet/base-model')
+const { Model } = require('objection')
+const { db } = require('@pubsweet/db-manager')
+
+Model.knex(db)
 
 const useTransaction = async (callback, options = {}) => {
   const { passedTrxOnly = false, trx } = options
@@ -10,7 +13,7 @@ const useTransaction = async (callback, options = {}) => {
    */
 
   if (!trx && !passedTrxOnly) {
-    return BaseModel.transaction(async newtrx => callback(newtrx))
+    return Model.transaction(async newtrx => callback(newtrx))
   }
 
   /**
