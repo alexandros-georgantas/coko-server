@@ -1,6 +1,8 @@
-const usersResolver = async (teamMember, _, ctx) => {
+const User = require('../user/user.model')
+
+const usersResolver = async teamMember => {
   const { userId } = teamMember
-  return ctx.loaders.User.usersBasedOnTeamMemberIdsLoader.load(userId)
+  return User.findById(userId)
 }
 
 module.exports = {
