@@ -18,7 +18,6 @@ const fileStorage = require('./services/fileStorage')
 // const { serviceHandshake } = require('./helpers')
 
 const createJWT = authentication.token.create
-
 module.exports = {
   app,
   createJWT,
