@@ -3,8 +3,8 @@ type File {
   name: String!
   alt: String
   caption: String
-  url(size: small): String!
-  # storedObjects: [StoredObjects!]!
+  url(size: ImageSize!): String!
+  storedObjects: [StoredObjects!]!
   uploadStatus: String
   updated: DateTime!
   created: DateTime!
