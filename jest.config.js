@@ -1,11 +1,11 @@
 module.exports = {
   collectCoverage: false,
-  collectCoverageFrom: [
-    '<rootDir>/src/models/**/*.model.js',
-    '<rootDir>/src/models/**/*.controller.js',
-    '<rootDir>/src/models/useTransaction.js',
-    '!<rootDir>/src/models/__tests__/helpers/**',
-  ],
+  // collectCoverageFrom: [
+  //   '<rootDir>/src/models/**/*.model.js',
+  //   '<rootDir>/src/models/**/*.controller.js',
+  //   '<rootDir>/src/models/useTransaction.js',
+  //   '!<rootDir>/src/models/__tests__/helpers/**',
+  // ],
   coverageDirectory: '<rootDir>/coverage',
   projects: [
     {

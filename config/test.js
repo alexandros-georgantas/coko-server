@@ -1,6 +1,7 @@
 /**
  * Only used by jest, not part of the distributed package
  */
+
 const { deferConfig } = require('config/defer')
 const path = require('path')
 
