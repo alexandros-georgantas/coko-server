@@ -17,11 +17,7 @@ const helpers = require('pubsweet-server/src/helpers/authorization')
 
 const schema = require('./graphqlSchema')
 
-const host = `${config.get('pubsweet-server.host')}${
-  config.get('pubsweet-server.port')
-    ? `:${config.get('pubsweet-server.port')}`
-    : ''
-}`
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 const extraApolloConfig = config.has('pubsweet-server.apollo')
   ? config.get('pubsweet-server.apollo')
@@ -36,7 +32,7 @@ const createGraphQLServer = testUserContext => {
 
   const createdLoaders = loaders()
 
-  return new ApolloServer({
+  const serverConfig = {
     schema,
     context: ({ req, res }) => ({
       helpers,
@@ -83,15 +79,23 @@ const createGraphQLServer = testUserContext => {
         },
       }
     },
-    playground:
-      process.env.NODE_ENV === 'production'
-        ? false
-        : {
-            subscriptionEndpoint: `ws://${host}/subscriptions`,
-          },
     introspection: process.env.NODE_ENV === 'development',
     ...extraApolloConfig,
-  })
+  }
+
+  if (isDevelopment) {
+    const host = `${config.get('pubsweet-server.host')}${
+      config.get('pubsweet-server.port')
+        ? `:${config.get('pubsweet-server.port')}`
+        : ''
+    }`
+
+    serverConfig.playground = {
+      subscriptionEndpoint: `ws://${host}/subscriptions`,
+    }
+  }
+
+  return new ApolloServer(serverConfig)
 }
 
 module.exports = createGraphQLServer
