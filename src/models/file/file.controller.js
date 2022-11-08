@@ -1,5 +1,7 @@
-const { File } = require('../index')
-const { logger, useTransaction } = require('../../index')
+const logger = require('@pubsweet/logger')
+
+const File = require('./file.model')
+const useTransaction = require('../useTransaction')
 
 const {
   deleteFiles: serviceDeleteFiles,
