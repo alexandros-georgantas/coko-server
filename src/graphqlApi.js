@@ -1,3 +1,5 @@
+const { graphqlUploadExpress } = require('graphql-upload')
+
 const createGraphQLServer = require('./graphqlServer')
 
 const api = app => {
@@ -7,6 +9,8 @@ const api = app => {
       session: false,
     }),
   )
+
+  app.use(graphqlUploadExpress())
 
   const server = createGraphQLServer()
   server.applyMiddleware({ app })

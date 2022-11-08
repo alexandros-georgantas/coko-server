@@ -198,6 +198,7 @@ const uploadFileHandler = (fileStream, filename, mimetype) => {
   }
 
   const { bucket } = config.get('fileStorage')
+
   const params = {
     Bucket: bucket,
     Key: filename, // file name you want to save as
@@ -409,6 +410,7 @@ const getFileInfo = key => {
   }
 
   const { bucket } = config.get('fileStorage')
+
   const params = {
     Bucket: bucket,
     Key: key,
@@ -433,6 +435,7 @@ const list = () => {
   }
 
   const { bucket } = config.get('fileStorage')
+
   const params = {
     Bucket: bucket,
   }

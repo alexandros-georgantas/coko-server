@@ -33,6 +33,7 @@ const createGraphQLServer = testUserContext => {
   const createdLoaders = loaders()
 
   const serverConfig = {
+    uploads: false,
     schema,
     context: ({ req, res }) => ({
       helpers,
