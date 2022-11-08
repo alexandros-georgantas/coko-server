@@ -41,6 +41,8 @@ const createGraphQLServer = testUserContext => {
       connectors,
       user: testUserContext || req.user,
       loaders: createdLoaders,
+      req,
+      res,
     }),
     formatError: err => {
       const error = isEmpty(err.originalError) ? err : err.originalError
