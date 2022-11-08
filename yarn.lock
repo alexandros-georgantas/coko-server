@@ -945,10 +945,32 @@
     tmp-promise "^2.0.0"
     umzug "^2.1.0"
 
+"@pubsweet/db-manager@^3.1.26":
+  version "3.1.26"
+  resolved "https://registry.yarnpkg.com/@pubsweet/db-manager/-/db-manager-3.1.26.tgz#59797ba78ef744fd83e4205a7ac9729f9459568d"
+  integrity sha512-wCseWcdTeDAaYg8QntZxnzwd46Qb88kc8T2OwkzI62LKmBMcnKEmA+Q1T69U/t4Hg6mgcfgvunwOYcymJbfSGw==
+  dependencies:
+    "@hapi/joi" "^14.3.0"
+    "@pubsweet/logger" "^0.2.61"
+    fs-extra "^8.1.0"
+    knex "^0.21.1"
+    lodash "^4.17.11"
+    objection "^2.1.3"
+    pg "^7.8.0"
+    tmp-promise "^2.0.0"
+    umzug "^2.1.0"
+
 "@pubsweet/errors@^2.0.46":
   version "2.0.46"
   resolved "https://registry.yarnpkg.com/@pubsweet/errors/-/errors-2.0.46.tgz#4554d17c9f48cf223fd03cd7d39405cdc527ac17"
   integrity sha512-qd64YBiVn12XXSvSzR4PjjYBl98oUOJmRFAJJN0nB8Nw6VXVXZuVEcv5HOi4UHj496zEWkwl8hK46Tq8jUbeZw==
+  dependencies:
+    http-status-codes "^1.3.0"
+
+"@pubsweet/errors@^2.0.51":
+  version "2.0.51"
+  resolved "https://registry.yarnpkg.com/@pubsweet/errors/-/errors-2.0.51.tgz#1a968edd2f636dd1746be7a1a60109963d2b3a64"
+  integrity sha512-5x3JU4KejnQAetkLFVdmFKGbnoTai/E6E46JsRhNuyapOhrN8sMDR/EHhKBdTxSF6JnGxVSH25w9kEgvOJ3Tqg==
   dependencies:
     http-status-codes "^1.3.0"
 
@@ -960,12 +982,27 @@
     "@hapi/joi" "^14.5.0"
     config "^3.0.1"
 
+"@pubsweet/logger@^0.2.61":
+  version "0.2.61"
+  resolved "https://registry.yarnpkg.com/@pubsweet/logger/-/logger-0.2.61.tgz#84f869f7f347ba535eb2d4eb3aee5deeee5dee7d"
+  integrity sha512-jbtavo8Gzxty8Vu1NqStD24Y5TJLYopKm1hx9XTyZ/eWGszaVuQuC3aFFRSt5IAaZ9BEPM9RUFIJKeYCzkw5qw==
+  dependencies:
+    "@hapi/joi" "^14.5.0"
+    config "^3.0.1"
+
 "@pubsweet/models@^0.3.21":
   version "0.3.21"
   resolved "https://registry.yarnpkg.com/@pubsweet/models/-/models-0.3.21.tgz#6610af4a638f46718eb008b9e293fd2822ea7b9a"
   integrity sha512-mfvm4UntPvu/ZMO1eIwCVZ3KXwDoIg8CRuYXavL0nbQLbq6xBFFLZWN+70ngoKWulLlRTHuRVI2auc80sSyBrw==
   dependencies:
     "@pubsweet/logger" "^0.2.56"
+
+"@pubsweet/models@^0.3.26":
+  version "0.3.26"
+  resolved "https://registry.yarnpkg.com/@pubsweet/models/-/models-0.3.26.tgz#6900822ba1faea285b20b257639061975665a4a2"
+  integrity sha512-bV9i2D+a9GZNLy6vWIyzr9Y50m/oAXbC+HLmviEFj9iwPOhpFm+PwtHwT3GRpenpwoZB+Mso2a3BNQHIa1ydcw==
+  dependencies:
+    "@pubsweet/logger" "^0.2.61"
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
@@ -5566,7 +5603,7 @@ graphql-middleware@^4.0.2:
   dependencies:
     graphql-tools "^4.0.5"
 
-graphql-postgres-subscriptions@^1.0.4:
+graphql-postgres-subscriptions@^1.0.4, graphql-postgres-subscriptions@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/graphql-postgres-subscriptions/-/graphql-postgres-subscriptions-1.0.5.tgz#1bf33bc34fb031025da86715524db23ea871f216"
   integrity sha512-k6aoe/0lBU8JEM4BowAX5ojQ8ovphNyMYmSWJo4bFU6IzzfM0UmdvSnVXBlwxABrJUX3IQ+tXdnQsOmQKuhTAw==
@@ -9565,6 +9602,43 @@ public-encrypt@^4.0.0:
     randombytes "^2.0.1"
     safe-buffer "^5.1.2"
 
+pubsweet-server@^13.12.11:
+  version "13.12.11"
+  resolved "https://registry.yarnpkg.com/pubsweet-server/-/pubsweet-server-13.12.11.tgz#ab65b2a78fd02944703559c3d2ac2049d07401b8"
+  integrity sha512-auRcrQjg+2aw2XhlwS8PdHBE1O1p/HHLJVXdi6qhPiYtYoJYkDR/TmFLZdt1JCuUHxUddJ2GYeuYIvKOBPIZSQ==
+  dependencies:
+    "@pubsweet/db-manager" "^3.1.26"
+    "@pubsweet/errors" "^2.0.51"
+    "@pubsweet/logger" "^0.2.61"
+    "@pubsweet/models" "^0.3.26"
+    apollo-server-express "^2.4.8"
+    authsome "^0.1.0"
+    body-parser "^1.15.2"
+    config "^3.0.1"
+    cookie-parser "^1.4.3"
+    dataloader "^1.4.0"
+    dotenv "^4.0.0"
+    express "^4.16.1"
+    fs-extra "^8.1.0"
+    graphql "^14.2.1"
+    graphql-postgres-subscriptions "^1.0.5"
+    helmet "^3.8.1"
+    http-status-codes "^1.0.6"
+    jsonwebtoken "^8.4.0"
+    lodash "^4.0.0"
+    morgan "^1.8.2"
+    multer "^1.1.0"
+    objection "^2.1.3"
+    passport "^0.4.0"
+    passport-anonymous "^1.0.1"
+    passport-http-bearer "^1.0.1"
+    passport-local "^1.0.0"
+    pg "^7.4.1"
+    pg-boss "^5.2.0"
+    pubsweet-sse "^1.0.55"
+    subscriptions-transport-ws "^0.9.19"
+    waait "^1.0.2"
+
 pubsweet-server@^13.12.5:
   version "13.12.5"
   resolved "https://registry.yarnpkg.com/pubsweet-server/-/pubsweet-server-13.12.5.tgz#72064329d9aa16a536a1818c752469e338659537"
@@ -9606,6 +9680,11 @@ pubsweet-sse@^1.0.50:
   version "1.0.50"
   resolved "https://registry.yarnpkg.com/pubsweet-sse/-/pubsweet-sse-1.0.50.tgz#3f0ca1bacd2b8be66bbd2b2132b990ec4faedbf3"
   integrity sha512-sc6XzMIbtYVETLriz3e6UBBH4DfUwPoPt7NdOwgqrAgey0LEBH/VvK/xDfpn1KNHXIQrR+r/qklh0aUGQKMpbw==
+
+pubsweet-sse@^1.0.55:
+  version "1.0.55"
+  resolved "https://registry.yarnpkg.com/pubsweet-sse/-/pubsweet-sse-1.0.55.tgz#f242228550b897b681659953b0a1c806c467a12f"
+  integrity sha512-cYemDMQ/UriKipS62R6i7eGUoj154vn24Oc4Cv3VDHOKihB1zmTyuwQ07C5dzz8wcOobNmASzyy1mX5lh2MQ3A==
 
 pubsweet@^5.1.25:
   version "5.1.25"
@@ -11125,6 +11204,17 @@ subscriptions-transport-ws@^0.9.11, subscriptions-transport-ws@^0.9.12, subscrip
     symbol-observable "^1.0.4"
     ws "^5.2.0"
 
+subscriptions-transport-ws@^0.9.19:
+  version "0.9.19"
+  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws/-/subscriptions-transport-ws-0.9.19.tgz#10ca32f7e291d5ee8eb728b9c02e43c52606cdcf"
+  integrity sha512-dxdemxFFB0ppCLg10FTtRqH/31FNRL1y1BQv8209MK5I4CwALb7iihQg+7p65lFcIl8MHatINWBLOqpgU4Kyyw==
+  dependencies:
+    backo2 "^1.0.2"
+    eventemitter3 "^3.1.0"
+    iterall "^1.2.1"
+    symbol-observable "^1.0.4"
+    ws "^5.2.0 || ^6.0.0 || ^7.0.0"
+
 sugarss@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/sugarss/-/sugarss-2.0.0.tgz#ddd76e0124b297d40bf3cca31c8b22ecb43bc61d"
@@ -12187,6 +12277,11 @@ ws@^5.2.0:
   integrity sha512-jaHFD6PFv6UgoIVda6qZllptQsMlDEJkTQcybzzXDYM1XO9Y8em691FGMPmM46WGyLU4z9KMgQN+qrux/nhlHA==
   dependencies:
     async-limiter "~1.0.0"
+
+"ws@^5.2.0 || ^6.0.0 || ^7.0.0":
+  version "7.5.9"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
+  integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
 
 ws@^6.0.0, ws@^6.2.1:
   version "6.2.1"
