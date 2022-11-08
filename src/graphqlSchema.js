@@ -25,7 +25,11 @@ const permissions = config.has('permissions') && config.get('permissions')
 const isProduction = process.env.NODE_ENV === 'production'
 
 if (!isEmpty(permissions)) {
-  const authorizationMiddleware = shield(permissions, { debug: !isProduction })
+  const authorizationMiddleware = shield(permissions, {
+    allowExternalErrors: true,
+    debug: !isProduction,
+  })
+
   middleware.push(authorizationMiddleware)
   logRegistration('authorization')
 }
