@@ -1,5 +1,4 @@
 // const axios = require('axios')
-const { rule } = require('graphql-shield')
 const path = require('path')
 const sharp = require('sharp')
 const fs = require('fs-extra')
@@ -9,21 +8,6 @@ const fs = require('fs-extra')
 // const { ServiceCredential } = require('./models')
 
 // const services = config.get('services')
-
-const isAuthenticated = rule()(async (parent, args, ctx, info) => {
-  return !!ctx.user
-})
-
-const isAdmin = rule()(
-  async (parent, args, { user: userId, connectors: { User } }, info) => {
-    if (!userId) {
-      return false
-    }
-
-    const user = await User.model.findById(userId)
-    return user.admin
-  },
-)
 
 const convertFileStreamIntoBuffer = async fileStream => {
   return new Promise((resolve, reject) => {
@@ -172,8 +156,6 @@ const writeFileFromStream = async (inputStream, filePath) => {
 // }
 
 module.exports = {
-  isAuthenticated,
-  isAdmin,
   convertFileStreamIntoBuffer,
   getFileExtension,
   getImageFileMetadata,
