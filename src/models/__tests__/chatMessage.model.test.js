@@ -142,6 +142,7 @@ describe('ChatMessage model', () => {
     expect(message.mentions[0]).toEqual(user.id)
   })
 
+  /* eslint-disable-next-line jest/no-commented-out-tests */
   // it('throws when mentioned user is not team member of chatThread', async () => {
   //   const user2 = await User.insert({})
   //   const relatedObject = uuid()
@@ -163,6 +164,7 @@ describe('ChatMessage model', () => {
   //   ).rejects.toThrow()
   // })
 
+  /* eslint-disable-next-line jest/no-commented-out-tests */
   // it('throws when updating a message mentions array with a user who is not team member of chatThread', async () => {
   //   const user2 = await User.insert({})
   //   const relatedObject = uuid()
