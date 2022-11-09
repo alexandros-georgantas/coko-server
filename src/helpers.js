@@ -1,9 +1,12 @@
 // const axios = require('axios')
+const { URL } = require('url')
 const { rule } = require('graphql-shield')
 const path = require('path')
 const sharp = require('sharp')
 const fs = require('fs-extra')
-// const config = require('config')
+const jwt = require('jsonwebtoken')
+const config = require('config')
+const { User: dbUser } = require('@pubsweet/models')
 // const get = require('lodash/get')
 
 // const { ServiceCredential } = require('./models')
@@ -171,6 +174,31 @@ const writeFileFromStream = async (inputStream, filePath) => {
 //   })
 // }
 
+const authenticateWS = async req => {
+  try {
+    const serverURL = config.has('pubsweet-server.publicURL')
+      ? config.get('pubsweet-server.publicURL')
+      : config.get('pubsweet-server.baseUrl')
+
+    const url = new URL(req.url, serverURL)
+
+    const token = url.searchParams.get('token')
+    let foundUser = false
+    if (token) {
+      const decoded = jwt.verify(token, config.get('pubsweet-server.secret'))
+      if (decoded) {
+        const user = await dbUser.query().findById(decoded.id)
+        if (user) {
+          foundUser = true
+        }
+      }
+    }
+    return foundUser
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
 module.exports = {
   isAuthenticated,
   isAdmin,
@@ -178,5 +206,6 @@ module.exports = {
   getFileExtension,
   getImageFileMetadata,
   writeFileFromStream,
+  authenticateWS,
   // serviceHandshake,
 }

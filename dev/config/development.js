@@ -19,6 +19,9 @@ module.exports = {
       user: 'test_user',
       password: 'password',
     },
+    port: 3000,
+    protocol: 'http',
+    host: 'localhost',
     emailVerificationTokenExpiry: {
       amount: 24,
       unit: 'hours',
@@ -31,7 +34,12 @@ module.exports = {
     tempFolderPath: path.join(process.cwd(), 'temp'),
     useFileStorage: true,
     useWebSockets: true,
-    websocketPaths: ['test1', 'test2'],
+    useGraphQLServer: false,
+    websocketPaths: 'test1, test2',
+    useJobQueue: false,
+  },
+  authsome: {
+    mode: path.join(__dirname, 'authsome.js'),
   },
   pubsweet: {
     components,
