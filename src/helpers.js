@@ -1,4 +1,5 @@
 // const axios = require('axios')
+const { rule } = require('graphql-shield')
 const path = require('path')
 const sharp = require('sharp')
 const fs = require('fs-extra')
