@@ -1,46 +1,49 @@
 const startServer = require('../src/startServer')
 
 const init = async () => {
-  const { server, createdWS } = await startServer()
+  const { createdWS } = await startServer()
   const heartbeat = ws => {
+    const argumentWS = ws
     console.log('pong')
-    ws.isAlive = true
+    argumentWS.isAlive = true
   }
   let clients = []
 
   createdWS.test1.on('connection', (ws, request, client) => {
+    const injectedWS = ws
     clients.push(client)
-    ws.isAlive = true
+    injectedWS.isAlive = true
 
-    ws.on('pong', () => {
-      heartbeat(ws)
+    injectedWS.on('pong', () => {
+      heartbeat(injectedWS)
     })
 
-    ws.on('message', function message(data) {
+    injectedWS.on('message', function message(data) {
       const retrieved = JSON.parse(data)
       console.log(`Received message ${retrieved} from user ${client}`)
-      ws.send(data)
+      injectedWS.send(data)
     })
 
-    ws.on('close', () => {
+    injectedWS.on('close', () => {
       console.log(`ws close ${client}`)
       clients = clients.filter(item => item !== client)
       console.log('clie', clients)
     })
 
-    ws.on('error', function message(err) {
+    injectedWS.on('error', function message(err) {
       console.log('error', err)
     })
   })
 
   const interval = setInterval(function ping() {
-    createdWS.test1.clients.forEach(ws => {
-      if (ws.isAlive === false) {
+    createdWS.test1.clients.forEach(client => {
+      const clientArgument = client
+      if (clientArgument.isAlive === false) {
         console.log('broken connection')
-        return ws.terminate()
+        return clientArgument.terminate()
       }
-      ws.isAlive = false
-      ws.ping()
+      clientArgument.isAlive = false
+      return clientArgument.ping()
     })
   }, 5000)
 

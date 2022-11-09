@@ -4,7 +4,7 @@ const { URL } = require('url')
 
 const { WebSocketServer } = require('ws')
 
-const { authenticateWS } = require('./helpers')
+// const { authenticateWS } = require('./helpers')
 
 const initializeWS = async httpServer => {
   const createdWS = {}
