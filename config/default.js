@@ -6,12 +6,19 @@ module.exports = {
   'pubsweet-server': {
     app: path.resolve(__dirname, '..', 'src', 'app.js'),
     useGraphQLServer: false,
+    useJobQueue: false,
     db: {
       host: 'localhost',
       port: '5432',
       database: 'cokoserver',
       user: 'postgres',
       password: 'postgres',
+    },
+    pool: {
+      min: 0,
+      max: 10,
+      idleTimeoutMillis: 1000,
+      acquireTimeoutMillis: 60000,
     },
     secret: 'somesecret123',
   },
