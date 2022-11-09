@@ -1,10 +1,9 @@
-const fs = require('fs')
 const startServer = require('../src/startServer')
 
 const init = async () => {
   const { server, createdWS } = await startServer()
   const heartbeat = ws => {
-    console.log('pong', ws.isAlive)
+    console.log('pong')
     ws.isAlive = true
   }
   let clients = []
@@ -16,7 +15,6 @@ const init = async () => {
     ws.on('pong', () => {
       heartbeat(ws)
     })
-    // ws.on('ping', heartbeat)
 
     ws.on('message', function message(data) {
       const retrieved = JSON.parse(data)
@@ -37,21 +35,17 @@ const init = async () => {
 
   const interval = setInterval(function ping() {
     createdWS.test1.clients.forEach(ws => {
-      console.log('waa1', ws.isAlive)
       if (ws.isAlive === false) {
-        console.log('waa2')
         console.log('broken connection')
         return ws.terminate()
       }
-      console.log('waa3')
       ws.isAlive = false
       ws.ping()
     })
-  }, 10000)
+  }, 5000)
 
   createdWS.test1.on('close', () => {
     console.log('server died')
-    fs.writeFileSync('./test.txt', 'closed', 'utf-8')
     clearInterval(interval)
   })
 }

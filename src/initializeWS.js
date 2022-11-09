@@ -47,18 +47,6 @@ const initializeWS = async httpServer => {
       return null
     })
   })
-  httpServer.on('close', async () => {
-    // if (!authenticateWS(request)) {
-    //   socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
-    //   socket.destroy()
-    //   return
-    // }
-    console.log('here1')
-
-    specificPurposeWebSockets.forEach(path => {
-      createdWS[path].emit('close')
-    })
-  })
 
   return createdWS
 }

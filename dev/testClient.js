@@ -2,9 +2,8 @@ const WebSocket = require('ws')
 
 const ws = new WebSocket('ws://localhost:3000/test1?token=123')
 function heartbeat() {
-  //   console.log('ping')
   clearTimeout(this.pingTimeout)
-  //   ws.pong()
+  console.log('ping')
   // Use `WebSocket#terminate()`, which immediately destroys the connection,
   // instead of `WebSocket#close()`, which waits for the close timer.
   // Delay should be equal to the interval at which your server
@@ -12,7 +11,7 @@ function heartbeat() {
   this.pingTimeout = setTimeout(() => {
     console.log('run')
     this.terminate()
-  }, 10000 + 1000)
+  }, 5000 + 1000)
 }
 // ws.on('open', function open() {
 //   ws.send(JSON.stringify({ hello: 'test' }))
