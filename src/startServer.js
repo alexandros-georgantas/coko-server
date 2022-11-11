@@ -34,7 +34,7 @@ const startServer = async (app = express()) => {
   }
 
   const configuredApp = configureApp(app)
-  const port = config['pubsweet-server'].port || 3000
+  const port = config['pubsweet-server'].port || 8080
   configuredApp.set('port', port)
   const httpServer = http.createServer(configuredApp)
   httpServer.app = configuredApp
