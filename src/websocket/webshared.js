@@ -1,5 +1,7 @@
 const Y = require('yjs')
+const debounce = require('lodash/debounce')
 const utils = require('./utils')
+const callback = require('./callback')
 
 const gcEnabled = process.env.GC !== 'false' && process.env.GC !== '0'
 
@@ -56,6 +58,14 @@ class WSSharedDoc extends Y.Doc {
     }
     this.awareness.on('update', awarenessChangeHandler)
     this.on('update', utils.updateHandler)
+    if (callback.isCallbackSet) {
+      this.on(
+        'update',
+        debounce(callback.callbackHandler, callback.CALLBACK_DEBOUNCE_WAIT, {
+          maxWait: callback.CALLBACK_DEBOUNCE_MAXWAIT,
+        }),
+      )
+    }
   }
 }
 

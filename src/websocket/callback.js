@@ -1,8 +1,8 @@
 const http = require('http')
 
-const CALLBACK_URL = 'localhost:3000'
+const CALLBACK_URL = 'http://localhost:3000'
 const CALLBACK_TIMEOUT = 5000
-const CALLBACK_OBJECTS = {}
+const CALLBACK_OBJECTS = '{"prosemirror":"XmlFragment"}'
 const CALLBACK_DEBOUNCE_WAIT = 2000
 const CALLBACK_DEBOUNCE_MAXWAIT = 10000
 
@@ -19,7 +19,7 @@ const callbackHandler = (update, origin, doc) => {
     const sharedObjectType = CALLBACK_OBJECTS[sharedObjectName]
     dataToSend.data[sharedObjectName] = {
       type: sharedObjectType,
-      content: getContent(sharedObjectName, sharedObjectType, doc).toJSON(),
+      content: doc.getXmlFragment(sharedObjectName),
     }
   })
   callbackRequest(CALLBACK_URL, CALLBACK_TIMEOUT, dataToSend)
@@ -28,9 +28,7 @@ const callbackHandler = (update, origin, doc) => {
 const callbackRequest = (url, timeout, data) => {
   const dataToSend = JSON.stringify(data)
   const options = {
-    hostname: url.hostname,
-    port: url.port,
-    path: url.pathname,
+    url,
     timeout,
     method: 'POST',
     headers: {
@@ -47,7 +45,9 @@ const callbackRequest = (url, timeout, data) => {
     console.error('Callback request error.', e)
     req.abort()
   })
-  req.write(data)
+  console.log('before writing')
+  req.write(dataToSend)
+  console.log('before ending req')
   req.end()
 }
 

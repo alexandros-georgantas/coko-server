@@ -1,16 +1,15 @@
-// const { createServer } = require('http')
 const { WebSocketServer } = require('ws')
-const webSocket = require('ws')
 const Y = require('yjs')
 const map = require('lib0/dist/map.cjs')
+const levelDb = require('y-leveldb')
 const WSSharedDoc = require('./webshared')
 const startServer = require('../startServer')
 const utils = require('./utils')
-const callBack = require('./callback')
 
 const docs = new Map()
-const persistence = null
 const pingTimeout = 30000
+const persistenceDir = process.env.YPERSISTENCE || './dbDir'
+let persistence = null
 
 const init = async () => {
   const server = await startServer()
@@ -113,6 +112,25 @@ const init = async () => {
     } catch (err) {
       console.error(err)
       doc.emit('error', [err])
+    }
+  }
+
+  if (typeof persistenceDir === 'string') {
+    console.log(`Persisting documents to "${persistenceDir}"`)
+    const LevelDbPersistence = levelDb.LeveldbPersistence
+    const ldb = new LevelDbPersistence(persistenceDir)
+    persistence = {
+      provider: ldb,
+      bindState: async (docName, ydoc) => {
+        const persistedYdoc = await ldb.getYDoc(docName)
+        const newUpdates = Y.encodeStateAsUpdate(ydoc)
+        ldb.storeUpdate(docName, newUpdates)
+        Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc))
+        ydoc.on('update', update => {
+          ldb.storeUpdate(docName, update)
+        })
+      },
+      writeState: async (docName, ydoc) => {},
     }
   }
 }
