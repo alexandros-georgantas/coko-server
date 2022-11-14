@@ -6,9 +6,11 @@ const map = require('lib0/dist/map.cjs')
 const WSSharedDoc = require('./webshared')
 const startServer = require('../startServer')
 const utils = require('./utils')
+const callBack = require('./callback')
 
 const docs = new Map()
 const persistence = null
+const pingTimeout = 30000
 
 const init = async () => {
   const server = await startServer()
@@ -23,6 +25,49 @@ const init = async () => {
     ws.on('message', message =>
       messageListener(ws, doc, new Uint8Array(message)),
     )
+
+    let pingReceived = true
+    const pingInterval = setInterval(() => {
+      if (!pingReceived) {
+        if (doc.conns.has(ws)) {
+          utils.closeConn(doc, ws)
+        }
+        clearInterval(pingInterval)
+      } else if (doc.conns.has(ws)) {
+        pingReceived = false
+        try {
+          ws.ping()
+        } catch (e) {
+          utils.closeConn(doc, ws)
+          clearInterval(pingInterval)
+        }
+      }
+    }, pingTimeout)
+    ws.on('close', () => {
+      utils.closeConn(doc, ws)
+      clearInterval(pingInterval)
+    })
+    ws.on('ping', () => {
+      pingReceived = true
+    })
+    {
+      const encoder = utils.encoding.createEncoder()
+      utils.encoding.writeVarUint(encoder, utils.messageSync)
+      utils.syncProtocol.writeSyncStep1(encoder, doc)
+      utils.send(doc, ws, utils.encoding.toUint8Array(encoder))
+      const awarenessStates = doc.awareness.getStates()
+      if (awarenessStates.size > 0) {
+        utils.encoding.writeVarUint(encoder, utils.messageAwareness)
+        utils.encoding.writeVarUint8Array(
+          encoder,
+          utils.awarenessProtocol.encodeAwarenessUpdate(
+            doc.awareness,
+            Array.from(awarenessStates.keys()),
+          ),
+        )
+        utils.send(doc, ws, utils.encoding.toUint8Array(encoder))
+      }
+    }
   })
 
   const getYDoc = (docName, gc = true) =>
@@ -46,7 +91,6 @@ const init = async () => {
       const encoder = utils.encoding.createEncoder()
       const decoder = utils.decoding.createDecoder(message)
       const messageType = utils.decoding.readVarUint(decoder)
-      console.log(messageType)
       // eslint-disable-next-line default-case
       switch (messageType) {
         case utils.messageSync:

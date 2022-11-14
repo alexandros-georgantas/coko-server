@@ -1,10 +1,12 @@
 const syncProtocol = require('y-protocols/dist/sync.cjs')
 const awarenessProtocol = require('y-protocols/dist/awareness.cjs')
 const encoding = require('lib0/dist/encoding.cjs')
+const decoding = require('lib0/dist/decoding.cjs')
 
 const persistence = null
 
 const messageSync = 0
+const messageAwareness = 1
 const wsReadyStateConnecting = 0
 const wsReadyStateOpen = 1
 const docs = new Map()
@@ -83,4 +85,8 @@ module.exports = {
   wsReadyStateOpen,
   docs,
   updateHandler,
+  decoding,
+  send,
+  closeConn,
+  messageAwareness,
 }
