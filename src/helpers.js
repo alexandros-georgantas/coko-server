@@ -10,21 +10,6 @@ const fs = require('fs-extra')
 
 // const services = config.get('services')
 
-const isAuthenticated = rule()(async (parent, args, ctx, info) => {
-  return !!ctx.user
-})
-
-const isAdmin = rule()(
-  async (parent, args, { user: userId, connectors: { User } }, info) => {
-    if (!userId) {
-      return false
-    }
-
-    const user = await User.model.findById(userId)
-    return user.admin
-  },
-)
-
 const convertFileStreamIntoBuffer = async fileStream => {
   return new Promise((resolve, reject) => {
     // Store file data chunks
@@ -172,8 +157,6 @@ const writeFileFromStream = async (inputStream, filePath) => {
 // }
 
 module.exports = {
-  isAuthenticated,
-  isAdmin,
   convertFileStreamIntoBuffer,
   getFileExtension,
   getImageFileMetadata,

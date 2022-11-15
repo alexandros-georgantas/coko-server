@@ -15,7 +15,6 @@ const useTransaction = require('./useTransaction')
 const modelTypes = require('./models/_helpers/types')
 
 const createJWT = authentication.token.create
-
 module.exports = {
   app,
   createJWT,

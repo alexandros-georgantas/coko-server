@@ -20,7 +20,9 @@ const startServer = async (app = express()) => {
 
   if (config.has('pubsweet-server.app')) {
     // See if a custom app entrypoint is configured
-    configureApp = config.get('pubsweet-server.app')
+    const declaredAppPath = config.get('pubsweet-server.app')
+    /* eslint-disable-next-line global-require, import/no-dynamic-require */
+    configureApp = require(declaredAppPath)
   } else if (fs.existsSync(appPath)) {
     // See if a custom app entrypoint exists at ./server/app.js
     /* eslint-disable-next-line global-require, import/no-dynamic-require */
@@ -32,7 +34,7 @@ const startServer = async (app = express()) => {
   }
 
   const configuredApp = configureApp(app)
-  const port = config['pubsweet-server'].port || 3000
+  const port = config['pubsweet-server'].port || 8080
   configuredApp.set('port', port)
   const httpServer = http.createServer(configuredApp)
   httpServer.app = configuredApp
