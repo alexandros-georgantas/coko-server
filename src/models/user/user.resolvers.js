@@ -28,6 +28,11 @@ const {
   getUserTeams,
 } = require('./user.controller')
 
+const {
+  getUserIdentities,
+  getDefaultIdentity,
+} = require('../identity/identity.controller')
+
 const userResolver = async (_, { id }, ctx) => {
   try {
     logger.info(`${USER_RESOLVER} user`)
@@ -240,13 +245,14 @@ const resetPasswordResolver = async (_, { token, password }, ctx) => {
 }
 
 const identitiesResolver = async (user, _, ctx) => {
-  const { id } = user
-  return ctx.loaders.Identity.identitiesBasedOnUserIdsLoader.load(id)
+  const identities = await getUserIdentities(user.id)
+  return identities.result
+  // return ctx.loaders.Identity.identitiesBasedOnUserIdsLoader.load(user.id)
 }
 
 const defaultIdentityResolver = async (user, _, ctx) => {
-  const { id } = user
-  return ctx.loaders.Identity.defaultIdentityBasedOnUserIdsLoader.load(id)
+  return getDefaultIdentity(user.id)
+  // return ctx.loaders.Identity.defaultIdentityBasedOnUserIdsLoader.load(user.id)
 }
 
 const displayNameResolver = async user => {
