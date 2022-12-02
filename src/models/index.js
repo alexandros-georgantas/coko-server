@@ -15,6 +15,8 @@ const Fake = require('./__tests__/helpers/fake/fake.model')
 
 const useTransaction = require('./useTransaction')
 
+const createTestServer = require('./__tests__/helpers/createTestServer')
+
 module.exports = {
   BaseModel,
 
@@ -33,4 +35,6 @@ module.exports = {
   useTransaction,
 
   Fake,
+
+  createTestServer,
 }
