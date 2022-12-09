@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://gitlab.coko.foundation/cokoapps/server/compare/v2.0.0-beta.1...v2.0.0) (2022-12-09)
+
+
+### Features
+
+* object storage and service handshake ([0fd50da](https://gitlab.coko.foundation/cokoapps/server/commit/0fd50da99c6af1edc6745cef2a3aaf841b078268))
+
+
+### Bug Fixes
+
+* **middleware:** fix permissions config circular dependency ([6cdd384](https://gitlab.coko.foundation/cokoapps/server/commit/6cdd38432799ae5f01529d670bd2ce35f4f4cb31))
+* **server:** fix file controller circular dependencies ([c0cdb50](https://gitlab.coko.foundation/cokoapps/server/commit/c0cdb50ef3fc579e5d59f1dcb96512102a9a7977))
+
 ## [2.0.0-beta.1](https://gitlab.coko.foundation/cokoapps/server/compare/v2.0.0-beta.0...v2.0.0-beta.1) (2022-01-25)
 
 
