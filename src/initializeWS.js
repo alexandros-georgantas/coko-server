@@ -4,6 +4,8 @@ const { URL } = require('url')
 
 const { WebSocketServer } = require('ws')
 
+// const { authenticateWS } = require('./helpers')
+
 const initializeWS = async httpServer => {
   const createdWS = {}
   const specificPurposeWebSockets = []
@@ -19,10 +21,7 @@ const initializeWS = async httpServer => {
   }
 
   specificPurposeWebSockets.forEach(path => {
-    createdWS[path] = new WebSocketServer({
-      noServer: true,
-      ClientTracking: true,
-    })
+    createdWS[path] = new WebSocketServer({ noServer: true })
   })
 
   httpServer.on('upgrade', async (req, socket, head) => {
@@ -31,10 +30,16 @@ const initializeWS = async httpServer => {
       : config.get('pubsweet-server.baseUrl')
 
     const { pathname } = new URL(req.url, serverURL)
+    // if (!authenticateWS(req)) {
+    //   socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
+    //   socket.destroy()
+    //   return
+    // }
 
     specificPurposeWebSockets.forEach(path => {
       if (pathname === `/${path}`) {
         return createdWS[path].handleUpgrade(req, socket, head, ws => {
+          // console.log('3', req.client)
           createdWS[path].emit('connection', ws, req, req.client)
         })
       }
