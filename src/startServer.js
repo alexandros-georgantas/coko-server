@@ -7,6 +7,8 @@ const path = require('path')
 
 const logger = require('@pubsweet/logger')
 
+const { connectToFileStorage } = require('./services/fileStorage')
+
 let server
 
 const startServer = async (app = express()) => {
@@ -36,6 +38,8 @@ const startServer = async (app = express()) => {
   configuredApp.set('port', port)
   const httpServer = http.createServer(configuredApp)
   httpServer.app = configuredApp
+
+  connectToFileStorage()
 
   logger.info(`Starting HTTP server`)
   const startListening = promisify(httpServer.listen).bind(httpServer)
