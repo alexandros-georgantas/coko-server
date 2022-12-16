@@ -15,7 +15,26 @@ const startServer = require('./startServer')
 const { boss, connectToJobQueue } = require('./pgboss')
 const { BaseModel, useTransaction } = require('./models')
 const modelTypes = require('./models/_helpers/types')
-const fileStorage = require('./services/fileStorage')
+
+const {
+  healthCheck,
+  getURL,
+  upload,
+  deleteFiles: fileStorageDeleteFiles,
+  list,
+  download,
+} = require('./services/fileStorage')
+
+// Do not expose connectToFileStorage
+const fileStorage = {
+  healthCheck,
+  getURL,
+  upload,
+  deleteFiles: fileStorageDeleteFiles,
+  list,
+  download,
+}
+
 // const { serviceHandshake } = require('./helpers')
 
 const createJWT = authentication.token.create
