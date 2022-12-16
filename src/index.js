@@ -15,7 +15,26 @@ const app = require('./app')
 const startServer = require('./startServer')
 const { boss, connectToJobQueue } = require('./pgboss')
 const useTransaction = require('./useTransaction')
-const fileStorage = require('./services/fileStorage')
+
+const {
+  healthCheck,
+  getURL,
+  upload,
+  deleteFiles: fileStorageDeleteFiles,
+  list,
+  download,
+} = require('./services/fileStorage')
+
+// Do not expose connectToFileStorage
+const fileStorage = {
+  healthCheck,
+  getURL,
+  upload,
+  deleteFiles: fileStorageDeleteFiles,
+  list,
+  download,
+}
+
 // const { serviceHandshake } = require('./helpers')
 
 const { callMicroservice } = require('./utils/microservices')
