@@ -1,1 +1,1 @@
-module.exports = ['./src/models/file']
+module.exports = ['./src/models/file', './src/models/serviceCredential']
