@@ -20,6 +20,7 @@ const api = require('pubsweet-server/src/routes/api')
 const index = require('pubsweet-server/src/routes/index')
 
 const healthcheck = require('./healthcheck')
+const createCORSConfig = require('./corsConfig')
 
 const configureApp = app => {
   const models = require('@pubsweet/models')
@@ -61,16 +62,8 @@ const configureApp = app => {
   }
 
   // Allow CORS from client if host / port is different
-  if (config.has('pubsweet-client.url')) {
-    const clientUrl = config.has('clientUrl') && config.get('clientUrl')
-
-    app.use(
-      cors({
-        origin: clientUrl,
-        credentials: true,
-      }),
-    )
-  }
+  const CORSConfig = createCORSConfig()
+  app.use(cors(CORSConfig))
 
   // Register passport authentication strategies
   app.use(passport.initialize())

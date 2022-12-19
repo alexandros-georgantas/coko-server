@@ -1,6 +1,7 @@
 const { graphqlUploadExpress } = require('graphql-upload')
 
 const createGraphQLServer = require('./graphqlServer')
+const createCORSConfig = require('./corsConfig')
 
 const api = app => {
   app.use(
@@ -13,7 +14,9 @@ const api = app => {
   app.use(graphqlUploadExpress())
 
   const server = createGraphQLServer()
-  server.applyMiddleware({ app })
+  const CORSConfig = createCORSConfig()
+
+  server.applyMiddleware({ app, cors: CORSConfig })
 }
 
 module.exports = api
