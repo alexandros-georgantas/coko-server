@@ -51,6 +51,11 @@ const configureApp = app => {
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(cookieParser())
   app.use(helmet())
+
+  // Allow CORS from client if host / port is different
+  const CORSConfig = createCORSConfig()
+  app.use(cors(CORSConfig))
+
   app.use(express.static(path.resolve('.', '_build')))
   app.use(express.static(path.resolve('.', 'static')))
 
@@ -60,10 +65,6 @@ const configureApp = app => {
       express.static(path.resolve(config.get('pubsweet-server.uploads'))),
     )
   }
-
-  // Allow CORS from client if host / port is different
-  const CORSConfig = createCORSConfig()
-  app.use(cors(CORSConfig))
 
   // Register passport authentication strategies
   app.use(passport.initialize())
