@@ -17,6 +17,7 @@ const loaders = require('pubsweet-server/src/graphql/loaders')
 const helpers = require('pubsweet-server/src/helpers/authorization')
 
 const schema = require('./graphqlSchema')
+const createCORSConfig = require('./corsConfig')
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -97,7 +98,9 @@ const api = app => {
   )
 
   const server = new ApolloServer(apolloServerConfig)
-  server.applyMiddleware({ app })
+
+  const CORSConfig = createCORSConfig()
+  server.applyMiddleware({ app, cors: CORSConfig })
 }
 
 module.exports = api

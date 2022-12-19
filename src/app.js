@@ -20,6 +20,7 @@ const api = require('pubsweet-server/src/routes/api')
 const index = require('pubsweet-server/src/routes/index')
 
 const healthcheck = require('./healthcheck')
+const createCORSConfig = require('./corsConfig')
 
 const configureApp = app => {
   const models = require('@pubsweet/models')
@@ -49,6 +50,11 @@ const configureApp = app => {
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(cookieParser())
   app.use(helmet())
+
+  // Allow CORS from client if host / port is different
+  const CORSConfig = createCORSConfig()
+  app.use(cors(CORSConfig))
+
   app.use(express.static(path.resolve('.', '_build')))
   app.use(express.static(path.resolve('.', 'static')))
 
@@ -56,38 +62,6 @@ const configureApp = app => {
     app.use(
       '/uploads',
       express.static(path.resolve(config.get('pubsweet-server.uploads'))),
-    )
-  }
-
-  // Allow CORS from client if host / port is different
-  if (config.has('pubsweet-client.host')) {
-    const clientProtocol =
-      (config.has('pubsweet-client.protocol') &&
-        config.get('pubsweet-client.protocol')) ||
-      'http'
-
-    let clientHost = config.get('pubsweet-client.host')
-
-    const clientPort =
-      config.has('pubsweet-client.port') && config.get('pubsweet-client.port')
-
-    // This is here because webpack dev server might need to be started with
-    // 0.0.0.0 instead of localhost, but the incoming request will still be
-    // eg. http://localhost:4000, not http://0.0.0.0:4000, which will make
-    // the CORS check fail
-    if (clientHost === '0.0.0.0' || clientHost === '127.0.0.1') {
-      clientHost = 'localhost'
-    }
-
-    const clientUrl = `${clientProtocol}://${clientHost}${
-      clientPort ? `:${clientPort}` : ''
-    }`
-
-    app.use(
-      cors({
-        origin: clientUrl,
-        credentials: true,
-      }),
     )
   }
 
