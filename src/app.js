@@ -20,6 +20,7 @@ const api = require('pubsweet-server/src/routes/api')
 const index = require('pubsweet-server/src/routes/index')
 
 const healthcheck = require('./healthcheck')
+const createCORSConfig = require('./corsConfig')
 
 const configureApp = app => {
   const models = require('@pubsweet/models')
@@ -60,36 +61,8 @@ const configureApp = app => {
   }
 
   // Allow CORS from client if host / port is different
-  if (config.has('pubsweet-client.host')) {
-    const clientProtocol =
-      (config.has('pubsweet-client.protocol') &&
-        config.get('pubsweet-client.protocol')) ||
-      'http'
-
-    let clientHost = config.get('pubsweet-client.host')
-
-    const clientPort =
-      config.has('pubsweet-client.port') && config.get('pubsweet-client.port')
-
-    // This is here because webpack dev server might need to be started with
-    // 0.0.0.0 instead of localhost, but the incoming request will still be
-    // eg. http://localhost:4000, not http://0.0.0.0:4000, which will make
-    // the CORS check fail
-    if (clientHost === '0.0.0.0' || clientHost === '127.0.0.1') {
-      clientHost = 'localhost'
-    }
-
-    const clientUrl = `${clientProtocol}://${clientHost}${
-      clientPort ? `:${clientPort}` : ''
-    }`
-
-    app.use(
-      cors({
-        origin: clientUrl,
-        credentials: true,
-      }),
-    )
-  }
+  const CORSConfig = createCORSConfig()
+  app.use(cors(CORSConfig))
 
   // Register passport authentication strategies
   app.use(passport.initialize())
