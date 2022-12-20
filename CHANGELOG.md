@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.17.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.16.2...v1.17.0) (2022-12-20)
+
+
+### Features
+
+* **server:** callMicroservice function with authentication ([3f9eccc](https://gitlab.coko.foundation/cokoapps/server/commit/3f9eccc3d81c8ff81c1acf43c7d2e41f0c3c1205))
+* **server:** expose model types ([c0cc5ad](https://gitlab.coko.foundation/cokoapps/server/commit/c0cc5ad216ac178865fcfbc629b98b7c5b9a4e98))
+* **server:** use coko server startServer.js instead of pubsweet's ([454d266](https://gitlab.coko.foundation/cokoapps/server/commit/454d266f7b4db3cb3f6249b43985ce13b4e6953f))
+
+
+### Bug Fixes
+
+* **middleware:** pass cors config to graphql server ([9fe1382](https://gitlab.coko.foundation/cokoapps/server/commit/9fe138210bc5408dfae382060cb981d07e0f7db3))
+* **server:** register cors before static endpoints ([7f31fd8](https://gitlab.coko.foundation/cokoapps/server/commit/7f31fd85e1c09672ef99b316622d27db6dcf8731))
+* **server:** throw when fileStorage configuration missing ([044c690](https://gitlab.coko.foundation/cokoapps/server/commit/044c690d4d570f75ef336b12376a035c2eafbe0f))
+* **server:** use Model instead of base model for useTransaction ([912ddfc](https://gitlab.coko.foundation/cokoapps/server/commit/912ddfc94fbf980365ac585272525a7235f33223))
+* **server:** wrap connect to filestorage in a function ([215a70a](https://gitlab.coko.foundation/cokoapps/server/commit/215a70aafbfe9585090a2d2bf2569f7bbb8f4a90))
+
 ### [1.16.2](https://gitlab.coko.foundation/cokoapps/server/compare/v1.16.1...v1.16.2) (2022-03-15)
 
 
