@@ -15,6 +15,7 @@ const app = require('./app')
 const startServer = require('./startServer')
 const { boss, connectToJobQueue } = require('./pgboss')
 const useTransaction = require('./useTransaction')
+const modelTypes = require('./models/_helpers/types')
 
 const {
   healthCheck,
@@ -46,6 +47,7 @@ module.exports = {
   createJWT,
   pubsubManager,
   startServer,
+  modelTypes,
   fileStorage,
   createFile,
   deleteFiles,
