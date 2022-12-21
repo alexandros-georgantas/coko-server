@@ -21,6 +21,7 @@ const index = require('pubsweet-server/src/routes/index')
 
 const healthcheck = require('./healthcheck')
 const createCORSConfig = require('./corsConfig')
+const { connectToFileStorage } = require('./services/fileStorage')
 
 const configureApp = app => {
   const models = require('@pubsweet/models')
@@ -29,6 +30,7 @@ const configureApp = app => {
   app.locals.models = models
 
   app.use(bodyParser.json({ limit: '50mb' }))
+
   morgan.token('graphql', ({ body }, res, type) => {
     if (!body.operationName) return ''
     switch (type) {
@@ -41,6 +43,7 @@ const configureApp = app => {
         return body.operationName
     }
   })
+
   app.use(
     morgan(config.get('pubsweet-server').morganLogFormat || 'combined', {
       stream: logger.stream,
@@ -136,6 +139,13 @@ const configureApp = app => {
     config.get('pubsweet-server.useJobQueue') === false
   ) {
     useJobQueue = false
+  }
+
+  if (
+    config.has('pubsweet-server.useFileStorage') &&
+    config.get('pubsweet-server.useFileStorage')
+  ) {
+    connectToFileStorage()
   }
 
   // Actions to perform when the HTTP server starts listening

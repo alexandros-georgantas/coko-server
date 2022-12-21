@@ -48,64 +48,57 @@ const healthCheck = () => {
 }
 
 const connectToFileStorage = () => {
-  if (
-    config.has('pubsweet-server.useFileStorage') &&
-    config.get('pubsweet-server.useFileStorage')
-  ) {
-    if (!config.has('fileStorage')) {
-      throw new Error(
-        'you have declared that you will use file storage but fileStorage configuration is missing',
-      )
-    }
-
-    const {
-      accessKeyId,
-      secretAccessKey,
-      bucket,
-      protocol,
-      host,
-      port,
-    } = config.get('fileStorage')
-
-    if (!protocol) {
-      throw new Error(
-        'missing required protocol param for initializing file storage',
-      )
-    }
-    if (!host) {
-      throw new Error(
-        'missing required host param for initializing file storage',
-      )
-    }
-
-    if (!accessKeyId) {
-      throw new Error(
-        'missing required accessKeyId param for initializing file storage',
-      )
-    }
-    if (!accessKeyId) {
-      throw new Error(
-        'missing required secretAccessKey param for initializing file storage',
-      )
-    }
-    if (!bucket) {
-      throw new Error(
-        'missing required bucket param for initializing file storage',
-      )
-    }
-
-    const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
-
-    s3 = new AWS.S3({
-      accessKeyId,
-      signatureVersion: 'v4',
-      secretAccessKey,
-      s3ForcePathStyle: true,
-      endpoint: serverUrl,
-    })
-
-    healthCheck()
+  if (!config.has('fileStorage')) {
+    throw new Error(
+      'You have declared that you will use file storage but fileStorage configuration is missing',
+    )
   }
+
+  const {
+    accessKeyId,
+    secretAccessKey,
+    bucket,
+    protocol,
+    host,
+    port,
+  } = config.get('fileStorage')
+
+  if (!protocol) {
+    throw new Error(
+      'Missing required protocol param for initializing file storage',
+    )
+  }
+  if (!host) {
+    throw new Error('Missing required host param for initializing file storage')
+  }
+
+  if (!accessKeyId) {
+    throw new Error(
+      'Missing required accessKeyId param for initializing file storage',
+    )
+  }
+  if (!accessKeyId) {
+    throw new Error(
+      'Missing required secretAccessKey param for initializing file storage',
+    )
+  }
+  if (!bucket) {
+    throw new Error(
+      'Missing required bucket param for initializing file storage',
+    )
+  }
+
+  const serverUrl = `${protocol}://${host}${port ? `:${port}` : ''}`
+
+  s3 = new AWS.S3({
+    accessKeyId,
+    signatureVersion: 'v4',
+    secretAccessKey,
+    s3ForcePathStyle: true,
+    endpoint: serverUrl,
+  })
+
+  healthCheck()
 }
 
 const createImageVersions = async (
