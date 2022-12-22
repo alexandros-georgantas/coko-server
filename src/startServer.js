@@ -6,6 +6,7 @@ const fs = require('fs')
 const path = require('path')
 
 const logger = require('@pubsweet/logger')
+const { initializeWS } = require('./initializeWS')
 
 const { connectToFileStorage } = require('./services/fileStorage')
 
@@ -15,6 +16,7 @@ const startServer = async (app = express()) => {
   if (server) return server
 
   let configureApp
+  let createdWS = {}
   // ./server/app.js in your app is used if it exist,
   // and no different entrypoint is configured in the
   // config at `pubsweet-server.app`
@@ -44,6 +46,11 @@ const startServer = async (app = express()) => {
   logger.info(`Starting HTTP server`)
   const startListening = promisify(httpServer.listen).bind(httpServer)
   await startListening(port)
+
+  if (config.has('pubsweet-server.useWebSockets')) {
+    createdWS = await initializeWS(httpServer)
+  }
+
   logger.info(`App is listening on port ${port}`)
   await configuredApp.onListen(httpServer)
 
@@ -57,7 +64,7 @@ const startServer = async (app = express()) => {
 
   server = httpServer
 
-  return httpServer
+  return { httpServer, createdWS }
 }
 
 module.exports = startServer
