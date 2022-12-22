@@ -2,20 +2,25 @@ const AWS = require('aws-sdk')
 const fs = require('fs-extra')
 const config = require('config')
 const forEach = require('lodash/forEach')
-const sharp = require('sharp')
 const crypto = require('crypto')
 const path = require('path')
 const mime = require('mime-types')
 const logger = require('@pubsweet/logger')
 
 const {
-  convertFileStreamIntoBuffer,
   getFileExtension,
-  getImageFileMetadata,
   writeFileFromStream,
+  handleUnsupportedImageFormats,
+  handleImageVersionsCreation,
+  convertFileStreamIntoBuffer,
+  getImageFileMetadata,
 } = require('../helpers')
 
 const { tempFolderPath } = config.get('pubsweet-server')
+
+const imageConversionToSupportedFormatMapper = {
+  eps: 'svg',
+}
 
 // Initializing Storage Interface
 let s3
@@ -101,69 +106,6 @@ const connectToFileStorage = () => {
   healthCheck()
 }
 
-const createImageVersions = async (
-  buffer,
-  tempDirRoot,
-  filenameWithoutExtension,
-  originalImageWidth,
-  isSVG,
-) => {
-  try {
-    const {
-      maximumWidthForSmallImages,
-      maximumWidthForMediumImages,
-    } = config.get('fileStorage')
-
-    const mediumWidth = maximumWidthForMediumImages
-      ? parseInt(maximumWidthForMediumImages, 10)
-      : 640
-
-    const smallWidth = maximumWidthForSmallImages
-      ? parseInt(maximumWidthForSmallImages, 10)
-      : 180
-
-    const smallFilePath = path.join(
-      tempDirRoot,
-      `${filenameWithoutExtension}_small.${isSVG ? 'svg' : 'jpeg'}`,
-    )
-
-    const mediumFilePath = path.join(
-      tempDirRoot,
-      `${filenameWithoutExtension}_medium.${isSVG ? 'svg' : 'jpeg'}`,
-    )
-
-    // all the versions of SVG will be the same as the original file
-    if (isSVG) {
-      await sharp(buffer).toFile(smallFilePath)
-      await sharp(buffer).toFile(mediumFilePath)
-
-      return {
-        tempSmallFile: smallFilePath,
-        tempMediumFile: mediumFilePath,
-      }
-    }
-
-    await sharp(buffer)
-      .resize({
-        width: smallWidth,
-      })
-      .toFile(smallFilePath)
-
-    if (originalImageWidth < mediumWidth) {
-      await sharp(buffer).toFile(mediumFilePath)
-    } else {
-      await sharp(buffer).resize({ width: mediumWidth }).toFile(mediumFilePath)
-    }
-
-    return {
-      tempSmallFile: smallFilePath,
-      tempMediumFile: mediumFilePath,
-    }
-  } catch (e) {
-    throw new Error(e)
-  }
-}
-
 const getURL = async (objectKey, options = {}) => {
   if (!s3) {
     throw new Error(
@@ -216,62 +158,102 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
     const randomHash = crypto.randomBytes(6).toString('hex')
     const tempDirRoot = tempFolderPath || path.join(process.cwd(), 'temp')
     const tempDir = path.join(tempDirRoot, randomHash)
+    let tempSmallFilePath
+    let tempMediumFilePath
 
     await fs.ensureDir(tempDir)
-    const filenameWithoutExtension = path.parse(hashedFilename).name
-    const tempOriginalFilePath = path.join(tempDir, hashedFilename)
-    await writeFileFromStream(fileStream, tempOriginalFilePath)
+    const originalFilePath = path.join(tempDir, hashedFilename)
 
-    const originalFileBuffer = await convertFileStreamIntoBuffer(
-      fs.createReadStream(tempOriginalFilePath),
-    )
+    await writeFileFromStream(fileStream, originalFilePath)
 
-    const {
-      width,
-      height,
-      space,
-      density,
-      size,
-      format,
-    } = await getImageFileMetadata(originalFileBuffer)
+    /* eslint-disable no-prototype-builtins */
+    if (
+      imageConversionToSupportedFormatMapper.hasOwnProperty(
+        getFileExtension(hashedFilename),
+      )
+    ) {
+      await handleUnsupportedImageFormats(hashedFilename, tempDir)
 
-    const localImageVersionPaths = await createImageVersions(
-      originalFileBuffer,
-      tempDir,
-      filenameWithoutExtension,
-      width,
-      format === 'svg',
-    )
+      const {
+        tempSmallFile,
+        tempMediumFile,
+        tempOriginalFilePath,
+      } = await handleImageVersionsCreation(hashedFilename, tempDir, true)
+      tempSmallFilePath = tempSmallFile
+      tempMediumFilePath = tempMediumFile
 
-    const { tempSmallFile, tempMediumFile } = localImageVersionPaths
+      const originalImageStream = fs.createReadStream(tempOriginalFilePath)
+      const originalFileBuffer = await convertFileStreamIntoBuffer(
+        originalImageStream,
+      )
 
-    const mediumImageStream = fs.createReadStream(tempMediumFile)
+      const {
+        width,
+        height,
+        space,
+        density,
+        size,
+      } = await getImageFileMetadata(originalFileBuffer)
+      const original = await uploadFileHandler(
+        fs.createReadStream(originalFilePath),
+        hashedFilename,
+        mime.lookup(hashedFilename),
+      )
+      original.imageMetadata = {
+        density,
+        height,
+        space,
+        width,
+      }
+      original.size = size
+      original.extension = `${getFileExtension(hashedFilename)}`
+      original.type = 'original'
+      original.mimetype = mime.lookup(hashedFilename)
+      storedObjects.push(original)
+    } else {
+      const {
+        tempSmallFile,
+        tempMediumFile,
+      } = await handleImageVersionsCreation(hashedFilename, tempDir)
+      tempSmallFilePath = tempSmallFile
+      tempMediumFilePath = tempMediumFile
+      const originalImageStream = fs.createReadStream(originalFilePath)
+      const originalFileBuffer = await convertFileStreamIntoBuffer(
+        originalImageStream,
+      )
 
-    const smallImageStream = fs.createReadStream(tempSmallFile)
-
-    const original = await uploadFileHandler(
-      fs.createReadStream(tempOriginalFilePath),
-      hashedFilename,
-      mime.lookup(hashedFilename),
-    )
-
-    original.imageMetadata = {
-      density,
-      height,
-      space,
-      width,
+      const {
+        width,
+        height,
+        space,
+        density,
+        size,
+      } = await getImageFileMetadata(originalFileBuffer)
+      const original = await uploadFileHandler(
+        fs.createReadStream(originalFilePath),
+        hashedFilename,
+        mime.lookup(hashedFilename),
+      )
+      original.imageMetadata = {
+        density,
+        height,
+        space,
+        width,
+      }
+      original.size = size
+      original.extension = `${getFileExtension(hashedFilename)}`
+      original.type = 'original'
+      original.mimetype = mime.lookup(hashedFilename)
+      storedObjects.push(original)
     }
-    original.size = size
-    original.extension = `${getFileExtension(hashedFilename)}`
-    original.type = 'original'
-    original.mimetype = mime.lookup(hashedFilename)
+    /* eslint-enable no-prototype-builtins */
 
-    storedObjects.push(original)
+    const mediumImageStream = fs.createReadStream(tempMediumFilePath)
 
     const medium = await uploadFileHandler(
-      fs.createReadStream(tempMediumFile),
-      path.basename(tempMediumFile),
-      mime.lookup(tempMediumFile),
+      fs.createReadStream(tempMediumFilePath),
+      path.basename(tempMediumFilePath),
+      mime.lookup(tempMediumFilePath),
     )
 
     const mediumFileBuffer = await convertFileStreamIntoBuffer(
@@ -293,16 +275,17 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
       width: mWidth,
     }
     medium.size = mSize
-    medium.extension = `${getFileExtension(tempMediumFile)}`
+    medium.extension = `${getFileExtension(tempMediumFilePath)}`
     medium.type = 'medium'
-    medium.mimetype = mime.lookup(tempMediumFile)
+    medium.mimetype = mime.lookup(tempMediumFilePath)
 
     storedObjects.push(medium)
+    const smallImageStream = fs.createReadStream(tempSmallFilePath)
 
     const small = await uploadFileHandler(
-      fs.createReadStream(tempSmallFile),
-      path.basename(tempSmallFile),
-      mime.lookup(tempSmallFile),
+      fs.createReadStream(tempSmallFilePath),
+      path.basename(tempSmallFilePath),
+      mime.lookup(tempSmallFilePath),
     )
 
     const smallFileBuffer = await convertFileStreamIntoBuffer(smallImageStream)
@@ -322,9 +305,9 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
       width: sWidth,
     }
     small.size = sSize
-    small.extension = `${getFileExtension(tempSmallFile)}`
+    small.extension = `${getFileExtension(tempSmallFilePath)}`
     small.type = 'small'
-    small.mimetype = mime.lookup(tempSmallFile)
+    small.mimetype = mime.lookup(tempSmallFilePath)
 
     storedObjects.push(small)
 
@@ -363,8 +346,13 @@ const upload = async (fileStream, filename, options = {}) => {
         .randomBytes(6)
         .toString('hex')}${getFileExtension(filename, true)}`
     }
-
-    if (!mimetype.match(/^image\//)) {
+    /* eslint-disable no-prototype-builtins */
+    if (
+      !mimetype.match(/^image\//) &&
+      !imageConversionToSupportedFormatMapper.hasOwnProperty(
+        getFileExtension(filename),
+      )
+    ) {
       const storedObject = await uploadFileHandler(
         fileStream,
         hashedFilename,
@@ -379,6 +367,7 @@ const upload = async (fileStream, filename, options = {}) => {
       storedObjects.push(storedObject)
       return storedObjects
     }
+    /* eslint-enable no-prototype-builtins */
 
     storedObjects = await handleImageUpload(
       fileStream,
@@ -515,4 +504,5 @@ module.exports = {
   deleteFiles,
   list,
   download,
+  uploadFileHandler,
 }
