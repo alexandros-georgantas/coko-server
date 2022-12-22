@@ -13,11 +13,13 @@ const {
 const { uploadOneFile, cleanBucket } = require('./helpers/helpers')
 
 describe('File Storage Service', () => {
-  beforeAll(() => {
-    connectToFileStorage()
+  beforeAll(async () => {
+    await connectToFileStorage()
   })
 
-  beforeEach(() => cleanBucket())
+  beforeEach(() => {
+    cleanBucket()
+  })
 
   afterAll(() =>
     fs.remove(
@@ -45,7 +47,7 @@ describe('File Storage Service', () => {
     expect(storedObject).toHaveLength(1)
   })
 
-  it('uploads an image file', async () => {
+  it('uploads an jpg image file', async () => {
     const filePath = path.join(
       process.cwd(),
       'src',
@@ -57,6 +59,66 @@ describe('File Storage Service', () => {
 
     const fileStream = fs.createReadStream(filePath)
     const storedObject = await upload(fileStream, 'test.jpg')
+    expect(storedObject).toHaveLength(3)
+  })
+
+  it('uploads an png image file', async () => {
+    const filePath = path.join(
+      process.cwd(),
+      'src',
+      'services',
+      '__tests__',
+      'files',
+      'test.png',
+    )
+
+    const fileStream = fs.createReadStream(filePath)
+    const storedObject = await upload(fileStream, 'test.png')
+    expect(storedObject).toHaveLength(3)
+  })
+
+  it('uploads an tiff image file', async () => {
+    const filePath = path.join(
+      process.cwd(),
+      'src',
+      'services',
+      '__tests__',
+      'files',
+      'test.tiff',
+    )
+
+    const fileStream = fs.createReadStream(filePath)
+    const storedObject = await upload(fileStream, 'test.tiff')
+    expect(storedObject).toHaveLength(3)
+  })
+
+  it('uploads an svg image file', async () => {
+    const filePath = path.join(
+      process.cwd(),
+      'src',
+      'services',
+      '__tests__',
+      'files',
+      'test.svg',
+    )
+
+    const fileStream = fs.createReadStream(filePath)
+    const storedObject = await upload(fileStream, 'test.svg')
+    expect(storedObject).toHaveLength(3)
+  })
+
+  it('uploads an eps image file', async () => {
+    const filePath = path.join(
+      process.cwd(),
+      'src',
+      'services',
+      '__tests__',
+      'files',
+      'test.eps',
+    )
+
+    const fileStream = fs.createReadStream(filePath)
+    const storedObject = await upload(fileStream, 'test.eps')
     expect(storedObject).toHaveLength(3)
   })
 

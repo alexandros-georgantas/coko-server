@@ -1,13 +1,37 @@
-// const axios = require('axios')
 const path = require('path')
 const sharp = require('sharp')
 const fs = require('fs-extra')
-// const config = require('config')
-// const get = require('lodash/get')
+const config = require('config')
+const commandExists = require('command-exists').sync
+const { exec } = require('child_process')
+const logger = require('@pubsweet/logger')
 
-// const { ServiceCredential } = require('./models')
+const imageConversionToSupportedFormatMapper = {
+  eps: 'svg',
+}
 
-// const services = config.get('services')
+const imageSizeConversionMapper = {
+  tiff: {
+    small: 'png',
+    medium: 'png',
+  },
+  tif: {
+    small: 'png',
+    medium: 'png',
+  },
+  svg: {
+    small: 'svg',
+    medium: 'svg',
+  },
+  png: {
+    small: 'png',
+    medium: 'png',
+  },
+  default: {
+    small: 'jpeg',
+    medium: 'jpeg',
+  },
+}
 
 const convertFileStreamIntoBuffer = async fileStream => {
   return new Promise((resolve, reject) => {
@@ -53,6 +77,14 @@ const getImageFileMetadata = async fileBuffer => {
   }
 }
 
+const getImageWidth = async fileBuffer => {
+  try {
+    return getImageFileMetadata(fileBuffer).width
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
 const writeFileFromStream = async (inputStream, filePath) => {
   try {
     return new Promise((resolve, reject) => {
@@ -72,93 +104,155 @@ const writeFileFromStream = async (inputStream, filePath) => {
   }
 }
 
-// const serviceHandshake = async (which, renew = false) => {
-//   if (!services) {
-//     throw new Error('services are undefined')
-//   }
+const handleUnsupportedImageFormats = async (filename, tempDir) => {
+  try {
+    const filenameWithoutExtension = path.parse(filename).name
+    const tempOriginalFilePath = path.join(tempDir, filename)
 
-//   const service = get(services, `${which}`)
+    if (!commandExists('magick') && !commandExists('convert')) {
+      throw new Error(
+        'for .eps support you need ImageMagick installed on your OS or container',
+      )
+    }
 
-//   if (!service) {
-//     throw new Error(`service ${which} configuration is undefined `)
-//   }
+    const targetFilePath = `${path.join(tempDir, filenameWithoutExtension)}.${
+      imageConversionToSupportedFormatMapper[getFileExtension(filename)]
+    }`
 
-//   const foundServiceCredential = await ServiceCredential.query().findOne({
-//     name: which,
-//   })
+    return new Promise((resolve, reject) => {
+      exec(
+        `convert ${tempOriginalFilePath} ${targetFilePath}`,
+        (error, stdout, stderr) => {
+          if (error) {
+            return reject(error)
+          }
 
-//   const { clientId, clientSecret, port, protocol, host } = service
-//   const buff = Buffer.from(`${clientId}:${clientSecret}`, 'utf8')
-//   const base64data = buff.toString('base64')
+          logger.info(stdout || stderr)
 
-//   const serviceURL = `${protocol}://${host}${port ? `:${port}` : ''}`
+          return resolve(targetFilePath)
+        },
+      )
+    })
+  } catch (e) {
+    throw new Error(e)
+  }
+}
 
-//   const serviceHealthCheck = await axios({
-//     method: 'get',
-//     url: `${serviceURL}/healthcheck`,
-//   })
+const createImageVersions = async (
+  buffer,
+  tempDirRoot,
+  filenameWithoutExtension,
+  originalImageWidth,
+  format,
+) => {
+  try {
+    const { maximumWidthForSmallImages, maximumWidthForMediumImages } =
+      config.get('fileStorage')
 
-//   const { data: healthCheckData } = serviceHealthCheck
-//   const { message } = healthCheckData
+    const mediumWidth = maximumWidthForMediumImages
+      ? parseInt(maximumWidthForMediumImages, 10)
+      : 640
 
-//   if (message !== 'Coolio') {
-//     throw new Error(`service ${which} is down`)
-//   }
+    const smallWidth = maximumWidthForSmallImages
+      ? parseInt(maximumWidthForSmallImages, 10)
+      : 180
 
-//   return new Promise((resolve, reject) => {
-//     axios({
-//       method: 'post',
-//       url: `${serviceURL}/api/auth`,
-//       headers: { authorization: `Basic ${base64data}` },
-//     })
-//       .then(async ({ data }) => {
-//         const { accessToken } = data
+    const smallFilePath = path.join(
+      tempDirRoot,
+      `${filenameWithoutExtension}_small.${
+        imageSizeConversionMapper[format]
+          ? imageSizeConversionMapper[format].small
+          : imageSizeConversionMapper.default.small
+      }`,
+    )
 
-//         if (!renew && !foundServiceCredential) {
-//           await ServiceCredential.query().insert({
-//             name: which,
-//             accessToken,
-//           })
-//           resolve()
-//         }
+    const mediumFilePath = path.join(
+      tempDirRoot,
+      `${filenameWithoutExtension}_medium.${
+        imageSizeConversionMapper[format]
+          ? imageSizeConversionMapper[format].medium
+          : imageSizeConversionMapper.default.medium
+      }`,
+    )
 
-//         await ServiceCredential.query().patchAndFetchById(
-//           foundServiceCredential.id,
-//           {
-//             accessToken,
-//           },
-//         )
-//         resolve()
-//       })
-//       .catch(async err => {
-//         const { response } = err
+    // all the versions of SVG will be the same as the original file
+    if (format === 'svg') {
+      await sharp(buffer).toFile(smallFilePath)
+      await sharp(buffer).toFile(mediumFilePath)
 
-//         if (foundServiceCredential) {
-//           await ServiceCredential.query().patchAndFetchById(
-//             foundServiceCredential.id,
-//             {
-//               accessToken: null,
-//             },
-//           )
-//         }
+      return {
+        tempSmallFile: smallFilePath,
+        tempMediumFile: mediumFilePath,
+      }
+    }
 
-//         if (!response) {
-//           return reject(new Error(`Request failed with message: ${err.code}`))
-//         }
+    await sharp(buffer)
+      .resize({
+        width: smallWidth,
+      })
+      .toFile(smallFilePath)
 
-//         const { status, data } = response
-//         const { msg } = data
-//         return reject(
-//           new Error(`Request failed with status ${status} and message: ${msg}`),
-//         )
-//       })
-//   })
-// }
+    if (originalImageWidth < mediumWidth) {
+      await sharp(buffer).toFile(mediumFilePath)
+    } else {
+      await sharp(buffer).resize({ width: mediumWidth }).toFile(mediumFilePath)
+    }
+
+    return {
+      tempSmallFile: smallFilePath,
+      tempMediumFile: mediumFilePath,
+    }
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+const handleImageVersionsCreation = async (
+  filename,
+  tempDir,
+  unsupportedFile = false,
+) => {
+  try {
+    const filenameWithoutExtension = path.parse(filename).name
+
+    const fileEXT = unsupportedFile
+      ? imageConversionToSupportedFormatMapper[getFileExtension(filename)]
+      : getFileExtension(filename)
+
+    const filePath = path.join(
+      tempDir,
+      `${filenameWithoutExtension}.${fileEXT}`,
+    )
+
+    const fileBuffer = await convertFileStreamIntoBuffer(
+      fs.createReadStream(filePath),
+    )
+
+    const originalImageWidth = await getImageWidth(fileBuffer)
+
+    const { tempSmallFile, tempMediumFile } = await createImageVersions(
+      fileBuffer,
+      tempDir,
+      filenameWithoutExtension,
+      originalImageWidth,
+      fileEXT,
+    )
+
+    return {
+      tempOriginalFilePath: filePath,
+      tempSmallFile,
+      tempMediumFile,
+    }
+  } catch (e) {
+    throw new Error(e)
+  }
+}
 
 module.exports = {
   convertFileStreamIntoBuffer,
   getFileExtension,
   getImageFileMetadata,
   writeFileFromStream,
-  // serviceHandshake,
+  handleUnsupportedImageFormats,
+  handleImageVersionsCreation,
 }
