@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://gitlab.coko.foundation/cokoapps/server/compare/v2.1.0...v2.2.0) (2022-12-23)
+
+
+### Features
+
+* **imageversion:** convert eps to svg, tiff & png to png ([6f8144a](https://gitlab.coko.foundation/cokoapps/server/commit/6f8144a3845a96242fa747e1e7edfbdc4cc2c4df))
+
 ## [2.1.0](https://gitlab.coko.foundation/cokoapps/server/compare/v2.0.0...v2.1.0) (2022-12-21)
 
 
