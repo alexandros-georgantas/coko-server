@@ -4,10 +4,10 @@ const axios = require('axios')
 
 const { ServiceCredential } = require('../models')
 
-const services = config.get('services')
-
 const getAccessToken = async (serviceName, renew = false) => {
   try {
+    const services = config.has('services') && config.get('services')
+
     if (!services) {
       throw new Error('services are undefined')
     }
