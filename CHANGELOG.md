@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.18.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.18.0...v1.18.1) (2023-01-10)
+
+
+### Bug Fixes
+
+* **server:** move config services into get access token fn ([aeda7a9](https://gitlab.coko.foundation/cokoapps/server/commit/aeda7a90264a8d8b32f137bad79174088953b37d))
+
 ## [1.18.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.17.0...v1.18.0) (2022-12-23)
 
 
