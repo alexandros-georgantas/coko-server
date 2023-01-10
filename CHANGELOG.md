@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.18.2](https://gitlab.coko.foundation/cokoapps/server/compare/v1.18.1...v1.18.2) (2023-01-10)
+
 ### [1.18.1](https://gitlab.coko.foundation/cokoapps/server/compare/v1.18.0...v1.18.1) (2023-01-10)
 
 
