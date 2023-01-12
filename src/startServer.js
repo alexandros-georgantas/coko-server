@@ -43,7 +43,7 @@ const startServer = async (app = express()) => {
   await startListening(port)
 
   if (config.has('pubsweet-server.useWebSockets')) {
-    createdWS = await initializeWS()
+    createdWS = await initializeWS(httpServer)
   }
 
   logger.info(`App is listening on port ${port}`)
