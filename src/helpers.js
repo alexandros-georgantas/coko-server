@@ -1,5 +1,6 @@
 const path = require('path')
 const sharp = require('sharp')
+// const authentication = require('pubsweet-server/src/authentication')
 const fs = require('fs-extra')
 const jwt = require('jsonwebtoken')
 const config = require('config')
@@ -7,7 +8,6 @@ const commandExists = require('command-exists').sync
 const { exec } = require('child_process')
 const logger = require('@pubsweet/logger')
 
-const { User: dbUser } = require('@pubsweet/models')
 
 const imageConversionToSupportedFormatMapper = {
   eps: 'svg',
@@ -38,6 +38,9 @@ const imageSizeConversionMapper = {
 
 const authenticateWS = async req => {
   try {
+    const { User: dbUser } = require('@pubsweet/models')
+    // const decodeJWT = authentication.token.verifyToken
+    
     const serverURL = config.has('pubsweet-server.publicURL')
       ? config.get('pubsweet-server.publicURL')
       : config.get('pubsweet-server.baseUrl')
