@@ -39,12 +39,13 @@ const startServer = async (app = express()) => {
   httpServer.app = configuredApp
 
   logger.info(`Starting HTTP server`)
-  const startListening = promisify(httpServer.listen).bind(httpServer)
-  await startListening(port)
 
   if (config.has('pubsweet-server.useWebSockets')) {
-    createdWS = await initializeWS()
+    createdWS = await initializeWS(httpServer)
   }
+
+  const startListening = promisify(httpServer.listen).bind(httpServer)
+  await startListening(port)
 
   logger.info(`App is listening on port ${port}`)
   await configuredApp.onListen(httpServer)
