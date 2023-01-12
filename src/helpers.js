@@ -1,10 +1,13 @@
 const path = require('path')
 const sharp = require('sharp')
 const fs = require('fs-extra')
+const jwt = require('jsonwebtoken')
 const config = require('config')
 const commandExists = require('command-exists').sync
 const { exec } = require('child_process')
 const logger = require('@pubsweet/logger')
+
+const { User: dbUser } = require('@pubsweet/models')
 
 const imageConversionToSupportedFormatMapper = {
   eps: 'svg',
@@ -31,6 +34,35 @@ const imageSizeConversionMapper = {
     small: 'jpeg',
     medium: 'jpeg',
   },
+}
+
+const authenticateWS = async req => {
+  try {
+    const serverURL = config.has('pubsweet-server.publicURL')
+      ? config.get('pubsweet-server.publicURL')
+      : config.get('pubsweet-server.baseUrl')
+
+    const url = new URL(req.url, serverURL)
+
+    const token = url.searchParams.get('token')
+    let foundUser = false
+
+    if (token) {
+      const decoded = jwt.verify(token, config.get('pubsweet-server.secret'))
+
+      if (decoded) {
+        const user = await dbUser.query().findById(decoded.id)
+
+        if (user) {
+          foundUser = true
+        }
+      }
+    }
+
+    return foundUser
+  } catch (e) {
+    throw new Error(e)
+  }
 }
 
 const convertFileStreamIntoBuffer = async fileStream => {
@@ -216,6 +248,7 @@ const handleImageVersionsCreation = async (
 ) => {
   try {
     const filenameWithoutExtension = path.parse(filename).name
+
     const fileEXT = unsupportedFile
       ? imageConversionToSupportedFormatMapper[getFileExtension(filename)]
       : getFileExtension(filename)
@@ -230,6 +263,7 @@ const handleImageVersionsCreation = async (
     )
 
     const originalImageWidth = await getImageWidth(fileBuffer)
+
     const { tempSmallFile, tempMediumFile } = await createImageVersions(
       fileBuffer,
       tempDir,
@@ -255,4 +289,5 @@ module.exports = {
   writeFileFromStream,
   handleUnsupportedImageFormats,
   handleImageVersionsCreation,
+  authenticateWS,
 }

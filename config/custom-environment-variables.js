@@ -8,6 +8,9 @@ module.exports = {
       password: 'POSTGRES_PASSWORD',
     },
     tempFolderPath: 'TEMP_FOLDER_PATH',
+    useFileStorage: 'USE_FILE_STORAGE',
+    useWebSockets: 'USE_WEB_SOCKETS',
+    websocketPaths: 'WEB_SOCKET_PATHS',
   },
   fileStorage: {
     minioRootUser: 'MINIO_ROOT_USER',

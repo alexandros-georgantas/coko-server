@@ -46,6 +46,7 @@ const getAccessToken = async (serviceName, renew = false) => {
         url: `${serviceURL}/api/auth`,
         headers: { authorization: `Basic ${base64data}` },
       })
+
       const { accessToken } = data
       await ServiceCredential.query().insert({
         name: serviceName,
@@ -62,12 +63,14 @@ const getAccessToken = async (serviceName, renew = false) => {
         url: `${serviceURL}/api/auth`,
         headers: { authorization: `Basic ${base64data}` },
       })
+
       const { accessToken: freshAccessToken } = data
       await ServiceCredential.query().patchAndFetchById(id, {
         accessToken: freshAccessToken,
       })
       return freshAccessToken
     }
+
     return accessToken
   } catch (e) {
     const foundServiceCredential = await ServiceCredential.query().findOne({
