@@ -4,9 +4,9 @@ const http = require('http')
 const config = require('config')
 const fs = require('fs')
 const path = require('path')
-
+const { WebSocketServer } = require('ws')
 const logger = require('@pubsweet/logger')
-const { initializeWS } = require('./initializeWS')
+// const { initializeWS } = require('./initializeWS')
 
 let server
 
@@ -14,7 +14,7 @@ const startServer = async (app = express()) => {
   if (server) return server
 
   let configureApp
-  let createdWS = {}
+  const createdWS = {}
   // ./server/app.js in your app is used if it exist,
   // and no different entrypoint is configured in the
   // config at `pubsweet-server.app`
@@ -42,12 +42,32 @@ const startServer = async (app = express()) => {
   logger.info(`Starting HTTP server`)
   const startListening = promisify(httpServer.listen).bind(httpServer)
   await startListening(port)
+
+  const wss = new WebSocketServer({ port: 5555 })
+
+  wss.on('connection', ws => {
+    console.log('eee', ws)
+    // clients.push(client)
+    ws.on('open', function open() {
+      ws.send('hello')
+    })
+    ws.on('message', data => {
+      console.log('received: %s', data)
+    })
+
+    ws.on('close', function close() {
+      console.log('disconnected')
+    })
+
+    // ws.send('something')
+  })
+
   logger.info(`App is listening on port ${port}`)
   await configuredApp.onListen(httpServer)
 
-  if (config.has('pubsweet-server.useWebSockets')) {
-    createdWS = await initializeWS(httpServer)
-  }
+  // if (config.has('pubsweet-server.useWebSockets')) {
+  //   createdWS = await initializeWS(httpServer)
+  // }
 
   httpServer.originalClose = httpServer.close
 
