@@ -6,7 +6,7 @@ const { WebSocketServer } = require('ws')
 
 // const { authenticateWS } = require('./helpers')
 
-const initializeWS = async httpServer => {
+const initializeWS = async () => {
   const createdWS = {}
   // const specificPurposeWebSockets = []
 
@@ -31,36 +31,36 @@ const initializeWS = async httpServer => {
     })
   }
 
-  httpServer.on('upgrade', async (req, socket, head) => {
-    // console.log(`http://${req.headers.host}/`)
+  // httpServer.on('upgrade', async (req, socket, head) => {
+  //   // console.log(`http://${req.headers.host}/`)
 
-    // const serverURL = config.has('pubsweet-server.publicURL')
-    //   ? config.get('pubsweet-server.publicURL')
-    //   : config.get('pubsweet-server.baseUrl')
+  //   // const serverURL = config.has('pubsweet-server.publicURL')
+  //   //   ? config.get('pubsweet-server.publicURL')
+  //   //   : config.get('pubsweet-server.baseUrl')
 
-    // const { pathname } = new URL(req.url, serverURL)
+  //   // const { pathname } = new URL(req.url, serverURL)
 
-    // if (!authenticateWS(req)) {
-    //   socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
-    //   socket.destroy()
-    //   return
-    // }
-    config.get('pubsweet-server.websockets').forEach(websocket => {
-      const { path } = websocket
-      return createdWS[path].handleUpgrade(req, socket, head, ws => {
-        createdWS[path].emit('connection', ws, req, req.client)
-      })
-    })
-    // specificPurposeWebSockets.forEach(path => {
-    //   if (pathname === `/${path}`) {
-    //     return createdWS[path].handleUpgrade(req, socket, head, ws => {
-    //       createdWS[path].emit('connection', ws, req, req.client)
-    //     })
-    //   }
+  //   // if (!authenticateWS(req)) {
+  //   //   socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
+  //   //   socket.destroy()
+  //   //   return
+  //   // }
+  //   config.get('pubsweet-server.websockets').forEach(websocket => {
+  //     const { path } = websocket
+  //     return createdWS[path].handleUpgrade(req, socket, head, ws => {
+  //       createdWS[path].emit('connection', ws, req, req.client)
+  //     })
+  //   })
+  //   // specificPurposeWebSockets.forEach(path => {
+  //   //   if (pathname === `/${path}`) {
+  //   //     return createdWS[path].handleUpgrade(req, socket, head, ws => {
+  //   //       createdWS[path].emit('connection', ws, req, req.client)
+  //   //     })
+  //   //   }
 
-    //   return null
-    // })
-  })
+  //   //   return null
+  //   // })
+  // })
 
   return createdWS
 }
