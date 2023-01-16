@@ -41,10 +41,12 @@ const fileStorage = {
 const { callMicroservice } = require('./utils/microservices')
 
 const createJWT = authentication.token.create
+const verifyJWT = authentication.token.verify
 
 module.exports = {
   app,
   createJWT,
+  verifyJWT,
   pubsubManager,
   startServer,
   modelTypes,
