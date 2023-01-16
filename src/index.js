@@ -38,10 +38,12 @@ const fileStorage = {
 // const { serviceHandshake } = require('./helpers')
 
 const createJWT = authentication.token.create
+const verifyJWT = authentication.token.verify
 
 module.exports = {
   app,
   createJWT,
+  verifyJWT,
   pubsubManager,
   startServer,
   modelTypes,
