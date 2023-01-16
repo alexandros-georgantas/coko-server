@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://gitlab.coko.foundation/cokoapps/server/compare/v2.2.1...v2.3.0) (2023-01-16)
+
+
+### Features
+
+* **server:** expose verifyJWT added ([b0538de](https://gitlab.coko.foundation/cokoapps/server/commit/b0538de5d050fbd467f5ac5ba75028901396c79e))
+
 ### [2.2.1](https://gitlab.coko.foundation/cokoapps/server/compare/v2.2.0...v2.2.1) (2023-01-10)
 
 
