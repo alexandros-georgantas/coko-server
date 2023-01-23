@@ -1,5 +1,7 @@
 const config = require('config')
 
+const clientUrl = config.has('clientUrl') && config.get('clientUrl')
+
 /*
   Email with email verification token to new users
 */
@@ -7,10 +9,7 @@ const identityVerification = context => {
   try {
     const { verificationToken, email } = context
 
-    const link = `${
-      config.get('pubsweet-server.externalURL') ||
-      config.get('pubsweet-server.baseURL')
-    }/email-verification/${verificationToken}`
+    const link = `${clientUrl}/email-verification/${verificationToken}`
 
     const content = `
         <p>Thank you for signing up!</p>
@@ -94,10 +93,7 @@ const requestResetPassword = context => {
     ? config.get('password-reset.pathToPage')
     : '/password-reset'
 
-  const link = `${
-    config.get('pubsweet-server.externalURL') ||
-    config.get('pubsweet-server.baseURL')
-  }${pathToPage}/${token}`
+  const link = `${clientUrl}${pathToPage}/${token}`
 
   const content = `
       <p>

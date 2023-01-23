@@ -284,7 +284,8 @@ module.exports = {
     verifyEmail: verifyEmailResolver,
     resendVerificationEmail: resendVerificationEmailResolver,
     resendVerificationEmailFromLogin: resendVerificationEmailFromLoginResolver,
-    resendVerificationEmailAfterLogin: resendVerificationEmailAfterLoginResolver,
+    resendVerificationEmailAfterLogin:
+      resendVerificationEmailAfterLoginResolver,
     updatePassword: updatePasswordResolver,
     sendPasswordResetEmail: sendPasswordResetEmailResolver,
     resetPassword: resetPasswordResolver,

@@ -130,7 +130,7 @@ describe('Base model', () => {
     expect(result[1].status).toEqual('d')
   })
 
-  it('fetches entities by their ids ', async () => {
+  it('fetches entities by their ids', async () => {
     const entity1 = await Fake.insert({
       status: 'a',
     })

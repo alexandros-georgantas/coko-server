@@ -237,7 +237,7 @@ class User extends BaseModel {
 
   static async updatePassword(
     userId,
-    currentPassword = undefined,
+    currentPassword = undefined, // eslint-disable-line default-param-last
     newPassword,
     passwordResetToken = undefined,
     options = {},

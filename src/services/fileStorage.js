@@ -59,14 +59,8 @@ const connectToFileStorage = () => {
       )
     }
 
-    const {
-      accessKeyId,
-      secretAccessKey,
-      bucket,
-      protocol,
-      host,
-      port,
-    } = config.get('fileStorage')
+    const { accessKeyId, secretAccessKey, bucket, protocol, host, port } =
+      config.get('fileStorage')
 
     if (!protocol) {
       throw new Error(
@@ -120,10 +114,8 @@ const createImageVersions = async (
   isSVG,
 ) => {
   try {
-    const {
-      maximumWidthForSmallImages,
-      maximumWidthForMediumImages,
-    } = config.get('fileStorage')
+    const { maximumWidthForSmallImages, maximumWidthForMediumImages } =
+      config.get('fileStorage')
 
     const mediumWidth = maximumWidthForMediumImages
       ? parseInt(maximumWidthForMediumImages, 10)
@@ -239,14 +231,8 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
       fs.createReadStream(tempOriginalFilePath),
     )
 
-    const {
-      width,
-      height,
-      space,
-      density,
-      size,
-      format,
-    } = await getImageFileMetadata(originalFileBuffer)
+    const { width, height, space, density, size, format } =
+      await getImageFileMetadata(originalFileBuffer)
 
     const localImageVersionPaths = await createImageVersions(
       originalFileBuffer,

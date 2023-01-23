@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const model = require('./identity.model')
 
 const {
@@ -13,5 +14,5 @@ module.exports = {
     identitiesBasedOnUserIdsLoader,
     defaultIdentityBasedOnUserIdsLoader,
   },
-  typeDefs: fs.readFileSync(`${__dirname}/identity.graphql`, 'utf-8'),
+  typeDefs: fs.readFileSync(path.join(__dirname, 'identity.graphql'), 'utf-8'),
 }
