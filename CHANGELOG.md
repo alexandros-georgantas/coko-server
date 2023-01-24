@@ -2,6 +2,76 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.14.0...v3.0.0-beta.0) (2023-01-24)
+
+
+### Features
+
+* **models:** add models test setup ([94a9bc5](https://gitlab.coko.foundation/cokoapps/server/commit/94a9bc5e5b4987fde91e857ebecd71ffa104a800))
+* **models:** add to/remove from global team methods ([19daad7](https://gitlab.coko.foundation/cokoapps/server/commit/19daad75c136184777cb76cd9a53b14634be656c))
+* **models:** chat added ([e7cb9c7](https://gitlab.coko.foundation/cokoapps/server/commit/e7cb9c7695356fd0a663de9d821d5416de00dad4))
+* **models:** enable query users by their data ([f1dab50](https://gitlab.coko.foundation/cokoapps/server/commit/f1dab50dae12a650f3043d171c714050ab0ebaf1))
+* **models:** expose graphql loader util ([2187e36](https://gitlab.coko.foundation/cokoapps/server/commit/2187e36f048be0ac105143f2b5382f29d0ffc42c))
+* **models:** expose model types ([f4dd673](https://gitlab.coko.foundation/cokoapps/server/commit/f4dd67398812d2a7a87bfea43583dd419d47c2b9))
+* **models:** get user teams with a model method ([fafdcf1](https://gitlab.coko.foundation/cokoapps/server/commit/fafdcf16cb7c7833ff01232cfbb5a131afd2bb95))
+* **models:** graphql schema and resolvers added ([3bcbeff](https://gitlab.coko.foundation/cokoapps/server/commit/3bcbeff74f41925ce4df161ba1be21f98be0d54f))
+* **models:** user, identity, team and teamMember added ([cbcf8a1](https://gitlab.coko.foundation/cokoapps/server/commit/cbcf8a16b4c5c4d6a5d5bf345a4c8b1164c77ada))
+* **models:** user, identity, team and teamMember added ([58be118](https://gitlab.coko.foundation/cokoapps/server/commit/58be11849c63b2ab55c5394b58ba69c157d9348e))
+* **models:** user, team, chat api completed ([e2a5bc1](https://gitlab.coko.foundation/cokoapps/server/commit/e2a5bc197905142b53f07d44f35881a368283885))
+* object storage ([b3d6d2c](https://gitlab.coko.foundation/cokoapps/server/commit/b3d6d2cdba27b24b0f835efb81b45b2663353b65))
+* **server:** add resend verify email after login ([a803d9f](https://gitlab.coko.foundation/cokoapps/server/commit/a803d9f4b4f639cb93cc2fe59f8039206e315c10))
+* **server:** expose req & res in graphql context ([7e5e876](https://gitlab.coko.foundation/cokoapps/server/commit/7e5e87642e7c49fcb94947794dfd1c0adc170ac1))
+* **server:** init graphql-api ([5feb581](https://gitlab.coko.foundation/cokoapps/server/commit/5feb581c24d67d1f4cc448479f360814879c9783))
+* **server:** replace external url, base url and client variables with a single client url variable ([b746aea](https://gitlab.coko.foundation/cokoapps/server/commit/b746aea41b1e3487a9c5dbe135c09bbc4b74ba46))
+* **server:** team, teamMember, chatThread, chatMessage added ([cfe38e6](https://gitlab.coko.foundation/cokoapps/server/commit/cfe38e627f2fed3b65c51e07fe5c407cfee6e508))
+* **server:** use graphql-upload to allow node > 12 ([3461a77](https://gitlab.coko.foundation/cokoapps/server/commit/3461a7757f4e49bc6a5e3a6699a04e5491de9b4f))
+
+
+### Bug Fixes
+
+* **middleware:** allow shield errors ([a6c32b8](https://gitlab.coko.foundation/cokoapps/server/commit/a6c32b872fa345884beb7dbb936353fd90c8fc3e))
+* **middleware:** permissions circular dependency ([877f428](https://gitlab.coko.foundation/cokoapps/server/commit/877f428efce0b90b06f1fdfe4c40511ff141bfba))
+* **middleware:** remove server host var in prod ([03b1bdf](https://gitlab.coko.foundation/cokoapps/server/commit/03b1bdf4df0c06e4676d338686644d2e4bb07c81))
+* **models:** allow paginating users results ([8d65cce](https://gitlab.coko.foundation/cokoapps/server/commit/8d65cce94e773fc81066b6f523e2272e26fc2b9f))
+* **models:** always count ([2ddd4a2](https://gitlab.coko.foundation/cokoapps/server/commit/2ddd4a2395737eb20096e3a7270d255404ac4a35))
+* **models:** chatMessage test fixed ([0e987df](https://gitlab.coko.foundation/cokoapps/server/commit/0e987dfc1719440a760171c99dbc440e479eb695))
+* **models:** correcting typo ([9e156f4](https://gitlab.coko.foundation/cokoapps/server/commit/9e156f416533e5e73259209d23559998b36565b2))
+* **models:** delete identities before deleting user(s) ([c466e4b](https://gitlab.coko.foundation/cokoapps/server/commit/c466e4bcec8aa1584e375059d9b8b001cafd920b))
+* **models:** fetch teamMember user from user model instead of loader ([b62eea9](https://gitlab.coko.foundation/cokoapps/server/commit/b62eea9c89e05bf9c3ee6654d5822bf2a9d7d20d))
+* **models:** fix api loaders ([d4fac6a](https://gitlab.coko.foundation/cokoapps/server/commit/d4fac6afeee44e0c7cfe0af3f968c292079e9528))
+* **models:** fix loader error message ([8177a10](https://gitlab.coko.foundation/cokoapps/server/commit/8177a10826d105f711d350bb1faa0eac04834e2a))
+* **models:** fix logger and model imports ([b30a283](https://gitlab.coko.foundation/cokoapps/server/commit/b30a283a2630a510220164badf08e8bb38e3e4f3))
+* **models:** pass the correct parameters to updatePassword controller ([d36121a](https://gitlab.coko.foundation/cokoapps/server/commit/d36121a50365ff978578c68be6adf5def965a34b))
+* **models:** return array of ids when deleting users ([2d40788](https://gitlab.coko.foundation/cokoapps/server/commit/2d40788377adc8fbf1c5347d75fe376cfb8e6ccb))
+* **models:** small is not a type ([74aa952](https://gitlab.coko.foundation/cokoapps/server/commit/74aa952d4565add0ffcdf5cb6225137e9d84a2b5))
+* **models:** unused user.teams deleted from resolvers ([46d5224](https://gitlab.coko.foundation/cokoapps/server/commit/46d52245bf80f8a4165049cd457bf8aad82542d6))
+* running tests ([297d5a1](https://gitlab.coko.foundation/cokoapps/server/commit/297d5a1d6def7c73e1e8c810592a861659b56413))
+* **server:** add file type definitions ([8c04f35](https://gitlab.coko.foundation/cokoapps/server/commit/8c04f35dd7cbd30fb371b6361ad296684631e9c4))
+* **server:** add plain text link to request password reset ([7badcb8](https://gitlab.coko.foundation/cokoapps/server/commit/7badcb840ec573296da0daa70449ecc18f2647b7))
+* **server:** avoid circular dependencies ([75b62b2](https://gitlab.coko.foundation/cokoapps/server/commit/75b62b2b4518eb46a1a0d5bbfe57f379d2a3440b))
+* **server:** correct login typedefs ([85681b2](https://gitlab.coko.foundation/cokoapps/server/commit/85681b2ecfec96fcfba6a21b51344adc16dfc6b3))
+* **server:** correct users typedef ([4efba7a](https://gitlab.coko.foundation/cokoapps/server/commit/4efba7a13661a348bed599b9729ac3b47c15be60))
+* **server:** correct verify after login query ([8e2ec49](https://gitlab.coko.foundation/cokoapps/server/commit/8e2ec494c8b9a7f55fe298f18b6ee1448ee39cf3))
+* **server:** do not allow gql playground in production ([f43c1d5](https://gitlab.coko.foundation/cokoapps/server/commit/f43c1d5567218406d4f6cc55ba3ebc6d99f93a41))
+* **server:** error handle invalid login credentials ([a0a766a](https://gitlab.coko.foundation/cokoapps/server/commit/a0a766af94e46aab0174611d7ca1a5cece3c45b8))
+* **server:** file controller circular dependencies ([1aac706](https://gitlab.coko.foundation/cokoapps/server/commit/1aac7069ece46a11fcd5c5fcb34cdaf94ab5d631))
+* **server:** fix datetime type for file ([782be0b](https://gitlab.coko.foundation/cokoapps/server/commit/782be0bc67b401eb3bbeb6509ff3f9fa11d858ff))
+* **server:** fix team member loader response ([aee28ae](https://gitlab.coko.foundation/cokoapps/server/commit/aee28aef88da1927d38d144a1c1ba857121c061d))
+* **server:** fix team queries api response definitions ([a68a1a6](https://gitlab.coko.foundation/cokoapps/server/commit/a68a1a63f4296687f9d12232bd5b5c5f4c669f28))
+* **server:** fix Upload scalar resolver ([23ae9a6](https://gitlab.coko.foundation/cokoapps/server/commit/23ae9a616d8af1ac7a0f2f5e1bcf4fe59b89f84d))
+* **server:** handle user not found on login ([b6c4bdd](https://gitlab.coko.foundation/cokoapps/server/commit/b6c4bdd53bbe68fa0742a2fbfdf76db1e84dcacd))
+* **server:** improve plain text formatting for verification email ([09894cb](https://gitlab.coko.foundation/cokoapps/server/commit/09894cb96806f95916644816ab37e2c6c930f143))
+* **server:** include plain text link in verification email ([7444dd6](https://gitlab.coko.foundation/cokoapps/server/commit/7444dd60d13a40d3efd31295fc7ed39731c031f2))
+* **server:** make login mutation args an input ([039dcd4](https://gitlab.coko.foundation/cokoapps/server/commit/039dcd48c9f755b53c7b99a7177b0a87a42972d9))
+* **server:** make sure old api is not called from pubsweet ([f46efb0](https://gitlab.coko.foundation/cokoapps/server/commit/f46efb042430d31b3f75547f5dca4b13bf702ec9))
+* **server:** make username optional during signup ([02e0cd1](https://gitlab.coko.foundation/cokoapps/server/commit/02e0cd1f372f3ac826eec19abba35854a6fb5b01))
+* **server:** remove loaders from user identities for now ([cced62a](https://gitlab.coko.foundation/cokoapps/server/commit/cced62ab12c6c059cc7d2b1a55574743b25a3eb3))
+* **server:** revert last change ([fa2c3da](https://gitlab.coko.foundation/cokoapps/server/commit/fa2c3daefc39e8628c882a820fcbb8ba02a224fe))
+* **server:** signup: do not check username if not provided ([4a17029](https://gitlab.coko.foundation/cokoapps/server/commit/4a17029f8986b20f0387e9745a926c0d258939af))
+* **server:** temporarily disable team member data loader ([0441a73](https://gitlab.coko.foundation/cokoapps/server/commit/0441a73c37ebac3d5bfa67dec0ef5ee109a46441))
+* **server:** throw when fileStorage configuration missing ([8e1d0cc](https://gitlab.coko.foundation/cokoapps/server/commit/8e1d0cc60470131b1ebc886097fcef9bf5e3984e))
+* **server:** wrap connect to filestorage in a function ([49e230d](https://gitlab.coko.foundation/cokoapps/server/commit/49e230d4f16ec0e3c8b4c510536312cf9fde4ff1))
+
 ## [1.14.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.13.0...v1.14.0) (2021-04-19)
 
 ### Features
