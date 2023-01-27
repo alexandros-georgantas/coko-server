@@ -1,8 +1,7 @@
 const { v4: uuid } = require('uuid')
-const { Fake } = require('../index')
 
+const Fake = require('./helpers/fake/fake.model')
 const { createUser } = require('./helpers/users')
-
 const clearDb = require('./_clearDb')
 
 describe('Base model', () => {

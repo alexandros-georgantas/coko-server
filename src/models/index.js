@@ -11,8 +11,6 @@ const Identity = require('./identity/identity.model')
 
 const File = require('./file/file.model')
 
-const Fake = require('./__tests__/helpers/fake/fake.model')
-
 const useTransaction = require('./useTransaction')
 
 module.exports = {
@@ -31,6 +29,4 @@ module.exports = {
   // ServiceCredential,
 
   useTransaction,
-
-  Fake,
 }
