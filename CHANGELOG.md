@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.0...v3.0.0-beta.1) (2023-01-27)
+
+
+### Bug Fixes
+
+* **models:** remove Fake from dist models ([3c72d6f](https://gitlab.coko.foundation/cokoapps/server/commit/3c72d6f4773d104320eefeb31eb953e7b7bae667))
+
 ## [3.0.0-beta.0](https://gitlab.coko.foundation/cokoapps/server/compare/v1.14.0...v3.0.0-beta.0) (2023-01-24)
 
 
