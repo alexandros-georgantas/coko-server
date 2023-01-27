@@ -2,6 +2,7 @@ const fs = require('fs-extra')
 const path = require('path')
 
 const {
+  connectToFileStorage,
   healthCheck,
   upload,
   getURL,
@@ -12,7 +13,12 @@ const {
 const { uploadOneFile, cleanBucket } = require('./helpers/helpers')
 
 describe('File Storage Service', () => {
+  beforeAll(() => {
+    connectToFileStorage()
+  })
+
   beforeEach(() => cleanBucket())
+
   afterAll(() =>
     fs.remove(
       path.join(process.cwd(), 'src', 'services', '__tests__', 'files', 'temp'),
