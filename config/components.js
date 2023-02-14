@@ -7,4 +7,5 @@ module.exports = [
   './src/models/chatMessage',
   './src/models/file',
   './src/models/__tests__/helpers/fake',
+  './src/models/serviceCredential',
 ]

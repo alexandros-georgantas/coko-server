@@ -12,6 +12,7 @@ const Identity = require('./identity/identity.model')
 const File = require('./file/file.model')
 
 const useTransaction = require('./useTransaction')
+const ServiceCredential = require('./serviceCredential/serviceCredential.model')
 
 module.exports = {
   BaseModel,
@@ -26,7 +27,7 @@ module.exports = {
   Identity,
 
   File,
-  // ServiceCredential,
 
   useTransaction,
+  ServiceCredential,
 }

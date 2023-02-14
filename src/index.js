@@ -37,6 +37,8 @@ const fileStorage = {
 
 // const { serviceHandshake } = require('./helpers')
 
+const { callMicroservice } = require('./utils/microservices')
+
 const createJWT = authentication.token.create
 const verifyJWT = authentication.token.verify
 
@@ -64,4 +66,6 @@ module.exports = {
 
   boss,
   connectToJobQueue,
+
+  callMicroservice,
 }
