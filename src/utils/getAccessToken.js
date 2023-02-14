@@ -36,7 +36,7 @@ const getAccessToken = async (serviceName, renew = false) => {
       throw new Error(`service ${serviceName} is down`)
     }
 
-    const foundServiceCredential = await ServiceCredential.query().findOne({
+    const foundServiceCredential = await ServiceCredential.findOne({
       name: serviceName,
     })
 
@@ -48,7 +48,7 @@ const getAccessToken = async (serviceName, renew = false) => {
       })
 
       const { accessToken } = data
-      await ServiceCredential.query().insert({
+      await ServiceCredential.insert({
         name: serviceName,
         accessToken,
       })
@@ -65,7 +65,7 @@ const getAccessToken = async (serviceName, renew = false) => {
       })
 
       const { accessToken: freshAccessToken } = data
-      await ServiceCredential.query().patchAndFetchById(id, {
+      await ServiceCredential.patchAndFetchById(id, {
         accessToken: freshAccessToken,
       })
       return freshAccessToken
@@ -73,17 +73,14 @@ const getAccessToken = async (serviceName, renew = false) => {
 
     return accessToken
   } catch (e) {
-    const foundServiceCredential = await ServiceCredential.query().findOne({
+    const foundServiceCredential = await ServiceCredential.findOne({
       name: serviceName,
     })
 
     if (foundServiceCredential) {
-      await ServiceCredential.query().patchAndFetchById(
-        foundServiceCredential.id,
-        {
-          accessToken: null,
-        },
-      )
+      await ServiceCredential.patchAndFetchById(foundServiceCredential.id, {
+        accessToken: null,
+      })
     }
 
     throw new Error(e)

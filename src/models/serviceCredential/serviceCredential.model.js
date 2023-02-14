@@ -1,4 +1,4 @@
-const BaseModel = require('@pubsweet/base-model')
+const BaseModel = require('../base.model')
 
 const { string, stringNotEmpty } = require('../_helpers/types')
 
