@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.2](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2023-02-15)
+
+
+### Features
+
+* **server:** add callMicroservice function ([5b06158](https://gitlab.coko.foundation/cokoapps/server/commit/5b06158a7a88785637f8852fa425269315d20d59))
+* **server:** convert eps to svg, tiff \& png to png ([440b366](https://gitlab.coko.foundation/cokoapps/server/commit/440b366bd68b0bdfa0a7ee1dd61cb18667bf38f5))
+* **server:** expose verifyJWT added ([a6fd48c](https://gitlab.coko.foundation/cokoapps/server/commit/a6fd48c9fec708f572db6217ab9f68d5a6cc6dc6))
+* **server:** pass cors config to apollo server ([6232cb5](https://gitlab.coko.foundation/cokoapps/server/commit/6232cb5f71704d22eb8d3f8fe4bdb86e6229059c))
+
+
+### Bug Fixes
+
+* **models:** get base model for service credentials from local file ([f17e633](https://gitlab.coko.foundation/cokoapps/server/commit/f17e633ea7018ee4aabf6fcc30cbd107bccf03d9))
+* **server:** move config services into get access token fn ([2487665](https://gitlab.coko.foundation/cokoapps/server/commit/24876652867c6d8b696a408f3127a300181ad2e6))
+* **server:** register cors before static endpoints ([b64dd28](https://gitlab.coko.foundation/cokoapps/server/commit/b64dd28f2a77cfc689ad8c3a6c139eebf3d16926))
+
 ## [3.0.0-beta.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.0...v3.0.0-beta.1) (2023-01-27)
 
 
