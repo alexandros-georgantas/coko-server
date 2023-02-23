@@ -73,17 +73,17 @@ const connectToFileStorage = () => {
     throw new Error('Missing required host param for initializing file storage')
   }
 
-  if (!accessKeyId) {
-    throw new Error(
-      'Missing required accessKeyId param for initializing file storage',
-    )
-  }
+  // if (!accessKeyId) {
+  //   throw new Error(
+  //     'Missing required accessKeyId param for initializing file storage',
+  //   )
+  // }
 
-  if (!accessKeyId) {
-    throw new Error(
-      'Missing required secretAccessKey param for initializing file storage',
-    )
-  }
+  // if (!secretAccessKey) {
+  //   throw new Error(
+  //     'Missing required secretAccessKey param for initializing file storage',
+  //   )
+  // }
 
   if (!bucket) {
     throw new Error(
