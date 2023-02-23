@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.3](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2023-02-23)
+
+
+### Features
+
+* **server:** allow filestorage to read credentials from os aws setup ([8db9292](https://gitlab.coko.foundation/cokoapps/server/commit/8db92929e806a26ad6d1caddb3f892c947f5f5a3))
+
 ## [3.0.0-beta.2](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2023-02-15)
 
 
