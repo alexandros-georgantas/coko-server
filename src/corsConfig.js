@@ -1,12 +1,10 @@
 const config = require('config')
 
 const createCORSConfig = () => {
-  if (!config.has('pubsweet-client.url')) return null
-
-  const clientUrl = config.has('clientUrl') && config.get('clientUrl')
+  if (!config.has('clientUrl')) return null
 
   return {
-    origin: clientUrl,
+    origin: config.get('clientUrl'),
     credentials: true,
   }
 }
