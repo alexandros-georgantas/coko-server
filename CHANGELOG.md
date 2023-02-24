@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.4](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2023-02-24)
+
+
+### Bug Fixes
+
+* **models:** more gentle migrations for users teams identities and team members ([0e4cb8b](https://gitlab.coko.foundation/cokoapps/server/commit/0e4cb8b1dbd8d26e6388140563bf8c6eccc40f85))
+* **server:** use correct env variable for cors ([e0e25e3](https://gitlab.coko.foundation/cokoapps/server/commit/e0e25e3086a07dcf65b35222425cb1a4a6939f75))
+
 ## [3.0.0-beta.3](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2023-02-23)
 
 
