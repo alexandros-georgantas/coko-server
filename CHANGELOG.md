@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.5](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.4...v3.0.0-beta.5) (2023-02-28)
+
+
+### Bug Fixes
+
+* **models:** create unique username if not exists ([28bcd51](https://gitlab.coko.foundation/cokoapps/server/commit/28bcd51ede13fc4dbff54761a0185cffc32f806b))
+
 ## [3.0.0-beta.4](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2023-02-24)
 
 
