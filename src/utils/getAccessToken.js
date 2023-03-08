@@ -18,15 +18,26 @@ const getAccessToken = async (serviceName, renew = false) => {
       throw new Error(`service ${serviceName} configuration is undefined `)
     }
 
-    const { clientId, clientSecret, port, protocol, host } = service
+    const { clientId, clientSecret, url } = service
+
+    if (!clientId) {
+      throw new Error(`service ${serviceName} clientId is undefined `)
+    }
+
+    if (!clientSecret) {
+      throw new Error(`service ${serviceName} clientSecret is undefined `)
+    }
+
+    if (!url) {
+      throw new Error(`service ${serviceName} url is undefined `)
+    }
+
     const buff = Buffer.from(`${clientId}:${clientSecret}`, 'utf8')
     const base64data = buff.toString('base64')
 
-    const serviceURL = `${protocol}://${host}${port ? `:${port}` : ''}`
-
     const serviceHealthCheck = await axios({
       method: 'get',
-      url: `${serviceURL}/healthcheck`,
+      url: `${url}/healthcheck`,
     })
 
     const { data: healthCheckData } = serviceHealthCheck
@@ -43,7 +54,7 @@ const getAccessToken = async (serviceName, renew = false) => {
     if (!foundServiceCredential) {
       const { data } = await axios({
         method: 'post',
-        url: `${serviceURL}/api/auth`,
+        url: `${url}/api/auth`,
         headers: { authorization: `Basic ${base64data}` },
       })
 
@@ -60,7 +71,7 @@ const getAccessToken = async (serviceName, renew = false) => {
     if (!accessToken || renew) {
       const { data } = await axios({
         method: 'post',
-        url: `${serviceURL}/api/auth`,
+        url: `${url}/api/auth`,
         headers: { authorization: `Basic ${base64data}` },
       })
 
