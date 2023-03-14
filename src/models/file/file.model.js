@@ -110,7 +110,8 @@ class File extends BaseModel {
       const { trx } = options
       return useTransaction(
         async tr => {
-          return File.query(tr).where({ objectId })
+          const { result: files } = await File.find({ objectId }, options)
+          return files
         },
         { trx, passedTrxOnly: true },
       )
