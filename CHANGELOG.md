@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.7](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.6...v3.0.0-beta.7) (2023-03-15)
+
+
+### Bug Fixes
+
+* **models:** improvments in file migration script ([4267df9](https://gitlab.coko.foundation/cokoapps/server/commit/4267df9290e3200b05ec13c37b73c3c6d0091886))
+* **server:** correction in forceObjectKey feature and tests ([8c45224](https://gitlab.coko.foundation/cokoapps/server/commit/8c45224a773182f8eaa9468fe771831f61356a5b))
+
 ## [3.0.0-beta.6](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.5...v3.0.0-beta.6) (2023-03-08)
 
 ## [3.0.0-beta.5](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.4...v3.0.0-beta.5) (2023-02-28)
