@@ -25,6 +25,26 @@ describe('File model', () => {
     )
   })
 
+  it('gets specified storedObject based on type', async () => {
+    const objectId = uuid()
+    await createFilesForObjectId(objectId)
+    const dbFiles = await File.getEntityFiles(objectId)
+
+    expect(dbFiles[0].getStoredObjectBasedOnType('original').type).toEqual(
+      'original',
+    )
+  })
+
+  it('throws when specified storedObject type is unknown', async () => {
+    const objectId = uuid()
+    await createFilesForObjectId(objectId)
+    const dbFiles = await File.getEntityFiles(objectId)
+
+    expect(() => dbFiles[0].getStoredObjectBasedOnType('unknown')).toThrow(
+      'Unknown type of stored object provided',
+    )
+  })
+
   it('creates ids for storedObjects and imageMetadata when not declared', async () => {
     const objectId = uuid()
     const files = await createFilesForObjectId(objectId)

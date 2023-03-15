@@ -22,14 +22,14 @@ const createFile = async (
   options = {},
 ) => {
   try {
-    const { trx, forceFilenameAsObjectKey } = options
+    const { trx, forceObjectKeyValue } = options
     logger.info(
       `${FILE_CONTROLLER} createFile: creating a new file representation`,
     )
     return useTransaction(
       async tr => {
         const storedObjects = await upload(fileStream, name, {
-          forceFilenameAsObjectKey,
+          forceObjectKeyValue,
         })
 
         return File.query(tr).insert({
