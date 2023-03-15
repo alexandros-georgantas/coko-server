@@ -37,8 +37,36 @@ describe('File Controller', () => {
     expect(newFile.name).toEqual('test.jpg')
   })
 
+  it('creates a file and forces specific object key', async () => {
+    const filePath = path.join(
+      process.cwd(),
+      'src',
+      'services',
+      '__tests__',
+      'files',
+      'test.jpg',
+    )
+
+    const fileStream = fs.createReadStream(filePath)
+
+    const newFile = await createFile(
+      fileStream,
+      'test.jpg',
+      null,
+      null,
+      [],
+      null,
+      { forceObjectKeyValue: 'specific.jpg' },
+    )
+
+    expect(newFile).toBeDefined()
+    expect(newFile.storedObjects).toHaveLength(3)
+    expect(newFile.name).toEqual('test.jpg')
+    expect(newFile.storedObjects[0].key).toEqual('specific.jpg')
+  })
+
   it('deletes files', async () => {
-    const newFile1 = await File.query().insert({
+    const newFile1 = await File.insert({
       name: 'test.txt',
       objectId: uuid(),
       storedObjects: [
@@ -53,7 +81,7 @@ describe('File Controller', () => {
       ],
     })
 
-    const newFile2 = await File.query().insert({
+    const newFile2 = await File.insert({
       name: 'test2.txt',
       objectId: uuid(),
       storedObjects: [

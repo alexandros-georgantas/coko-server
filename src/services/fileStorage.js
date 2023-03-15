@@ -327,19 +327,17 @@ const upload = async (fileStream, filename, options = {}) => {
       throw new Error('filename is required')
     }
 
-    const { forceFilenameAsObjectKey } = options
+    const { forceObjectKeyValue } = options
 
     const mimetype = mime.lookup(filename)
     let storedObjects = []
-    let hashedFilename
 
-    if (forceFilenameAsObjectKey) {
-      hashedFilename = filename
-    } else {
-      hashedFilename = `${crypto
-        .randomBytes(6)
-        .toString('hex')}${getFileExtension(filename, true)}`
-    }
+    const hashedFilename =
+      forceObjectKeyValue ||
+      `${crypto.randomBytes(6).toString('hex')}${getFileExtension(
+        filename,
+        true,
+      )}`
 
     /* eslint-disable no-prototype-builtins */
     if (

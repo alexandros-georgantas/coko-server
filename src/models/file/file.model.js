@@ -1,5 +1,6 @@
 const { v4: uuid } = require('uuid')
 const { logger } = require('@pubsweet/logger')
+const find = require('lodash/find')
 
 const BaseModel = require('../base.model')
 const useTransaction = require('../useTransaction')
@@ -120,6 +121,20 @@ class File extends BaseModel {
       throw new Error(
         `File model: Cannot get files for entity with id ${objectId}`,
       )
+    }
+  }
+
+  getStoredObjectBasedOnType(type) {
+    try {
+      const found = find(this.storedObjects, { type })
+
+      if (!found) {
+        throw new Error('Unknown type of stored object provided')
+      }
+
+      return found
+    } catch (e) {
+      throw new Error(e.message)
     }
   }
 }
