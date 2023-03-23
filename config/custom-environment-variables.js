@@ -22,4 +22,7 @@ module.exports = {
     maximumWidthForSmallImages: 'MAXIMUM_WIDTH_FOR_SMALL_IMAGES',
     maximumWidthForMediumImages: 'MAXIMUM_WIDTH_FOR_MEDIUM_IMAGES',
   },
+  chatGPT: {
+    key: 'CHAT_GPT_KEY',
+  },
 }
