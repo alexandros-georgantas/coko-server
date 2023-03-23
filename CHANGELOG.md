@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.8](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.7...v3.0.0-beta.8) (2023-03-23)
+
+
+### Features
+
+* **server:** add chat gpt support ([231f3bc](https://gitlab.coko.foundation/cokoapps/server/commit/231f3bca38b8955de694a229f8fc3d59a6dbfb05))
+
 ## [3.0.0-beta.7](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.6...v3.0.0-beta.7) (2023-03-15)
 
 
