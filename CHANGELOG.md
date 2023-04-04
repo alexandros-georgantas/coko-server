@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.9](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.8...v3.0.0-beta.9) (2023-04-04)
+
+
+### Bug Fixes
+
+* **models:** current user should be allowed to return null ([57f11f4](https://gitlab.coko.foundation/cokoapps/server/commit/57f11f4fbd43f29871009ab8993f8bf1d0e2e1dc))
+
 ## [3.0.0-beta.8](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.7...v3.0.0-beta.8) (2023-03-23)
 
 
