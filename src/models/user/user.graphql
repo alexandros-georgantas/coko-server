@@ -75,7 +75,7 @@ input UsersQueryParams {
 extend type Query {
   user(id: ID): User
   users(queryParams: UsersQueryParams, options: PageInput): Users!
-  currentUser: User!
+  currentUser: User
 }
 
 extend type Mutation {
