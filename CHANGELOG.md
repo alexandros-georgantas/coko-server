@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.10](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.9...v3.0.0-beta.10) (2023-04-06)
+
+
+### Bug Fixes
+
+* **server:** fix svg corrupted conversions ([b344d96](https://gitlab.coko.foundation/cokoapps/server/commit/b344d9656018bcd9f267240868a67c61b8f32961))
+
 ## [3.0.0-beta.9](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.8...v3.0.0-beta.9) (2023-04-04)
 
 
