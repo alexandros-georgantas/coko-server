@@ -1,3 +1,4 @@
+const { Readable } = require('stream')
 const path = require('path')
 const sharp = require('sharp')
 const fs = require('fs-extra')
@@ -177,8 +178,8 @@ const createImageVersions = async (
 
     // all the versions of SVG will be the same as the original file
     if (format === 'svg') {
-      await sharp(buffer).toFile(smallFilePath)
-      await sharp(buffer).toFile(mediumFilePath)
+      await writeFileFromStream(Readable.from(buffer), smallFilePath)
+      await writeFileFromStream(Readable.from(buffer), mediumFilePath)
 
       return {
         tempSmallFile: smallFilePath,
