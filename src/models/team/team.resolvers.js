@@ -1,8 +1,13 @@
 const logger = require('@pubsweet/logger')
+const { pubsubManager } = require('pubsweet-server')
 
 const {
   labels: { TEAM_RESOLVER },
 } = require('./constants')
+
+const {
+  subscriptions: { USER_UPDATED },
+} = require('../user/constants')
 
 const {
   getTeam,
@@ -15,7 +20,22 @@ const {
   // deleteTeam,
 } = require('./team.controller')
 
+const { getUser } = require('../user/user.controller')
+
 const TeamMember = require('../teamMember/teamMember.model')
+
+const pubsub = await pubsubManager.getPubsub()
+
+const broadcastUserUpdated = async userId => {
+  try {
+    const updatedUser = await getUser(userId)
+    return pubsub.publish(USER_UPDATED, {
+      userUpdated: updatedUser,
+    })
+  } catch (e) {
+    throw new Error(e.message)
+  }
+}
 
 const teamResolver = async (_, { id }, ctx) => {
   try {
@@ -60,7 +80,12 @@ const getObjectTeamsResolver = async (_, { objectId, objectType }, ctx) => {
 const updateTeamMembershipResolver = async (_, { teamId, members }, ctx) => {
   try {
     logger.info(`${TEAM_RESOLVER} updateTeamMembership`)
-    return updateTeamMembership(teamId, members)
+
+    const updatedTeam = await updateTeamMembership(teamId, members)
+
+    await Promise.all(members.map(async userId => broadcastUserUpdated(userId)))
+
+    return updatedTeam
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} updateTeamMembership: ${e.message}`)
     throw new Error(e)
@@ -70,7 +95,11 @@ const updateTeamMembershipResolver = async (_, { teamId, members }, ctx) => {
 const addTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
   try {
     logger.info(`${TEAM_RESOLVER} addTeamMember`)
-    return addTeamMember(teamId, userId)
+    const updatedTeam = await addTeamMember(teamId, userId)
+
+    await broadcastUserUpdated(userId)
+
+    return updatedTeam(teamId, userId)
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} addTeamMember: ${e.message}`)
     throw new Error(e)
@@ -80,7 +109,11 @@ const addTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
 const removeTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
   try {
     logger.info(`${TEAM_RESOLVER} removeTeamMember`)
-    return removeTeamMember(teamId, userId)
+    const updatedTeam = await removeTeamMember(teamId, userId)
+
+    await broadcastUserUpdated(userId)
+
+    return updatedTeam
   } catch (e) {
     logger.error(`${TEAM_RESOLVER} removeTeamMember: ${e.message}`)
     throw new Error(e)

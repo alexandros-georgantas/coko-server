@@ -1,7 +1,10 @@
 const logger = require('@pubsweet/logger')
+const { pubsubManager } = require('pubsweet-server')
+const { withFilter } = require('graphql-subscriptions')
 
 const {
   labels: { USER_RESOLVER },
+  subscriptions: { USER_UPDATED },
 } = require('./constants')
 
 const {
@@ -295,5 +298,24 @@ module.exports = {
     defaultIdentity: defaultIdentityResolver,
     displayName: displayNameResolver,
     teams: teamsResolver,
+  },
+  Subscription: {
+    userUpdated: {
+      subscribe: async (...args) => {
+        const pubsub = await pubsubManager.getPubsub()
+
+        return withFilter(
+          () => {
+            return pubsub.asyncIterator(USER_UPDATED)
+          },
+          (payload, variables) => {
+            const { userId } = variables
+            const { userUpdated } = payload
+            const { id } = userUpdated
+            return userId === id
+          },
+        )(...args)
+      },
+    },
   },
 }

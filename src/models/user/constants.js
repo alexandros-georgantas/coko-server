@@ -1,3 +1,5 @@
+const USER_UPDATED = 'USER_UPDATED'
+
 module.exports = {
   labels: {
     USER_LOADER: '[USER LOADER] -',
@@ -5,6 +7,6 @@ module.exports = {
     USER_RESOLVER: '[USER RESOLVER] -',
   },
   subscriptions: {
-    // identifiers
+    USER_UPDATED,
   },
 }
