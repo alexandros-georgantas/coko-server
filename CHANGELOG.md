@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.11](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.10...v3.0.0-beta.11) (2023-06-06)
+
+
+### Features
+
+* **server:** subscriptions added for user ([adf5bf9](https://gitlab.coko.foundation/cokoapps/server/commit/adf5bf96658652e6525623cddc8c1ca48c0ca0a4))
+
 ## [3.0.0-beta.10](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.9...v3.0.0-beta.10) (2023-04-06)
 
 
