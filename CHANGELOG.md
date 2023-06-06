@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.12](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.11...v3.0.0-beta.12) (2023-06-06)
+
+
+### Bug Fixes
+
+* **server:** fix problem with await of pubsub ([84c6ff4](https://gitlab.coko.foundation/cokoapps/server/commit/84c6ff474333d96dcdf9fcc1c454419869c76097))
+
 ## [3.0.0-beta.11](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.10...v3.0.0-beta.11) (2023-06-06)
 
 
