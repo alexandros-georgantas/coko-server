@@ -24,11 +24,12 @@ const { getUser } = require('../user/user.controller')
 
 const TeamMember = require('../teamMember/teamMember.model')
 
-const pubsub = await pubsubManager.getPubsub()
-
 const broadcastUserUpdated = async userId => {
   try {
+    const pubsub = await pubsubManager.getPubsub()
+
     const updatedUser = await getUser(userId)
+
     return pubsub.publish(USER_UPDATED, {
       userUpdated: updatedUser,
     })
@@ -95,6 +96,7 @@ const updateTeamMembershipResolver = async (_, { teamId, members }, ctx) => {
 const addTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
   try {
     logger.info(`${TEAM_RESOLVER} addTeamMember`)
+
     const updatedTeam = await addTeamMember(teamId, userId)
 
     await broadcastUserUpdated(userId)
@@ -109,6 +111,7 @@ const addTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
 const removeTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
   try {
     logger.info(`${TEAM_RESOLVER} removeTeamMember`)
+
     const updatedTeam = await removeTeamMember(teamId, userId)
 
     await broadcastUserUpdated(userId)
