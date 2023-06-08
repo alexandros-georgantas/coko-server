@@ -7,6 +7,7 @@ const BCRYPT_COST = config.util.getEnv('NODE_ENV') === 'test' ? 1 : 12
 
 const BaseModel = require('../base.model')
 const useTransaction = require('../useTransaction')
+const { displayNameConstructor } = require('../_helpers/utilities')
 
 const {
   alphaNumericStringNotNullable,
@@ -229,10 +230,8 @@ class User extends BaseModel {
 
   async getDisplayName() {
     const { givenNames, surname, username } = this
-    if (givenNames && surname) return `${givenNames} ${surname}`
-    if (username) return username
 
-    throw new Error('User model: Cannot get displayName')
+    return displayNameConstructor(givenNames, surname, username)
   }
 
   static async updatePassword(

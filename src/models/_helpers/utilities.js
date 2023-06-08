@@ -6,4 +6,11 @@ const cleanUndefined = object =>
       return acc
     }, {})
 
-module.exports = { cleanUndefined }
+const displayNameConstructor = (givenNames, surname, username) => {
+  if (givenNames && surname) return `${givenNames} ${surname}`
+  if (username) return username
+
+  throw new Error('User model: Cannot get displayName')
+}
+
+module.exports = { cleanUndefined, displayNameConstructor }

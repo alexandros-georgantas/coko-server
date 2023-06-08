@@ -15,6 +15,7 @@ const {
 const User = require('./user.model')
 const Identity = require('../identity/identity.model')
 const useTransaction = require('../useTransaction')
+const { displayNameConstructor } = require('../_helpers/utilities')
 
 const createJWT = authentication.token.create
 
@@ -87,7 +88,16 @@ const getUser = async (id, options = {}) => {
   }
 }
 
-const getDisplayName = async user => user.getDisplayName()
+const getDisplayName = async user => {
+  try {
+    const { givenNames, surname, username } = user
+
+    return displayNameConstructor(givenNames, surname, username)
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} getDisplayName: ${e.message}`)
+    throw new Error(e)
+  }
+}
 
 const getUsers = async (queryParams = {}, options = {}) => {
   try {
@@ -819,7 +829,15 @@ const setDefaultIdentity = async (userId, identityId, options = {}) => {
   }
 }
 
-const getUserTeams = user => user.getTeams()
+const getUserTeams = user => {
+  try {
+    const { id } = user
+    return User.getTeams(id)
+  } catch (e) {
+    logger.error(`${USER_CONTROLLER} getUserTeams: ${e.message}`)
+    throw new Error(e)
+  }
+}
 
 module.exports = {
   activateUser,
