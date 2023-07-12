@@ -119,6 +119,7 @@ describe('File Storage Service', () => {
 
     const fileStream = fs.createReadStream(filePath)
     const storedObject = await upload(fileStream, 'test.eps')
+
     expect(storedObject).toHaveLength(3)
   })
 
