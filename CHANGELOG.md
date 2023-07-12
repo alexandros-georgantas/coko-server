@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.14](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.13...v3.0.0-beta.14) (2023-07-12)
+
+
+### Features
+
+* **models:** added currentUserOnly flag in members resolver ([65105e9](https://gitlab.coko.foundation/cokoapps/server/commit/65105e94ea2bedd0b9905a636fe8b6e05dd1d830))
+
 ## [3.0.0-beta.13](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.12...v3.0.0-beta.13) (2023-06-09)
 
 ## [3.0.0-beta.12](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.11...v3.0.0-beta.12) (2023-06-06)
