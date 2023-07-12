@@ -11,7 +11,7 @@ describe('Team API', () => {
     knex.destroy()
   })
 
-  it('tests', async () => {
+  it('returns global teams with members', async () => {
     const globalTeam = await Team.insert({
       role: 'editor',
       displayName: 'Editor',
@@ -61,7 +61,75 @@ describe('Team API', () => {
 
     const foundUser = foundMember.user
     expect(foundUser.id).toEqual(user.id)
+  })
 
-    expect(true).toBe(true)
+  it('returns only current user in members array when currentUserOnly flag is on', async () => {
+    const globalTeam = await Team.insert({
+      role: 'editor',
+      displayName: 'Editor',
+      global: true,
+    })
+
+    const anotherTeam = await Team.insert({
+      role: 'author',
+      displayName: 'Author',
+      global: true,
+    })
+
+    const user = await User.insert({})
+    const user2 = await User.insert({})
+
+    const member = await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user.id,
+    })
+
+    await TeamMember.insert({
+      teamId: globalTeam.id,
+      userId: user2.id,
+    })
+
+    // add user to two teams to make sure you get the correct member in the result
+    await TeamMember.insert({
+      teamId: anotherTeam.id,
+      userId: user.id,
+    })
+
+    const GET_GLOBAL_TEAMS = `
+      query GetGlobalTeams {
+        getGlobalTeams {
+          result {
+            id
+            role
+            members(currentUserOnly:true) {
+              id
+              user {
+                id
+              }
+            }
+          }
+          totalCount
+        }
+      }
+    `
+
+    const testServer = await createTestServer(user.id)
+
+    const result = await testServer.executeOperation({
+      query: GET_GLOBAL_TEAMS,
+    })
+
+    const foundTeam = result.data.getGlobalTeams.result.find(
+      t => t.role === 'editor',
+    )
+
+    expect(foundTeam.id).toEqual(globalTeam.id)
+
+    expect(foundTeam.members).toHaveLength(1)
+    const foundMember = foundTeam.members[0]
+    expect(foundMember.id).toEqual(member.id)
+
+    const foundUser = foundMember.user
+    expect(foundUser.id).toEqual(user.id)
   })
 })

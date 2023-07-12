@@ -1,11 +1,16 @@
 const createGraphQLServer = require('../../../graphqlServer')
 const { User } = require('../..')
 
-const createTestServer = async () => {
+const createTestServer = async (passedUserId = undefined) => {
   // the user that will be making the calls
-  const user = await User.insert({})
+  let userId = passedUserId
 
-  return createGraphQLServer(user.id)
+  if (!passedUserId) {
+    const user = await User.insert({})
+    userId = user.id
+  }
+
+  return createGraphQLServer(userId)
 }
 
 module.exports = createTestServer

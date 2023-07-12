@@ -4,7 +4,7 @@ type Team {
   displayName: String!
   objectId: ID
   objectType: String
-  members: [TeamMember!]
+  members(currentUserOnly: Boolean): [TeamMember!]
   global: Boolean!
 }
 

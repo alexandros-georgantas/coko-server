@@ -133,12 +133,15 @@ const removeTeamMemberResolver = async (_, { teamId, userId }, ctx) => {
 //   }
 // }
 
-const teamMemberResolver = async (team, _, ctx) => {
+const teamMemberResolver = async (team, { currentUserOnly }, ctx) => {
   // const { id } = team
   // return ctx.loaders.TeamMember.teamMembersBasedOnTeamIdsLoader.load(id)
 
-  const members = await TeamMember.find({ teamId: team.id })
-  return members.result
+  const where = { teamId: team.id }
+  if (currentUserOnly) where.userId = ctx.user
+
+  const { result: members } = await TeamMember.find(where)
+  return members
 }
 
 module.exports = {
