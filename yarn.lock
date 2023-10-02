@@ -5722,7 +5722,7 @@ graphql-postgres-subscriptions@^1.0.5:
     pg "^7.4.1"
     pg-ipc "^1.0.4"
 
-graphql-shield@^7.4.1:
+graphql-shield@^7.6.5:
   version "7.6.5"
   resolved "https://registry.yarnpkg.com/graphql-shield/-/graphql-shield-7.6.5.tgz#91683254e498e120ce58d560b8b4f118e10530ea"
   integrity sha512-etbzf7UIhQW6vadn/UR+ds0LJOceO8ITDXwbUkQMlP2KqPgSKTZRE2zci+AUfqP+cpV9zDQdbTJfPfW5OCEamg==
