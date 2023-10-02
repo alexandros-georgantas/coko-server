@@ -25,6 +25,8 @@ const {
   download,
 } = require('./services/fileStorage')
 
+const WaxToDocxConverter = require('./services/docx/docx.service')
+
 // Do not expose connectToFileStorage
 const fileStorage = {
   healthCheck,
@@ -68,4 +70,5 @@ module.exports = {
   connectToJobQueue,
 
   callMicroservice,
+  WaxToDocxConverter,
 }
