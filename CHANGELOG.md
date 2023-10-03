@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.16...v3.0.0) (2023-10-03)
+
+
+### Features
+
+* upgrade bcrypt to allow using node 18+ ([f946a3e](https://gitlab.coko.foundation/cokoapps/server/commit/f946a3ea13d03d2d6b0cf4ff2971de5f96593398))
+
+
+### Bug Fixes
+
+* update gql shield version in lockfile ([10d9be1](https://gitlab.coko.foundation/cokoapps/server/commit/10d9be1e447e16bdd91370c96fb16dca406004e0))
+
 ## [3.0.0-beta.16](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.15...v3.0.0-beta.16) (2023-07-20)
 
 
