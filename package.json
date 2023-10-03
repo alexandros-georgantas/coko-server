@@ -32,6 +32,7 @@
     "apollo-server-express": "^2.11.0",
     "aws-sdk": "^2.1046.0",
     "axios": "^0.24.0",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.19.0",
     "command-exists": "^1.2.9",
     "config": "^3.3.2",
@@ -67,6 +68,9 @@
     "node-wait-for-it": "^0.2.0",
     "nodemon": "^3.0.1",
     "standard-version": "^7.1.0"
+  },
+  "resolutions": {
+    "bcrypt": "5.1.1"
   },
   "config": {
     "commitizen": {
