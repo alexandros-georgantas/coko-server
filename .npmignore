@@ -87,7 +87,12 @@ uploads/
 .gitignore
 .prettierrc.js
 commitlint.config.js
+Dockerfile*
 docker-compose.yml
+docker-compose.*.yml
 jest.config.js
 yarn.lock
 **/__tests__
+
+# developer playground
+dev/

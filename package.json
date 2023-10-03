@@ -58,8 +58,14 @@
     "waait": "^1.0.5"
   },
   "devDependencies": {
-    "@coko/lint": "^1.4.0",
+    "@babel/eslint-parser": "^7.22.15",
+    "@babel/preset-react": "^7.22.15",
+    "@coko/lint": "^2.0.0",
+    "@pubsweet/model-team": "^4.0.18",
+    "@pubsweet/model-user": "^6.0.18",
     "jest": "^26.6.3",
+    "node-wait-for-it": "^0.2.0",
+    "nodemon": "^3.0.1",
     "standard-version": "^7.1.0"
   },
   "config": {
