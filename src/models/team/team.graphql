@@ -12,6 +12,7 @@ type TeamsResponse {
   result: [Team!]!
   totalCount: Int
 }
+
 # input TeamInput {
 #   role: String!
 #   displayName: String!
