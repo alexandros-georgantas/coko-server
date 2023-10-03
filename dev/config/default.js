@@ -21,4 +21,7 @@ module.exports = {
   authsome: {
     mode: path.join(__dirname, 'authsome.js'),
   },
+  mailer: {
+    from: '',
+  },
 }
