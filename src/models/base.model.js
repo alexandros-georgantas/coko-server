@@ -311,7 +311,8 @@ class BaseModel extends PubsweetBaseModel {
     }
   }
 
-  /* eslint-disable */
+  // #region legacy
+  /* eslint-disable class-methods-use-this */
   save() {
     throw new Error('Base model: save method has been disabled')
   }
@@ -320,10 +321,12 @@ class BaseModel extends PubsweetBaseModel {
     throw new Error('Base model: saveGraph method has been disabled')
   }
 
+  /* eslint-disable-next-line no-underscore-dangle */
   async _save(insertAndFetch, updateAndFetch, trx) {
     throw new Error('Base model: _save method has been disabled')
   }
 
+  /* eslint-disable-next-line no-underscore-dangle */
   _updateProperties(properties) {
     throw new Error('Base model: _updateProperties method has been disabled')
   }
@@ -336,6 +339,11 @@ class BaseModel extends PubsweetBaseModel {
     throw new Error('Base model: setOwners method has been disabled')
   }
 
+  async delete() {
+    throw new Error('Base model: delete method has been disabled')
+  }
+  /* eslint-enable class-methods-use-this */
+
   static findByField(field, value) {
     throw new Error('Base model: findByField method has been disabled')
   }
@@ -347,9 +355,6 @@ class BaseModel extends PubsweetBaseModel {
   static async all() {
     throw new Error('Base model: all method has been disabled')
   }
-
-  async delete() {
-    throw new Error('Base model: delete method has been disabled')
-  }
+  // #endregion legacy
 }
 module.exports = BaseModel
