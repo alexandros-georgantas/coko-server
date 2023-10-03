@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://gitlab.coko.foundation/cokoapps/server/compare/v2.3.0...v2.4.0) (2023-10-03)
+
+
+### Features
+
+* upgrade bcrypt to allow node 18+ ([17146f6](https://gitlab.coko.foundation/cokoapps/server/commit/17146f62c1372f121cccdf7200cfef92710cf4f2))
+
 ## [2.3.0](https://gitlab.coko.foundation/cokoapps/server/compare/v2.2.1...v2.3.0) (2023-01-16)
 
 
