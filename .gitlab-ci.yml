@@ -23,6 +23,8 @@ lint:
   image: cokoapps/coko-server-ci:909718fbc517cd6267f5cf4a6df80706b1bc040c
   script:
     - cd .
+    - ls
+    - ls node_modules
     - yarn eslint .
     - yarn prettier --check .
     - if [ ! -z "$STYLELINT" ]; then yarn stylelint "**/*.js"; fi
