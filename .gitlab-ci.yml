@@ -1,6 +1,5 @@
 variables:
   IMAGE_NAME_CI: coko-server-ci
-  # SERVICE_NAME_DEPLOYMENT: waxdemo
 
 include:
   - project: 'cokoapps/ci'
@@ -19,11 +18,17 @@ build ci image:
     BUILD_PATH: .
 
 lint:
-  extends: .lint
+  # extends: .lint
   stage: Test
-  variables:
-    IMAGE_NAME: $IMAGE_NAME_CI
-    WORKDIR: .
+  image: cokoapps/coko-server-ci:909718fbc517cd6267f5cf4a6df80706b1bc040c
+  script:
+    - cd .
+    - yarn eslint .
+    - yarn prettier --check .
+    - if [ ! -z "$STYLELINT" ]; then yarn stylelint "**/*.js"; fi
+  # variables:
+  #   IMAGE_NAME: $IMAGE_NAME_CI
+  #   WORKDIR: .
 # test:
 #   image: cokoapps/$IMAGE_NAME_CI:$CI_COMMIT_SHA
 #   script:
