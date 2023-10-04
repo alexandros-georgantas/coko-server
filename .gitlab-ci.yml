@@ -39,9 +39,7 @@ lint:
   services:
     - docker:23-dind
   script:
-    - yarn install --frozen-lockfile
-    - yarn eslint .
-    - yarn prettier --check .
+    - yarn lint
 
 test:
   image: docker:23

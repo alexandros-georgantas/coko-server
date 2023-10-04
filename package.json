@@ -16,10 +16,11 @@
   "main": "src/index.js",
   "scripts": {
     "cz": "git-cz",
+    "dev": "sh scripts/runDev.sh",
+    "lint": "sh scripts/runLint.sh",
     "prepare": "husky install",
     "release": "standard-version",
-    "test": "sh scripts/runTests.sh",
-    "dev": "sh scripts/runDev.sh"
+    "test": "sh scripts/runTests.sh"
   },
   "husky": {
     "hooks": {
