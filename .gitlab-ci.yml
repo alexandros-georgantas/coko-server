@@ -1,0 +1,32 @@
+variables:
+  IMAGE_NAME_CI: coko-server-ci
+  # SERVICE_NAME_DEPLOYMENT: waxdemo
+
+include:
+  - project: 'cokoapps/ci'
+    ref: main
+    file: 'ci-templates.yml'
+
+stages:
+  - Build
+  - Test
+
+build ci image:
+  extends: .build development
+  stage: Build
+  variables:
+    IMAGE_NAME: $IMAGE_NAME_CI
+    BUILD_PATH: .
+  # only:
+  #   - master
+# .deploy demo:
+#   extends: .deploy
+#   stage: Deploy demo
+#   variables:
+#     PRIVATE_KEY: $SSH_PRIVATE_KEY
+#     PORT: $SSH_PORT
+#     URL: $SSH_URL
+#     USER: $SSH_USER
+#     SERVICE_NAME: $SERVICE_NAME_DEPLOYMENT
+# only:
+#   - master
