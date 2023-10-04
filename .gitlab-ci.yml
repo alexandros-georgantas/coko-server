@@ -7,15 +7,15 @@ include:
     file: 'ci-templates.yml'
 
 stages:
-  - Build
+  # - Build
   - Test
 
-build ci image:
-  extends: .build development
-  stage: Build
-  variables:
-    IMAGE_NAME: $IMAGE_NAME_CI
-    BUILD_PATH: .
+# build ci image:
+#   extends: .build development
+#   stage: Build
+#   variables:
+#     IMAGE_NAME: $IMAGE_NAME_CI
+#     BUILD_PATH: .
 
 lint:
   # extends: .lint
