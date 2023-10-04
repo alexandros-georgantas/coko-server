@@ -18,7 +18,8 @@
     "cz": "git-cz",
     "prepare": "husky install",
     "release": "standard-version",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "sh scripts/runTests.sh",
+    "dev": "sh scripts/runDev.sh"
   },
   "husky": {
     "hooks": {

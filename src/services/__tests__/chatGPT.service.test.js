@@ -3,20 +3,20 @@
 const chatGPT = require('../chatGPT/chatGPT.controllers')
 const createTestServer = require('../../models/__tests__/helpers/createTestServer')
 
-describe('ChatGPT', () => {
+describe.skip('ChatGPT', () => {
   /**
    * Keep disabled by default, as these tests connect to an external api that
    * might be down, causing pipelines to fail through no fault of our own.
    */
 
-  it.skip('returns text given a prompt', async () => {
+  it('returns text given a prompt', async () => {
     // config.get.mockReturnValue(process.env.CHAT_GPT_KEY)
     const result = await chatGPT('what is the coko foundation')
-    console.log(result) // eslint-disable-line no-console
+    // console.log(result)
     expect(result).toBeTruthy()
   }, 20000)
 
-  it.skip('uses the graphql resolver to call the openai api', async () => {
+  it('uses the graphql resolver to call the openai api', async () => {
     const CHAT_GPT = `
       query chatGPT ($input: String!) {
         chatGPT (input: $input)
@@ -32,7 +32,7 @@ describe('ChatGPT', () => {
       },
     })
 
-    console.log(result.data.chatGPT) // eslint-disable-line no-console
+    // console.log(result.data.chatGPT)
     expect(result.data.chatGPT).toBeTruthy()
 
     expect(true).toBeTruthy()

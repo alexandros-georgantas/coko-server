@@ -19,11 +19,17 @@ module.exports = {
       amount: 24,
       unit: 'hours',
     },
-    secret: 'whatASecret',
+    logger: {
+      error: () => {},
+      warn: () => {},
+      info: () => {},
+      debug: () => {},
+    },
     passwordResetTokenExpiry: {
       amount: 24,
       unit: 'hours',
     },
+    secret: 'whatASecret',
     tempFolderPath: path.join(process.cwd(), 'temp'),
     useFileStorage: true,
   },

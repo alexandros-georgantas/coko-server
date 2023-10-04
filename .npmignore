@@ -96,5 +96,7 @@ yarn.lock
 **.test.js
 **.spec.js
 
-# developer playground
+# only used for dev or testing
+config/
 dev/
+scripts/

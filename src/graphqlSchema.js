@@ -66,7 +66,7 @@ const logRegistration = name =>
   logger.info(`${baseMessage} Middleware: Registered ${name} middleware`)
 
 const middleware = []
-console.log('') // eslint-disable-line no-console
+logger.info('')
 logger.info(`${baseMessage} Registering graphql middleware...`)
 
 /**
@@ -98,7 +98,7 @@ if (!isEmpty(emailConfig)) {
   logRegistration('email')
 }
 
-console.log('') // eslint-disable-line no-console
+logger.info('')
 // #endregion GRAPHQL-MIDDLEWARE
 
 const schemaWithMiddleWare = applyMiddleware(schema, ...middleware)
