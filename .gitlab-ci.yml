@@ -17,8 +17,20 @@ build ci image:
   variables:
     IMAGE_NAME: $IMAGE_NAME_CI
     BUILD_PATH: .
-  # only:
-  #   - master
+
+lint:
+  extends: .lint
+  stage: Test
+  variables:
+    IMAGE_NAME: $IMAGE_NAME_CI
+    WORKDIR: .
+# test:
+#   image: cokoapps/$IMAGE_NAME_CI:$CI_COMMIT_SHA
+#   script:
+#     - yarn jest
+
+# only:
+#   - master
 # .deploy demo:
 #   extends: .deploy
 #   stage: Deploy demo
