@@ -1,49 +1,49 @@
-# variables:
-#   IMAGE_NAME_CI: coko-server-ci
-#   # SERVICE_NAME_DEPLOYMENT: waxdemo
+variables:
+  IMAGE_NAME_CI: coko-server-ci
+  # SERVICE_NAME_DEPLOYMENT: waxdemo
 
-# include:
-#   - project: 'cokoapps/ci'
-#     ref: main
-#     file: 'ci-templates.yml'
+include:
+  - project: 'cokoapps/ci'
+    ref: main
+    file: 'ci-templates.yml'
 
-# stages:
-#   - Build
-#   - Test
+stages:
+  - Build
+  - Test
 
-# build ci image:
-#   extends: .build development
-#   stage: Build
-#   variables:
-#     IMAGE_NAME: $IMAGE_NAME_CI
-#     BUILD_PATH: .
+build ci image:
+  extends: .build development
+  stage: Build
+  variables:
+    IMAGE_NAME: $IMAGE_NAME_CI
+    BUILD_PATH: .
 
-# lint:
-#   extends: .lint
-#   stage: Test
-#   variables:
-#     IMAGE_NAME: $IMAGE_NAME_CI
-#     WORKDIR: .
+lint:
+  extends: .lint
+  stage: Test
+  variables:
+    IMAGE_NAME: $IMAGE_NAME_CI
+    WORKDIR: .
 # test:
 #   image: cokoapps/$IMAGE_NAME_CI:$CI_COMMIT_SHA
 #   script:
 #     - yarn jest
 
-stages:
-  - Lint
-  - Test
+# stages:
+#   - Lint
+#   - Test
 
-lint:
-  image: docker:23
-  stage: Lint
-  services:
-    - docker:23-dind
-  script:
-    - yarn lint
+# lint:
+#   image: cokoapps/hhmi-dnn
+#   stage: Lint
+#   services:
+#     - docker:23-dind
+#   script:
+#     - yarn lint
 
-test:
-  image: docker:23
-  stage: Test
-  services:
-    - docker:23-dind
-  script: yarn test
+# test:
+#   image: cokoapps/hhmi-dnn
+#   stage: Test
+#   services:
+#     - docker:23-dind
+#   script: yarn test
