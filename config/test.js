@@ -26,6 +26,12 @@ module.exports = {
     },
     tempFolderPath: path.join(process.cwd(), 'temp'),
     useFileStorage: true,
+    logger: {
+      info: () => {},
+      warn: () => {},
+      error: () => {},
+      debug: () => {},
+    },
   },
   pubsweet: {
     components,
