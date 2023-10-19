@@ -80,7 +80,8 @@ const getImageFileMetadata = async fileBuffer => {
 
 const getImageWidth = async fileBuffer => {
   try {
-    return getImageFileMetadata(fileBuffer).width
+    const metadata = await getImageFileMetadata(fileBuffer)
+    return metadata.width
   } catch (e) {
     throw new Error(e)
   }
