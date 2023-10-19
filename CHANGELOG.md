@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0...v3.0.1) (2023-10-19)
+
+
+### Bug Fixes
+
+* **server:** await promise when returning image width ([a8f4ec2](https://gitlab.coko.foundation/cokoapps/server/commit/a8f4ec27dc9ab6cb95aa5096301474742777261b))
+
 ## [3.0.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0-beta.16...v3.0.0) (2023-10-03)
 
 
