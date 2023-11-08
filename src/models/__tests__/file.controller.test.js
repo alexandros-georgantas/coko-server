@@ -33,7 +33,7 @@ describe('File Controller', () => {
     const newFile = await createFile(fileStream, 'test.jpg')
 
     expect(newFile).toBeDefined()
-    expect(newFile.storedObjects).toHaveLength(3)
+    expect(newFile.storedObjects).toHaveLength(4)
     expect(newFile.name).toEqual('test.jpg')
   })
 
@@ -60,7 +60,7 @@ describe('File Controller', () => {
     )
 
     expect(newFile).toBeDefined()
-    expect(newFile.storedObjects).toHaveLength(3)
+    expect(newFile.storedObjects).toHaveLength(4)
     expect(newFile.name).toEqual('test.jpg')
     expect(newFile.storedObjects[0].key).toEqual('specific.jpg')
   })
