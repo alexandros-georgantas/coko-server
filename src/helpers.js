@@ -15,22 +15,27 @@ const imageSizeConversionMapper = {
   tiff: {
     small: 'png',
     medium: 'png',
+    full: 'png',
   },
   tif: {
     small: 'png',
     medium: 'png',
+    full: 'png',
   },
   svg: {
     small: 'svg',
     medium: 'svg',
+    full: 'png',
   },
   png: {
     small: 'png',
     medium: 'png',
+    full: 'png',
   },
   default: {
     small: 'jpeg',
     medium: 'jpeg',
+    full: 'png',
   },
 }
 
@@ -177,14 +182,25 @@ const createImageVersions = async (
       }`,
     )
 
+    const fullFilePath = path.join(
+      tempDirRoot,
+      `${filenameWithoutExtension}_full.${
+        imageSizeConversionMapper[format]
+          ? imageSizeConversionMapper[format].full
+          : imageSizeConversionMapper.default.full
+      }`,
+    )
+
     // all the versions of SVG will be the same as the original file
     if (format === 'svg') {
       await writeFileFromStream(Readable.from(buffer), smallFilePath)
       await writeFileFromStream(Readable.from(buffer), mediumFilePath)
+      await writeFileFromStream(Readable.from(buffer), fullFilePath)
 
       return {
         tempSmallFile: smallFilePath,
         tempMediumFile: mediumFilePath,
+        tempFullFile: fullFilePath,
       }
     }
 
@@ -200,9 +216,12 @@ const createImageVersions = async (
       await sharp(buffer).resize({ width: mediumWidth }).toFile(mediumFilePath)
     }
 
+    await sharp(buffer).toFile(fullFilePath)
+
     return {
       tempSmallFile: smallFilePath,
       tempMediumFile: mediumFilePath,
+      tempFullFile: fullFilePath,
     }
   } catch (e) {
     throw new Error(e)
@@ -232,18 +251,20 @@ const handleImageVersionsCreation = async (
 
     const originalImageWidth = await getImageWidth(fileBuffer)
 
-    const { tempSmallFile, tempMediumFile } = await createImageVersions(
-      fileBuffer,
-      tempDir,
-      filenameWithoutExtension,
-      originalImageWidth,
-      fileEXT,
-    )
+    const { tempSmallFile, tempMediumFile, tempFullFile } =
+      await createImageVersions(
+        fileBuffer,
+        tempDir,
+        filenameWithoutExtension,
+        originalImageWidth,
+        fileEXT,
+      )
 
     return {
       tempOriginalFilePath: filePath,
       tempSmallFile,
       tempMediumFile,
+      tempFullFile,
     }
   } catch (e) {
     throw new Error(e)

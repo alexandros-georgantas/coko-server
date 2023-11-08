@@ -160,6 +160,7 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
     const tempDir = path.join(tempDirRoot, randomHash)
     let tempSmallFilePath
     let tempMediumFilePath
+    let tempFullFilePath
 
     await fs.ensureDir(tempDir)
     const originalFilePath = path.join(tempDir, hashedFilename)
@@ -174,11 +175,16 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
     ) {
       await handleUnsupportedImageFormats(hashedFilename, tempDir)
 
-      const { tempSmallFile, tempMediumFile, tempOriginalFilePath } =
-        await handleImageVersionsCreation(hashedFilename, tempDir, true)
+      const {
+        tempSmallFile,
+        tempMediumFile,
+        tempFullFile,
+        tempOriginalFilePath,
+      } = await handleImageVersionsCreation(hashedFilename, tempDir, true)
 
       tempSmallFilePath = tempSmallFile
       tempMediumFilePath = tempMediumFile
+      tempFullFilePath = tempFullFile
 
       const originalImageStream = fs.createReadStream(tempOriginalFilePath)
 
@@ -207,11 +213,12 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
       original.mimetype = mime.lookup(hashedFilename)
       storedObjects.push(original)
     } else {
-      const { tempSmallFile, tempMediumFile } =
+      const { tempSmallFile, tempMediumFile, tempFullFile } =
         await handleImageVersionsCreation(hashedFilename, tempDir)
 
       tempSmallFilePath = tempSmallFile
       tempMediumFilePath = tempMediumFile
+      tempFullFilePath = tempFullFile
       const originalImageStream = fs.createReadStream(originalFilePath)
 
       const originalFileBuffer = await convertFileStreamIntoBuffer(
@@ -240,6 +247,37 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
       storedObjects.push(original)
     }
     /* eslint-enable no-prototype-builtins */
+
+    const fullImageStream = fs.createReadStream(tempFullFilePath)
+
+    const full = await uploadFileHandler(
+      fs.createReadStream(tempFullFilePath),
+      path.basename(tempFullFilePath),
+      mime.lookup(tempFullFilePath),
+    )
+
+    const fullFileBuffer = await convertFileStreamIntoBuffer(fullImageStream)
+
+    const {
+      width: fWidth,
+      height: fHeight,
+      space: fSpace,
+      density: fDensity,
+      size: fSize,
+    } = await getImageFileMetadata(fullFileBuffer)
+
+    full.imageMetadata = {
+      density: fDensity,
+      height: fHeight,
+      space: fSpace,
+      width: fWidth,
+    }
+    full.size = fSize
+    full.extension = `${getFileExtension(tempFullFilePath)}`
+    full.type = 'full'
+    full.mimetype = mime.lookup(tempFullFilePath)
+
+    storedObjects.push(full)
 
     const mediumImageStream = fs.createReadStream(tempMediumFilePath)
 
