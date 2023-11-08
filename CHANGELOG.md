@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.1...v3.1.0) (2023-11-08)
+
+
+### Features
+
+* add full size conversion to image uploads ([6effd16](https://gitlab.coko.foundation/cokoapps/server/commit/6effd169184c879c7fa0c45594395a254ab76150))
+
 ### [3.0.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.0...v3.0.1) (2023-10-19)
 
 
