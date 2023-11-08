@@ -14,22 +14,27 @@ const imageSizeConversionMapper = {
   tiff: {
     small: 'png',
     medium: 'png',
+    full: 'png',
   },
   tif: {
     small: 'png',
     medium: 'png',
+    full: 'png',
   },
   svg: {
     small: 'svg',
     medium: 'svg',
+    full: 'svg',
   },
   png: {
     small: 'png',
     medium: 'png',
+    full: 'png',
   },
   default: {
     small: 'jpeg',
     medium: 'jpeg',
+    full: 'jpeg',
   },
 }
 
@@ -146,10 +151,8 @@ const createImageVersions = async (
   format,
 ) => {
   try {
-    const {
-      maximumWidthForSmallImages,
-      maximumWidthForMediumImages,
-    } = config.get('fileStorage')
+    const { maximumWidthForSmallImages, maximumWidthForMediumImages } =
+      config.get('fileStorage')
 
     const mediumWidth = maximumWidthForMediumImages
       ? parseInt(maximumWidthForMediumImages, 10)
@@ -177,14 +180,25 @@ const createImageVersions = async (
       }`,
     )
 
+    const fullFilePath = path.join(
+      tempDirRoot,
+      `${filenameWithoutExtension}_full.${
+        imageSizeConversionMapper[format]
+          ? imageSizeConversionMapper[format].full
+          : imageSizeConversionMapper.default.full
+      }`,
+    )
+
     // all the versions of SVG will be the same as the original file
     if (format === 'svg') {
       await sharp(buffer).toFile(smallFilePath)
       await sharp(buffer).toFile(mediumFilePath)
+      await sharp(buffer).toFile(fullFilePath)
 
       return {
         tempSmallFile: smallFilePath,
         tempMediumFile: mediumFilePath,
+        tempFullFile: fullFilePath,
       }
     }
 
@@ -200,9 +214,12 @@ const createImageVersions = async (
       await sharp(buffer).resize({ width: mediumWidth }).toFile(mediumFilePath)
     }
 
+    await sharp(buffer).toFile(fullFilePath)
+
     return {
       tempSmallFile: smallFilePath,
       tempMediumFile: mediumFilePath,
+      tempFullFile: fullFilePath,
     }
   } catch (e) {
     throw new Error(e)
@@ -216,6 +233,7 @@ const handleImageVersionsCreation = async (
 ) => {
   try {
     const filenameWithoutExtension = path.parse(filename).name
+
     const fileEXT = unsupportedFile
       ? imageConversionToSupportedFormatMapper[getFileExtension(filename)]
       : getFileExtension(filename)
@@ -230,18 +248,21 @@ const handleImageVersionsCreation = async (
     )
 
     const originalImageWidth = await getImageWidth(fileBuffer)
-    const { tempSmallFile, tempMediumFile } = await createImageVersions(
-      fileBuffer,
-      tempDir,
-      filenameWithoutExtension,
-      originalImageWidth,
-      fileEXT,
-    )
+
+    const { tempSmallFile, tempMediumFile, tempFullFile } =
+      await createImageVersions(
+        fileBuffer,
+        tempDir,
+        filenameWithoutExtension,
+        originalImageWidth,
+        fileEXT,
+      )
 
     return {
       tempOriginalFilePath: filePath,
       tempSmallFile,
       tempMediumFile,
+      tempFullFile,
     }
   } catch (e) {
     throw new Error(e)

@@ -77,3 +77,4 @@ uploads/
 # Misc
 .cache/
 .DS_Store
+.nvmrc

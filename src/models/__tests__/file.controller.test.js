@@ -5,8 +5,13 @@ const { File } = require('../index')
 const { deleteFiles, createFile } = require('../file/file.controller')
 
 const clearDb = require('./_clearDb')
+const { connectToFileStorage } = require('../../services/fileStorage')
 
 describe('File Controller', () => {
+  beforeAll(async () => {
+    await connectToFileStorage()
+  })
+
   beforeEach(() => clearDb())
 
   afterAll(() => {
@@ -23,11 +28,12 @@ describe('File Controller', () => {
       'files',
       'test.jpg',
     )
+
     const fileStream = fs.createReadStream(filePath)
     const newFile = await createFile(fileStream, 'test.jpg')
 
     expect(newFile).toBeDefined()
-    expect(newFile.storedObjects).toHaveLength(3)
+    expect(newFile.storedObjects).toHaveLength(4)
     expect(newFile.name).toEqual('test.jpg')
   })
 

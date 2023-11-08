@@ -43,6 +43,7 @@ const healthCheck = () => {
           )
           return reject(err)
         }
+
         logger.info('File Storage Healthcheck: OK')
         return resolve(data)
       })
@@ -59,20 +60,15 @@ const connectToFileStorage = () => {
     )
   }
 
-  const {
-    accessKeyId,
-    secretAccessKey,
-    bucket,
-    protocol,
-    host,
-    port,
-  } = config.get('fileStorage')
+  const { accessKeyId, secretAccessKey, bucket, protocol, host, port } =
+    config.get('fileStorage')
 
   if (!protocol) {
     throw new Error(
       'Missing required protocol param for initializing file storage',
     )
   }
+
   if (!host) {
     throw new Error('Missing required host param for initializing file storage')
   }
@@ -82,11 +78,13 @@ const connectToFileStorage = () => {
       'Missing required accessKeyId param for initializing file storage',
     )
   }
+
   if (!accessKeyId) {
     throw new Error(
       'Missing required secretAccessKey param for initializing file storage',
     )
   }
+
   if (!bucket) {
     throw new Error(
       'Missing required bucket param for initializing file storage',
@@ -133,6 +131,7 @@ const uploadFileHandler = (fileStream, filename, mimetype) => {
   }
 
   const { bucket } = config.get('fileStorage')
+
   const params = {
     Bucket: bucket,
     Key: filename, // file name you want to save as
@@ -145,6 +144,7 @@ const uploadFileHandler = (fileStream, filename, mimetype) => {
       if (err) {
         reject(err)
       }
+
       // do we need etag?
       const { Key } = data
       resolve({ key: Key })
@@ -160,6 +160,7 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
     const tempDir = path.join(tempDirRoot, randomHash)
     let tempSmallFilePath
     let tempMediumFilePath
+    let tempFullFilePath
 
     await fs.ensureDir(tempDir)
     const originalFilePath = path.join(tempDir, hashedFilename)
@@ -177,28 +178,29 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
       const {
         tempSmallFile,
         tempMediumFile,
+        tempFullFile,
         tempOriginalFilePath,
       } = await handleImageVersionsCreation(hashedFilename, tempDir, true)
+
       tempSmallFilePath = tempSmallFile
       tempMediumFilePath = tempMediumFile
+      tempFullFilePath = tempFullFile
 
       const originalImageStream = fs.createReadStream(tempOriginalFilePath)
+
       const originalFileBuffer = await convertFileStreamIntoBuffer(
         originalImageStream,
       )
 
-      const {
-        width,
-        height,
-        space,
-        density,
-        size,
-      } = await getImageFileMetadata(originalFileBuffer)
+      const { width, height, space, density, size } =
+        await getImageFileMetadata(originalFileBuffer)
+
       const original = await uploadFileHandler(
         fs.createReadStream(originalFilePath),
         hashedFilename,
         mime.lookup(hashedFilename),
       )
+
       original.imageMetadata = {
         density,
         height,
@@ -211,29 +213,27 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
       original.mimetype = mime.lookup(hashedFilename)
       storedObjects.push(original)
     } else {
-      const {
-        tempSmallFile,
-        tempMediumFile,
-      } = await handleImageVersionsCreation(hashedFilename, tempDir)
+      const { tempSmallFile, tempMediumFile, tempFullFile } =
+        await handleImageVersionsCreation(hashedFilename, tempDir)
+
       tempSmallFilePath = tempSmallFile
       tempMediumFilePath = tempMediumFile
+      tempFullFilePath = tempFullFile
       const originalImageStream = fs.createReadStream(originalFilePath)
+
       const originalFileBuffer = await convertFileStreamIntoBuffer(
         originalImageStream,
       )
 
-      const {
-        width,
-        height,
-        space,
-        density,
-        size,
-      } = await getImageFileMetadata(originalFileBuffer)
+      const { width, height, space, density, size } =
+        await getImageFileMetadata(originalFileBuffer)
+
       const original = await uploadFileHandler(
         fs.createReadStream(originalFilePath),
         hashedFilename,
         mime.lookup(hashedFilename),
       )
+
       original.imageMetadata = {
         density,
         height,
@@ -247,6 +247,37 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
       storedObjects.push(original)
     }
     /* eslint-enable no-prototype-builtins */
+
+    const fullImageStream = fs.createReadStream(tempFullFilePath)
+
+    const full = await uploadFileHandler(
+      fs.createReadStream(tempFullFilePath),
+      path.basename(tempFullFilePath),
+      mime.lookup(tempFullFilePath),
+    )
+
+    const fullFileBuffer = await convertFileStreamIntoBuffer(fullImageStream)
+
+    const {
+      width: fWidth,
+      height: fHeight,
+      space: fSpace,
+      density: fDensity,
+      size: fSize,
+    } = await getImageFileMetadata(fullFileBuffer)
+
+    full.imageMetadata = {
+      density: fDensity,
+      height: fHeight,
+      space: fSpace,
+      width: fWidth,
+    }
+    full.size = fSize
+    full.extension = `${getFileExtension(tempFullFilePath)}`
+    full.type = 'full'
+    full.mimetype = mime.lookup(tempFullFilePath)
+
+    storedObjects.push(full)
 
     const mediumImageStream = fs.createReadStream(tempMediumFilePath)
 
@@ -280,6 +311,7 @@ const handleImageUpload = async (fileStream, hashedFilename) => {
     medium.mimetype = mime.lookup(tempMediumFilePath)
 
     storedObjects.push(medium)
+
     const smallImageStream = fs.createReadStream(tempSmallFilePath)
 
     const small = await uploadFileHandler(
@@ -333,6 +365,7 @@ const upload = async (fileStream, filename, options = {}) => {
     if (!filename) {
       throw new Error('filename is required')
     }
+
     const { forceFilenameAsObjectKey } = options
 
     const mimetype = mime.lookup(filename)
@@ -346,6 +379,7 @@ const upload = async (fileStream, filename, options = {}) => {
         .randomBytes(6)
         .toString('hex')}${getFileExtension(filename, true)}`
     }
+
     /* eslint-disable no-prototype-builtins */
     if (
       !mimetype.match(/^image\//) &&
@@ -389,6 +423,7 @@ const getFileInfo = key => {
   }
 
   const { bucket } = config.get('fileStorage')
+
   const params = {
     Bucket: bucket,
     Key: key,
@@ -413,6 +448,7 @@ const list = () => {
   }
 
   const { bucket } = config.get('fileStorage')
+
   const params = {
     Bucket: bucket,
   }

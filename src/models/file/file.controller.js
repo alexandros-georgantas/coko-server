@@ -75,9 +75,11 @@ const deleteFiles = async (ids, removeFromFileServer = true, options = {}) => {
             }),
           )
         }
+
         const affectedRows = await Promise.all(
           ids.map(async id => File.query(tr).deleteById(id)),
         )
+
         return affectedRows.length
       },
       { trx, passedTrxOnly: true },

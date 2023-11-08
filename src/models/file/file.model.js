@@ -31,7 +31,7 @@ const arrayOfStoredObjects = {
     required: ['type', 'key', 'mimetype', 'extension', 'size'],
     properties: {
       id,
-      type: { type: 'string', enum: ['original', 'small', 'medium'] },
+      type: { type: 'string', enum: ['original', 'small', 'medium', 'full'] },
       key: stringNotEmpty,
       mimetype,
       extension: stringNotEmpty,
