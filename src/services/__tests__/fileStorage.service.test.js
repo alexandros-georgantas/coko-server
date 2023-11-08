@@ -58,7 +58,7 @@ describe('File Storage Service', () => {
 
     const fileStream = fs.createReadStream(filePath)
     const storedObject = await upload(fileStream, 'test.jpg')
-    expect(storedObject).toHaveLength(3)
+    expect(storedObject).toHaveLength(4)
   })
 
   it('uploads an png image file', async () => {
@@ -73,10 +73,10 @@ describe('File Storage Service', () => {
 
     const fileStream = fs.createReadStream(filePath)
     const storedObject = await upload(fileStream, 'test.png')
-    expect(storedObject).toHaveLength(3)
+    expect(storedObject).toHaveLength(4)
   })
 
-  it('uploads an tiff image file', async () => {
+  it('uploads an tiff image file and checks the original and converted file types', async () => {
     const filePath = path.join(
       process.cwd(),
       'src',
@@ -88,7 +88,15 @@ describe('File Storage Service', () => {
 
     const fileStream = fs.createReadStream(filePath)
     const storedObject = await upload(fileStream, 'test.tiff')
-    expect(storedObject).toHaveLength(3)
+    expect(storedObject).toHaveLength(4)
+    expect(storedObject).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: 'original', extension: 'tiff' }),
+        expect.objectContaining({ type: 'full', extension: 'png' }),
+        expect.objectContaining({ type: 'medium', extension: 'png' }),
+        expect.objectContaining({ type: 'small', extension: 'png' }),
+      ]),
+    )
   })
 
   it('uploads an svg image file', async () => {
@@ -103,7 +111,7 @@ describe('File Storage Service', () => {
 
     const fileStream = fs.createReadStream(filePath)
     const storedObject = await upload(fileStream, 'test.svg')
-    expect(storedObject).toHaveLength(3)
+    expect(storedObject).toHaveLength(4)
   })
 
   it('uploads an eps image file', async () => {
@@ -118,7 +126,7 @@ describe('File Storage Service', () => {
 
     const fileStream = fs.createReadStream(filePath)
     const storedObject = await upload(fileStream, 'test.eps')
-    expect(storedObject).toHaveLength(3)
+    expect(storedObject).toHaveLength(4)
   })
 
   it('provides signed URLs for given operation and object key', async () => {

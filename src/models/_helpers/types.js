@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+
 const alphaNumericStringNotNullable = {
   type: 'string',
   pattern: '^[a-zA-Z0-9]+',

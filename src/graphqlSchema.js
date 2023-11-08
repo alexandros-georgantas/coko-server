@@ -35,6 +35,7 @@ function getSchemaRecursively(componentName) {
   if (component.typeDefs) {
     typeDefs.push(component.typeDefs)
   }
+
   if (component.resolvers) {
     merge(resolvers, component.resolvers)
   }
