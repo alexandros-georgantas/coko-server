@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 const logger = require('@pubsweet/logger')
 const mime = require('mime-types')
@@ -6,21 +5,21 @@ const axios = require('axios')
 const fs = require('fs-extra')
 const path = require('path')
 const sharp = require('sharp')
-const useTransaction = require('../src/models/useTransaction')
+const { useTransaction } = require('@coko/server')
 
-const File = require('../src/models/file/file.model')
+const File = require('@coko/server/src/models/file/file.model')
 
 const {
   connectToFileStorage,
   getURL,
   uploadFileHandler,
-} = require('../src/services/fileStorage')
+} = require('@coko/server/src/services/fileStorage')
 
 const {
   convertFileStreamIntoBuffer,
   getFileExtension,
   getImageFileMetadata,
-} = require('../src/helpers')
+} = require('@coko/server/src/helpers')
 
 const imageSizeConversionMapper = {
   tiff: {
