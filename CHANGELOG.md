@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.1.0...v3.1.1) (2023-11-10)
+
+
+### Bug Fixes
+
+* **server:** fix file migration import paths ([bb4f94f](https://gitlab.coko.foundation/cokoapps/server/commit/bb4f94f9d789f63d5839723efdbfc7b204b24669))
+
 ## [3.1.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.0.1...v3.1.0) (2023-11-08)
 
 
