@@ -1,5 +1,4 @@
-const axios = require('axios')
-const clone = require('lodash/clone')
+const makeCall = require('./makeCall')
 
 const getAccessToken = require('./getAccessToken')
 
@@ -32,24 +31,9 @@ const callMicroservice = async (serviceName, callParameters) => {
         `communication parameters needed for calling ${serviceName} microservice`,
       )
 
-    const makeCall = async token => {
-      const axiosParams = clone(callParameters)
-      const { headers } = axiosParams
-
-      if (!headers) {
-        axiosParams.headers = {
-          authorization: `Bearer ${token}`,
-        }
-      } else {
-        axiosParams.headers.authorization = `Bearer ${token}`
-      }
-
-      return axios(axiosParams)
-    }
-
     const accessToken = await getAccessToken(serviceName)
 
-    return makeCall(accessToken).catch(async err => {
+    return makeCall(callParameters, accessToken).catch(async err => {
       const { response } = err
 
       if (!response) {
@@ -61,7 +45,7 @@ const callMicroservice = async (serviceName, callParameters) => {
 
       if (status === 401 && msg === 'expired token') {
         const freshToken = await getAccessToken(serviceName, true)
-        return makeCall(freshToken)
+        return makeCall(callParameters, freshToken)
       }
 
       throw new Error(err)
