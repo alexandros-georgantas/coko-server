@@ -41,6 +41,10 @@ const fileStorage = {
 
 const { callMicroservice } = require('./utils/microservices')
 
+const {
+  authenticatedCall: makeOAuthCall,
+} = require('./utils/authenticatedCall')
+
 const createJWT = authentication.token.create
 const verifyJWT = authentication.token.verify
 
@@ -70,5 +74,6 @@ module.exports = {
   connectToJobQueue,
 
   callMicroservice,
+  makeOAuthCall,
   WaxToDocxConverter,
 }
