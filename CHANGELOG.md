@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.1.1...v3.2.0) (2023-11-17)
+
+
+### Features
+
+* add function to make authenticated oauth calls ([8e52c4a](https://gitlab.coko.foundation/cokoapps/server/commit/8e52c4a731776bb7217ea76ab0c01bb4bb715710))
+* **models:** add expiration to oauth tokens in identities ([9ebdf48](https://gitlab.coko.foundation/cokoapps/server/commit/9ebdf48e61bef0bb28d2e1cf38c9ee4722af7acc))
+* **server:** add function to make authenticated call to integration ([313929d](https://gitlab.coko.foundation/cokoapps/server/commit/313929d239fa34b3a8d8f10ca4baf3061f482fa5))
+
+
+### Bug Fixes
+
+* **models:** add constraint that makes provider-email combinations unique ([f04f589](https://gitlab.coko.foundation/cokoapps/server/commit/f04f589224321166adb7611c4059b3865ce416ad))
+
 ### [3.1.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.1.0...v3.1.1) (2023-11-10)
 
 
