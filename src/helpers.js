@@ -271,6 +271,10 @@ const handleImageVersionsCreation = async (
   }
 }
 
+const getExpirationTime = secondsFromNow => {
+  return new Date(new Date().getTime() + 1000 * parseInt(secondsFromNow, 10))
+}
+
 module.exports = {
   convertFileStreamIntoBuffer,
   getFileExtension,
@@ -278,4 +282,5 @@ module.exports = {
   writeFileFromStream,
   handleUnsupportedImageFormats,
   handleImageVersionsCreation,
+  getExpirationTime,
 }

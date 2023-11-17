@@ -21,6 +21,14 @@ module.exports = {
   authsome: {
     mode: path.join(__dirname, 'authsome.js'),
   },
+  integrations: {
+    dummy: {
+      clientId: 'ketida-editor',
+      redirectUrl: 'http://localhost:4000/provider-connection-popup/dummy',
+      tokenUrl:
+        'https://api.sandbox.lulu.com/auth/realms/glasstree/protocol/openid-connect/token',
+    },
+  },
   mailer: {
     from: '',
   },

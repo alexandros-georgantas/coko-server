@@ -2,6 +2,7 @@ const config = require('config')
 const axios = require('axios')
 
 const { Identity } = require('../models')
+const { getExpirationTime } = require('../helpers')
 
 const getAuthTokens = async (userId, providerLabel) => {
   try {
@@ -70,7 +71,6 @@ const getAuthTokens = async (userId, providerLabel) => {
     const { data } = await axios({
       method: 'post',
       url: tokenUrl,
-
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       data: tokenData.toString(),
     })
@@ -78,13 +78,15 @@ const getAuthTokens = async (userId, providerLabel) => {
     /* eslint-disable camelcase */
     const { access_token, expires_in, refresh_token, refresh_expires_in } = data
 
+    if (!access_token || !expires_in || !refresh_token || !refresh_expires_in) {
+      throw new Error('Missing data from response!')
+    }
+
     await Identity.patchAndFetchById(providerUserIdentity.id, {
       oauthAccessToken: access_token,
       oauthRefreshToken: refresh_token,
-      oauthAccessTokenExpiration:
-        new Date().getTime() + 1000 * parseInt(expires_in, 10),
-      oauthRefreshTokenExpiration:
-        new Date().getTime() + 1000 * parseInt(refresh_expires_in, 10),
+      oauthAccessTokenExpiration: getExpirationTime(expires_in),
+      oauthRefreshTokenExpiration: getExpirationTime(refresh_expires_in),
     })
 
     return access_token
