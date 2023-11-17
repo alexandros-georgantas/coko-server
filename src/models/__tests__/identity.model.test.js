@@ -99,4 +99,41 @@ describe('Identity model', () => {
       identityWithProfileData.profileData.displayName,
     )
   })
+
+  it('creates two identities with the same email but different provider', async () => {
+    const user = await createUser()
+
+    const createIdentity = async provider => {
+      return Identity.insert({
+        userId: user.id,
+        email: 'john@example.com',
+        provider,
+      })
+    }
+
+    // first time should be fine
+    const id1 = await createIdentity('test1')
+    const id2 = await createIdentity('test2')
+
+    expect(id1.email).toEqual(id2.email)
+    expect(id1.provider).not.toEqual(id2.provider)
+  })
+
+  it('fails when creating two identities with the same email and provider', async () => {
+    const user = await createUser()
+
+    const createIdentity = async () => {
+      await Identity.insert({
+        userId: user.id,
+        email: 'john@example.com',
+        provider: 'test',
+      })
+    }
+
+    // first time should be fine
+    await createIdentity()
+
+    // second time should throw an error
+    await expect(createIdentity).rejects.toThrow(/unique_provider_email/)
+  })
 })
