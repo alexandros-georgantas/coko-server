@@ -8,3 +8,11 @@ type Identity {
   isVerified: Boolean!
   provider: String
 }
+
+extend type Mutation {
+  createOAuthIdentity(
+    code: String!
+    provider: String!
+    sessionState: String!
+  ): Identity!
+}

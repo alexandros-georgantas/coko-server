@@ -1,10 +1,5 @@
-const {
-  logger,
-  Identity,
-  Team,
-  TeamMember,
-  useTransaction,
-} = require('../../src')
+const { logger, useTransaction } = require('../../src')
+const { Identity, Team, TeamMember } = require('../../src/models')
 
 const { signUp } = require('../../src/models/user/user.controller')
 
@@ -18,7 +13,7 @@ const seedAdmin = async () => {
       password: 'password',
     }
 
-    useTransaction(async trx => {
+    await useTransaction(async trx => {
       const userId = await signUp(data, { trx })
 
       await Identity.query(trx)
@@ -40,7 +35,7 @@ const seedAdmin = async () => {
       await TeamMember.insert(
         {
           teamId: adminTeam.id,
-          memberId: userId,
+          userId,
         },
         { trx },
       )

@@ -46,6 +46,7 @@ const createUserAndIdentities = async () => {
   const id2 = await Identity.query().insert({
     userId: user.id,
     email: internet.email(),
+    provider: 'test',
     isVerified: true,
     isDefault: false,
   })
