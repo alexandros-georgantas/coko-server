@@ -10,7 +10,7 @@ module.exports = {
   integrations: {
     test: {
       clientId: 'ketida-editor',
-      redirectUrl: 'http://localhost:4000/provider-connection-popup/dummy',
+      redirectUri: 'http://localhost:4000/provider-connection-popup/dummy',
       tokenUrl: 'http://example.com',
     },
   },

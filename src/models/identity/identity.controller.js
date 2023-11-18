@@ -88,12 +88,14 @@ const createOAuthIdentity = async (userId, provider, sessionState, code) => {
 const authorizeOAuth = async (provider, sessionState, code) => {
   const tokenUrl = config.get(`integrations.${provider}.tokenUrl`)
   const clientId = config.get(`integrations.${provider}.clientId`)
+  const redirectUri = config.get(`integrations.${provider}.redirectUri`)
 
   const postData = {
     code,
     grant_type: 'authorization_code',
     session_state: sessionState,
     client_id: clientId,
+    redirect_uri: redirectUri,
   }
 
   const params = new URLSearchParams(postData)

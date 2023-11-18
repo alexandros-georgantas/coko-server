@@ -24,7 +24,7 @@ module.exports = {
   integrations: {
     dummy: {
       clientId: 'ketida-editor',
-      redirectUrl: 'http://localhost:4000/provider-connection-popup/dummy',
+      redirectUri: 'http://localhost:4000/provider-connection-popup/dummy',
       tokenUrl:
         'https://api.sandbox.lulu.com/auth/realms/glasstree/protocol/openid-connect/token',
     },
