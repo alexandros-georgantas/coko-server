@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.2.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.2.0...v3.2.1) (2023-11-18)
+
+
+### Bug Fixes
+
+* add redirect uri to integration authenticated call ([a0b2531](https://gitlab.coko.foundation/cokoapps/server/commit/a0b253113dba235e29e53e193e50c625d5f829c4))
+
 ## [3.2.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.1.1...v3.2.0) (2023-11-17)
 
 
