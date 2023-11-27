@@ -1,8 +1,10 @@
 const axios = require('axios')
 const { authenticatedCall } = require('../authenticatedCall')
 
-jest.mock('../getAuthTokens.js', () => {
-  return jest.fn(() => 'token')
+jest.mock('../tokens', () => {
+  return {
+    getAuthTokens: jest.fn(() => 'token'),
+  }
 })
 
 jest.mock('axios')

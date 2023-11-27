@@ -2,7 +2,7 @@ const logger = require('@pubsweet/logger')
 
 const axios = require('axios')
 const config = require('config')
-const { getExpirationTime } = require('../../helpers')
+const { getExpirationTime } = require('../../utils/tokens')
 
 const Identity = require('./identity.model')
 

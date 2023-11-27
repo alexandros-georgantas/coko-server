@@ -1,5 +1,5 @@
 const makeCall = require('./makeCall')
-const getAuthTokens = require('./getAuthTokens')
+const { getAuthTokens } = require('./tokens')
 
 const authenticatedCall = async (userId, providerLabel, callParameters) => {
   try {
