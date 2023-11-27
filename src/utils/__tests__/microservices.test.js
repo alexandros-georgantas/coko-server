@@ -2,8 +2,10 @@ const axios = require('axios')
 
 const { callMicroservice } = require('../microservices')
 
-jest.mock('../getAccessToken', () => {
-  return jest.fn(() => 'token')
+jest.mock('../tokens', () => {
+  return {
+    getAccessToken: jest.fn(() => 'token'),
+  }
 })
 
 jest.mock('axios')

@@ -1,6 +1,6 @@
 const makeCall = require('./makeCall')
 
-const getAccessToken = require('./getAccessToken')
+const { getAccessToken } = require('./tokens')
 
 /**
  * Calls given microservice, while taking care of authentication for you.
