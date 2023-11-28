@@ -6,16 +6,10 @@ const moment = require('moment')
 const { Identity, ServiceCredential } = require('../models')
 
 const getAuthTokens = async (userId, providerLabel) => {
-  const data = requestTokensFromProvider(userId, providerLabel, {
+  return requestTokensFromProvider(userId, providerLabel, {
     checkAccessToken: true,
     returnAccessToken: true,
   })
-
-  /* eslint-disable camelcase */
-  const { access_token } = data
-
-  return access_token
-  /* eslint-enable camelcase */
 }
 
 const getExpirationTime = secondsFromNow => {
