@@ -1,6 +1,6 @@
 {
   "name": "@coko/server",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "A tweaked version of pubsweet-server for use by Coko's projects",
   "keywords": [
     "pubsweet",
