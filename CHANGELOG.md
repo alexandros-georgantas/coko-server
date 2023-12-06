@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.2.3...v3.3.0) (2023-12-06)
+
+
+### Features
+
+* add deferred job for renewing refresh tokens ([2f57018](https://gitlab.coko.foundation/cokoapps/server/commit/2f570189f7f3ea173871fc34c53fd71d372d3fd6))
+
 ### [3.2.3](https://gitlab.coko.foundation/cokoapps/server/compare/v3.2.2...v3.2.3) (2023-11-28)
 
 
