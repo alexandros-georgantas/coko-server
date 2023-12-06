@@ -116,7 +116,7 @@ const requestTokensFromProvider = async (
 }
 
 const renewAuthTokens = async (userId, providerLabel) =>
-  requestTokensFromProvider(userId, providerLabel)
+  requestTokensFromProvider(userId, providerLabel, { checkAccessToken: false })
 
 const getAccessToken = async (serviceName, renew = false) => {
   try {
