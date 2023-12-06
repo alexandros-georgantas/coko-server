@@ -2,11 +2,32 @@ const axios = require('axios')
 const config = require('config')
 const { URLSearchParams: UnpackedParams } = require('url')
 
-const { createUser, createUserAndIdentities } = require('./helpers/users')
+const { createUser } = require('./helpers/users')
 
 const { createOAuthIdentity } = require('../identity/identity.controller')
 const { User, Identity } = require('../index')
 const clearDb = require('./_clearDb')
+
+const { jobs } = require('../../services')
+
+// Mock "renewAuthTokensJob"
+jest.mock('../../services', () => {
+  const { jobs: jobs_, ...originalModule } =
+    jest.requireActual('../../services')
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    jobs: {
+      ...jobs_,
+      defer: jest.fn(async (name, startAfter, data) => [
+        name,
+        startAfter,
+        data,
+      ]),
+    },
+  }
+})
 
 const fakeAccessToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZW1haWwiOiJkZWZhdWx0QHRlc3QuY29tIiwiZmFtaWx5X25hbWUiOiJXYWx0b24iLCJnaXZlbl9uYW1lIjoiSm9obiJ9.8Qn2H6FAJVUn6T1U7bnbjnuguIFlY5EW_XaII1IJdE4'
@@ -127,54 +148,11 @@ describe('Identity Controller', () => {
     expect(
       timeLeft(newProvider.oauthRefreshTokenExpiration) >= 359995000,
     ).toBeTruthy()
-  })
-
-  it('authorises access and updates the Oauth tokens', async () => {
-    axios.mockImplementationOnce(fakePostResponse)
-    const { user, id2: providerIdentity } = await createUserAndIdentities()
-    const { provider } = providerIdentity
-
-    // Make sure provider auth fields are empty
-    expect(provider.oauthAccessToken).toBe(undefined)
-    expect(provider.oauthAccessExpiration).toBe(undefined)
-    expect(provider.oauthRefreshToken).toBe(undefined)
-    expect(provider.oauthRefreshExpiration).toBe(undefined)
-
-    // Validate provider auth tokens
-    const identity = await Identity.findOne({
-      userId: user.id,
-      provider,
-    })
-
-    await Identity.patchAndFetchById(identity.id, {
-      oauthRefreshTokenExpiration: new Date(1995, 11, 17),
-    })
-
-    // Mock authorisation
-    await createOAuthIdentity(
-      user.id,
-      provider,
-      'fake-session-state',
-      'fake-code',
-    )
-
-    const updatedIdentity = await Identity.findById(identity.id)
-
-    expect(updatedIdentity.oauthAccessToken).toEqual(fakeAccessToken)
-    // Expect time left to be 3600s (with 5s uncertainty)
-    expect(
-      timeLeft(updatedIdentity.oauthAccessTokenExpiration) <= 3600000,
-    ).toBeTruthy()
-    expect(
-      timeLeft(updatedIdentity.oauthAccessTokenExpiration) >= 3595000,
-    ).toBeTruthy()
-    expect(updatedIdentity.oauthRefreshToken).toEqual('fake.refresh.token')
-    // Expect time left to be 3600000 (with 5s uncertainty)
-    expect(
-      timeLeft(updatedIdentity.oauthRefreshTokenExpiration) <= 360000000,
-    ).toBeTruthy()
-    expect(
-      timeLeft(updatedIdentity.oauthRefreshTokenExpiration) >= 359995000,
-    ).toBeTruthy()
+    // Expect renewal job to have been "scheduled"
+    const lastCallIndex = jobs.defer.mock.calls.length - 1
+    const [name, renewAfter, data] = jobs.defer.mock.calls[lastCallIndex]
+    expect(name).toEqual('renew-auth-tokens')
+    expect(renewAfter).toEqual({ seconds: 273600 }) // 360000 - 86400
+    expect(data).toEqual({ providerLabel: 'test', userId: user.id })
   })
 })

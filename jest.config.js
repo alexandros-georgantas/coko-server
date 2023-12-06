@@ -43,6 +43,13 @@ module.exports = {
       // globalSetup: '<rootDir>/src/models/__tests__/_setup.js',
       // globalTeardown: '<rootDir>/src/models/__tests__/_teardown.js',
     },
+    {
+      displayName: 'app',
+      testEnvironment: 'node',
+      testRegex: 'src/__tests__/.+test.js$',
+      // globalSetup: '<rootDir>/src/models/__tests__/_setup.js',
+      // globalTeardown: '<rootDir>/src/models/__tests__/_teardown.js',
+    },
   ],
   maxWorkers: 1,
 }

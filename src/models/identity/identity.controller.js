@@ -3,6 +3,7 @@ const logger = require('@pubsweet/logger')
 const axios = require('axios')
 const config = require('config')
 const { getExpirationTime } = require('../../utils/tokens')
+const { jobs } = require('../../services')
 
 const Identity = require('./identity.model')
 
@@ -29,7 +30,7 @@ const getDefaultIdentity = async userId => {
   }
 }
 
-/** activateOauth
+/**
  * Authorise user OAuth.
  * Save OAuth access and refresh tokens.
  * Trigger subscription indicating the identity has changed.
@@ -37,42 +38,44 @@ const getDefaultIdentity = async userId => {
 const createOAuthIdentity = async (userId, provider, sessionState, code) => {
   // Throw error if unable to acquire and then store authorisation
   try {
-    const authData = await authorizeOAuth(provider, sessionState, code)
-    const identity = await Identity.findOne({ userId, provider })
+    let identity = await Identity.findOne({ userId, provider })
 
-    if (!identity) {
-      const {
-        email,
-        given_name: givenNames,
-        family_name: surname,
-        sub: providerUserId,
-      } = JSON.parse(
-        Buffer.from(
-          authData.oauthAccessToken.split('.')[1],
-          'base64',
-        ).toString(),
-      )
-
-      return Identity.insert({
-        email,
-        provider,
-        userId,
-        profileData: {
-          givenNames,
-          surname,
-          providerUserId,
-        },
-        ...authData,
-      })
+    if (identity) {
+      return identity
     }
 
-    const refreshTokenExpired =
-      identity.oauthRefreshTokenExpiration &&
-      identity.oauthRefreshTokenExpiration.getTime() < new Date().getTime()
+    const { renewAfter, ...authData } = await authorizeOAuth(
+      provider,
+      sessionState,
+      code,
+    )
 
-    if (refreshTokenExpired) {
-      return Identity.patchAndFetchById(identity.id, authData)
-    }
+    const {
+      email,
+      given_name: givenNames,
+      family_name: surname,
+      sub: providerUserId,
+    } = JSON.parse(
+      Buffer.from(authData.oauthAccessToken.split('.')[1], 'base64').toString(),
+    )
+
+    identity = Identity.insert({
+      email,
+      provider,
+      userId,
+      profileData: {
+        givenNames,
+        surname,
+        providerUserId,
+      },
+      ...authData,
+    })
+
+    await jobs.defer(
+      jobs.RENEW_AUTH_TOKENS_JOB,
+      { seconds: renewAfter },
+      { userId, providerLabel: provider },
+    )
 
     return identity
   } catch (e) {
@@ -125,11 +128,18 @@ const authorizeOAuth = async (provider, sessionState, code) => {
     throw new Error('Missing data from response!')
   }
 
+  const renewAfter = refresh_expires_in - 86400
+
+  if (renewAfter < 0) {
+    throw new Error('"renewAfter" is less than 0')
+  }
+
   return {
     oauthAccessToken: access_token,
     oauthRefreshToken: refresh_token,
     oauthAccessTokenExpiration: getExpirationTime(expires_in),
     oauthRefreshTokenExpiration: getExpirationTime(refresh_expires_in),
+    renewAfter,
   }
   /* eslint-enable camelcase */
 }
