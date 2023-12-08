@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.3.0...v3.3.1) (2023-12-08)
+
+
+### Bug Fixes
+
+* use s3 api instead of axios for full size image migration ([80d1c44](https://gitlab.coko.foundation/cokoapps/server/commit/80d1c4439bf6094c8eefcc3ecbe1784642a11cef))
+
 ## [3.3.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.2.3...v3.3.0) (2023-12-06)
 
 
