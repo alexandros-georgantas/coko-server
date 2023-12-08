@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unresolved */
 const logger = require('@pubsweet/logger')
 const mime = require('mime-types')
-const axios = require('axios')
 const fs = require('fs-extra')
 const path = require('path')
 const sharp = require('sharp')
@@ -11,7 +10,7 @@ const File = require('@coko/server/src/models/file/file.model')
 
 const {
   connectToFileStorage,
-  getURL,
+  download,
   uploadFileHandler,
 } = require('@coko/server/src/services/fileStorage')
 
@@ -61,14 +60,6 @@ const sharpConversionFullFilePath = async (
   return tempFullFilePath
 }
 
-const createMinioFileImageStream = async url => {
-  const response = await axios.get(url, {
-    responseType: 'stream',
-  })
-
-  return response.data
-}
-
 exports.up = async knex => {
   try {
     return useTransaction(async trx => {
@@ -76,6 +67,7 @@ exports.up = async knex => {
       const files = await File.query(trx)
 
       const tempDir = path.join(__dirname, '..', 'temp')
+      await fs.ensureDir(tempDir)
 
       await Promise.all(
         files.map(async file => {
@@ -86,21 +78,16 @@ exports.up = async knex => {
               storedObject => storedObject.type === 'original',
             )
 
-            const fileURL = await getURL(originalStoredObject.key)
-
             const filenameWithoutExtension = path.parse(
               originalStoredObject.key,
             ).name
 
-            const minioFileImageStream = await createMinioFileImageStream(
-              fileURL,
-            )
+            const tempPath = path.join(tempDir, originalStoredObject.key)
+            await download(originalStoredObject.key, tempPath)
 
             const format = originalStoredObject.extension
 
-            const buffer = await convertFileStreamIntoBuffer(
-              minioFileImageStream,
-            )
+            const buffer = fs.readFileSync(tempPath)
 
             const tempFullFilePath = await sharpConversionFullFilePath(
               buffer,
@@ -108,6 +95,8 @@ exports.up = async knex => {
               filenameWithoutExtension,
               format,
             )
+
+            fs.unlinkSync(tempPath)
 
             const fullImageStream = fs.createReadStream(tempFullFilePath)
 
