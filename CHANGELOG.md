@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.3.1...v3.4.0) (2023-12-13)
+
+
+### Features
+
+* make s3 style path configurable ([f84130e](https://gitlab.coko.foundation/cokoapps/server/commit/f84130ef1d9620ae1fe55d8679cf8e245ad891bc))
+
 ### [3.3.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.3.0...v3.3.1) (2023-12-08)
 
 
