@@ -14,6 +14,7 @@ const {
   handleImageVersionsCreation,
   convertFileStreamIntoBuffer,
   getImageFileMetadata,
+  emptyUndefinedOrNull,
 } = require('../helpers')
 
 const { tempFolderPath } = config.get('pubsweet-server')
@@ -60,8 +61,15 @@ const connectToFileStorage = () => {
     )
   }
 
-  const { accessKeyId, secretAccessKey, bucket, protocol, host, port } =
-    config.get('fileStorage')
+  const {
+    accessKeyId,
+    secretAccessKey,
+    bucket,
+    protocol,
+    host,
+    port,
+    s3ForcePathStyle,
+  } = config.get('fileStorage')
 
   if (!protocol) {
     throw new Error(
@@ -97,7 +105,9 @@ const connectToFileStorage = () => {
     accessKeyId,
     signatureVersion: 'v4',
     secretAccessKey,
-    s3ForcePathStyle: true,
+    s3ForcePathStyle: !emptyUndefinedOrNull(s3ForcePathStyle)
+      ? JSON.parse(s3ForcePathStyle)
+      : true,
     endpoint: serverUrl,
   })
 

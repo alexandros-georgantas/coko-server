@@ -39,6 +39,12 @@ const imageSizeConversionMapper = {
   },
 }
 
+const emptyUndefinedOrNull = value => {
+  return (
+    value == null || (typeof value === 'string' && value.trim().length === 0)
+  )
+}
+
 const convertFileStreamIntoBuffer = async fileStream => {
   return new Promise((resolve, reject) => {
     // Store file data chunks
@@ -278,4 +284,5 @@ module.exports = {
   writeFileFromStream,
   handleUnsupportedImageFormats,
   handleImageVersionsCreation,
+  emptyUndefinedOrNull,
 }
