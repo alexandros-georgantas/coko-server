@@ -3,7 +3,15 @@ const config = require('config')
 const axios = require('axios')
 const moment = require('moment')
 
+const { pubsubManager } = require('pubsweet-server')
+
+const {
+  subscriptions: { USER_UPDATED },
+} = require('../models/user/constants')
+
 const { Identity, ServiceCredential } = require('../models')
+
+const { getUser } = require('../models/user/user.controller')
 
 const getAuthTokens = async (userId, providerLabel) => {
   return requestTokensFromProvider(userId, providerLabel, {
@@ -21,6 +29,7 @@ const requestTokensFromProvider = async (
   providerLabel,
   options = {},
 ) => {
+  const pubsub = await pubsubManager.getPubsub()
   const { checkAccessToken, returnAccessToken } = options
 
   const providerUserIdentity = await Identity.findOne({
@@ -54,6 +63,15 @@ const requestTokensFromProvider = async (
     oauthRefreshTokenExpiration.getTime() < UTCNowTimestamp
 
   if (refreshTokenExpired) {
+    const updatedUser = await getUser(userId)
+
+    pubsub.publish(USER_UPDATED, {
+      userUpdated: updatedUser,
+    })
+    // logger.error(
+    //   `refresh token for provider ${providerLabel} expired, authorization flow should (provider login) be followed by the user`,
+    // )
+    // return false
     throw new Error(
       `refresh token for provider ${providerLabel} expired, authorization flow should (provider login) be followed by the user`,
     )
@@ -87,12 +105,30 @@ const requestTokensFromProvider = async (
     client_id: clientId,
   })
 
-  const { data } = await axios({
+  const { data, status } = await axios({
     method: 'post',
     url: tokenUrl,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     data: tokenData.toString(),
   })
+
+  if (status === 401) {
+    // for the case that something happened and refreshToken become invalid -> set that expired
+    const updatedUser = await getUser(userId)
+    await Identity.patchAndFetchById(providerUserIdentity.id, {
+      oauthRefreshTokenExpiration: moment().utc().toDate(),
+    })
+    pubsub.publish(USER_UPDATED, {
+      userUpdated: updatedUser,
+    })
+    // logger.error(
+    //   `refresh token for provider ${providerLabel} expired, authorization flow should (provider login) be followed by the user`,
+    // )
+    // return false
+    throw new Error(
+      `refresh token for provider ${providerLabel} expired, authorization flow should (provider login) be followed by the user`,
+    )
+  }
 
   /* eslint-disable camelcase */
   const { access_token, expires_in, refresh_token, refresh_expires_in } = data
