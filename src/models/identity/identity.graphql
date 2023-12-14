@@ -7,7 +7,7 @@ type Identity {
   isSocial: Boolean!
   isVerified: Boolean!
   provider: String
-  refreshTokenExpired: Boolean
+  hasValidRefreshToken: Boolean
 }
 
 extend type Mutation {

@@ -43,13 +43,13 @@ const createOAuthIdentityResolver = async (
   }
 }
 
-const refreshTokenExpiredResolver = async identity => {
+const hasValidRefreshTokenResolver = async identity => {
   const { oauthRefreshTokenExpiration } = identity
   const UTCNowTimestamp = moment().utc().toDate().getTime()
 
   return (
     oauthRefreshTokenExpiration &&
-    oauthRefreshTokenExpiration.getTime() < UTCNowTimestamp
+    oauthRefreshTokenExpiration.getTime() > UTCNowTimestamp
   )
 }
 
@@ -58,6 +58,6 @@ module.exports = {
     createOAuthIdentity: createOAuthIdentityResolver,
   },
   Identity: {
-    refreshTokenExpired: refreshTokenExpiredResolver,
+    hasValidRefreshToken: hasValidRefreshTokenResolver,
   },
 }
