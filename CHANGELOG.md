@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.4.0...v3.4.1) (2023-12-15)
+
+
+### Bug Fixes
+
+* handle refresh token expiration ([eb70a4b](https://gitlab.coko.foundation/cokoapps/server/commit/eb70a4bd363cf0dac4aa60e83bb2031847fb8872))
+
 ## [3.4.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.3.1...v3.4.0) (2023-12-13)
 
 
