@@ -2,6 +2,7 @@ const logger = require('@pubsweet/logger')
 
 const axios = require('axios')
 const config = require('config')
+const moment = require('moment')
 const { getExpirationTime } = require('../../utils/tokens')
 const { jobs } = require('../../services')
 
@@ -44,11 +45,7 @@ const createOAuthIdentity = async (userId, provider, sessionState, code) => {
       return identity
     }
 
-    const { renewAfter, ...authData } = await authorizeOAuth(
-      provider,
-      sessionState,
-      code,
-    )
+    const { ...authData } = await authorizeOAuth(provider, sessionState, code)
 
     const {
       email,
@@ -70,10 +67,12 @@ const createOAuthIdentity = async (userId, provider, sessionState, code) => {
       },
       ...authData,
     })
+    const { oauthRefreshTokenExpiration } = authData
+    const expiresIn = (oauthRefreshTokenExpiration - moment().utc()) / 1000
 
     await jobs.defer(
-      jobs.RENEW_AUTH_TOKENS_JOB,
-      { seconds: renewAfter },
+      jobs.REFRESH_TOKEN_EXPIRED,
+      { seconds: expiresIn },
       { userId, providerLabel: provider },
     )
 
@@ -128,18 +127,11 @@ const authorizeOAuth = async (provider, sessionState, code) => {
     throw new Error('Missing data from response!')
   }
 
-  const renewAfter = refresh_expires_in - 86400
-
-  if (renewAfter < 0) {
-    throw new Error('"renewAfter" is less than 0')
-  }
-
   return {
     oauthAccessToken: access_token,
     oauthRefreshToken: refresh_token,
     oauthAccessTokenExpiration: getExpirationTime(expires_in),
     oauthRefreshTokenExpiration: getExpirationTime(refresh_expires_in),
-    renewAfter,
   }
   /* eslint-enable camelcase */
 }
