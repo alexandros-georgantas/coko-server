@@ -40,14 +40,14 @@ const imageSizeConversionMapper = {
 
 const sharpConversionFullFilePath = async (
   buffer,
-  tempDir,
+  tempFileDir,
   filenameWithoutExtension,
   format,
 ) => {
-  await fs.ensureDir(tempDir)
+  await fs.ensureDir(tempFileDir)
 
   const tempFullFilePath = path.join(
-    tempDir,
+    tempFileDir,
     `${filenameWithoutExtension}_full.${
       imageSizeConversionMapper[format]
         ? imageSizeConversionMapper[format].full
@@ -73,7 +73,14 @@ exports.up = async knex => {
         files.map(async file => {
           const mimetype = mime.lookup(file.name)
 
-          if (mimetype.match(/^image\//)) {
+          const fullStoredObject = file.storedObjects.find(
+            storedObject => storedObject.type === 'full',
+          )
+
+          if (mimetype.match(/^image\//) && !fullStoredObject) {
+            const tempFileDir = path.join(__dirname, '..', 'temp', file.id)
+            await fs.ensureDir(tempFileDir)
+
             const originalStoredObject = file.storedObjects.find(
               storedObject => storedObject.type === 'original',
             )
@@ -82,7 +89,8 @@ exports.up = async knex => {
               originalStoredObject.key,
             ).name
 
-            const tempPath = path.join(tempDir, originalStoredObject.key)
+            const tempPath = path.join(tempFileDir, originalStoredObject.key)
+
             await download(originalStoredObject.key, tempPath)
 
             const format = originalStoredObject.extension
@@ -91,7 +99,7 @@ exports.up = async knex => {
 
             const tempFullFilePath = await sharpConversionFullFilePath(
               buffer,
-              tempDir,
+              tempFileDir,
               filenameWithoutExtension,
               format,
             )
@@ -139,6 +147,13 @@ exports.up = async knex => {
           }
         }),
       )
+
+      try {
+        await fs.remove(tempDir)
+      } catch (e) {
+        logger.error(e)
+        throw new Error(e)
+      }
 
       return true
     })
