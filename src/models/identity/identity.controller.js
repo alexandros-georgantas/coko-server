@@ -56,7 +56,7 @@ const createOAuthIdentity = async (userId, provider, sessionState, code) => {
       Buffer.from(authData.oauthAccessToken.split('.')[1], 'base64').toString(),
     )
 
-    identity = Identity.insert({
+    identity = await Identity.insert({
       email,
       provider,
       userId,
