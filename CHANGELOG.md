@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.4.1...v3.5.0) (2023-12-19)
+
+
+### Features
+
+* **models:** add optional status on updateMembershipByTeamId ([09adbe2](https://gitlab.coko.foundation/cokoapps/server/commit/09adbe2af74cbeb548cbd588cd729730f796ed96))
+
+
+### Bug Fixes
+
+* duplicate identity crashes server ([d2fb19f](https://gitlab.coko.foundation/cokoapps/server/commit/d2fb19f54ba7175ac1c1f9a257aac5f8d0a61222))
+* **server:** correctly update existing oauth identities ([479cc60](https://gitlab.coko.foundation/cokoapps/server/commit/479cc6036bc20a0193802718e283a37436b1b1ea))
+
 ### [3.4.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.4.0...v3.4.1) (2023-12-15)
 
 
