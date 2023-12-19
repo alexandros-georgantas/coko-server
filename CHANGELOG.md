@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.5.3](https://gitlab.coko.foundation/cokoapps/server/compare/v2.5.2...v2.5.3) (2023-12-19)
+
+
+### Bug Fixes
+
+* **models:** fix migration failing when multiple files use the same object key ([2187d97](https://gitlab.coko.foundation/cokoapps/server/commit/2187d97889a9453562dd10980b791f33a64ce18c))
+
 ### [2.5.2](https://gitlab.coko.foundation/cokoapps/server/compare/v2.5.1...v2.5.2) (2023-12-08)
 
 
