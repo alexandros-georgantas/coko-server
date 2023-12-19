@@ -184,7 +184,12 @@ class Team extends BaseModel {
       // add members that exist in the incoming array, but not in the db
       const toAdd = members.filter(id => !existingMemberUserIds.includes(id))
       await Promise.all(
-        toAdd.map(userId => Team.addMember(teamId, userId, { trx })),
+        toAdd.map(userId =>
+          Team.addMember(teamId, userId, {
+            trx,
+            ...(options.status && { status: options.status }),
+          }),
+        ),
       )
 
       // delete members that exist in the db, but not in the incoming array

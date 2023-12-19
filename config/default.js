@@ -46,6 +46,10 @@ module.exports = {
         displayName: 'Author',
         role: 'author',
       },
+      reviewer: {
+        displayName: 'Reviewer',
+        role: 'reviewer',
+      },
     },
   },
   fileStorage: {
