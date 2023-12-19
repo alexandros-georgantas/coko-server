@@ -31,6 +31,17 @@ const getDefaultIdentity = async userId => {
   }
 }
 
+const hasValidRefreshToken = identity => {
+  const { oauthRefreshTokenExpiration, oauthRefreshToken } = identity
+  const UTCNowTimestamp = moment().utc().toDate().getTime()
+
+  return (
+    !!oauthRefreshToken &&
+    !!oauthRefreshTokenExpiration &&
+    oauthRefreshTokenExpiration.getTime() > UTCNowTimestamp
+  )
+}
+
 /**
  * Authorise user OAuth.
  * Save OAuth access and refresh tokens.
@@ -41,7 +52,7 @@ const createOAuthIdentity = async (userId, provider, sessionState, code) => {
   try {
     let identity = await Identity.findOne({ userId, provider })
 
-    if (identity) {
+    if (identity && hasValidRefreshToken(identity)) {
       return identity
     }
 
@@ -56,17 +67,22 @@ const createOAuthIdentity = async (userId, provider, sessionState, code) => {
       Buffer.from(authData.oauthAccessToken.split('.')[1], 'base64').toString(),
     )
 
-    identity = await Identity.insert({
-      email,
-      provider,
-      userId,
-      profileData: {
-        givenNames,
-        surname,
-        providerUserId,
-      },
-      ...authData,
-    })
+    if (!identity) {
+      identity = await Identity.insert({
+        email,
+        provider,
+        userId,
+        profileData: {
+          givenNames,
+          surname,
+          providerUserId,
+        },
+        ...authData,
+      })
+    } else {
+      identity = await Identity.patchAndFetchById(identity.id, { ...authData })
+    }
+
     const { oauthRefreshTokenExpiration } = authData
     const expiresIn = (oauthRefreshTokenExpiration - moment().utc()) / 1000
 
@@ -140,4 +156,5 @@ module.exports = {
   createOAuthIdentity,
   getUserIdentities,
   getDefaultIdentity,
+  hasValidRefreshToken,
 }
