@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.5.0...v3.6.0) (2023-12-19)
+
+
+### Features
+
+* **server:** remove trailing slashes from client url ([da79590](https://gitlab.coko.foundation/cokoapps/server/commit/da795901c3d2d162915c5b5ade42f7c57fa39957))
+
+
+### Bug Fixes
+
+* **models:** fix migration failing when multiple files use the same object key ([22f0218](https://gitlab.coko.foundation/cokoapps/server/commit/22f021800e345843286954b139645d0eb93456dd))
+
 ## [3.5.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.4.1...v3.5.0) (2023-12-19)
 
 
