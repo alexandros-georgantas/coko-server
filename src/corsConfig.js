@@ -1,10 +1,9 @@
-const config = require('config')
+const { clientUrl } = require('./utils/urls')
 
 const createCORSConfig = () => {
-  if (!config.has('clientUrl')) return null
-
+  if (!clientUrl) return null
   return {
-    origin: config.get('clientUrl'),
+    origin: clientUrl,
     credentials: true,
   }
 }
