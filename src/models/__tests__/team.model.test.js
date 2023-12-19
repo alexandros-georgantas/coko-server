@@ -376,4 +376,34 @@ describe('Team Model', () => {
 
     expect(members.result).toEqual([])
   })
+
+  it('adds team member status on update membership', async () => {
+    const team = await Team.insert({
+      role: 'reviewer',
+      displayName: 'Reviewer',
+      global: false,
+      objectId: uuid(),
+      objectType: 'someObjectType',
+    })
+
+    const user1 = await User.insert({})
+    const user2 = await User.insert({})
+
+    await Team.updateMembershipByTeamId(team.id, [user1.id, user2.id])
+
+    const { result: teamMembers1 } = await TeamMember.find({ teamId: team.id })
+
+    teamMembers1.forEach(member => expect(member.status).toBe(null))
+
+    const NOT_INVITED = 'notInvited'
+
+    await Team.updateMembershipByTeamId(team.id, [])
+    await Team.updateMembershipByTeamId(team.id, [user1.id, user2.id], {
+      status: NOT_INVITED,
+    })
+
+    const { result: teamMembers2 } = await TeamMember.find({ teamId: team.id })
+
+    teamMembers2.forEach(member => expect(member.status).toBe(NOT_INVITED))
+  })
 })
