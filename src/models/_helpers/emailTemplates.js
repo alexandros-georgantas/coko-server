@@ -1,6 +1,6 @@
 const config = require('config')
 
-const clientUrl = config.has('clientUrl') && config.get('clientUrl')
+const { clientUrl } = require('../../utils/urls')
 
 /*
   Email with email verification token to new users
