@@ -1,8 +1,11 @@
 const logger = require('@pubsweet/logger')
 const { pubsubManager } = require('pubsweet-server')
-const moment = require('moment')
 
-const { createOAuthIdentity } = require('./identity.controller')
+const {
+  createOAuthIdentity,
+  hasValidRefreshToken,
+} = require('./identity.controller')
+
 const { getUser } = require('../user/user.controller')
 
 const {
@@ -43,21 +46,11 @@ const createOAuthIdentityResolver = async (
   }
 }
 
-const hasValidRefreshTokenResolver = async identity => {
-  const { oauthRefreshTokenExpiration } = identity
-  const UTCNowTimestamp = moment().utc().toDate().getTime()
-
-  return (
-    oauthRefreshTokenExpiration &&
-    oauthRefreshTokenExpiration.getTime() > UTCNowTimestamp
-  )
-}
-
 module.exports = {
   Mutation: {
     createOAuthIdentity: createOAuthIdentityResolver,
   },
   Identity: {
-    hasValidRefreshToken: hasValidRefreshTokenResolver,
+    hasValidRefreshToken,
   },
 }
