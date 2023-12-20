@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.6.0...v3.7.0) (2023-12-20)
+
+
+### Features
+
+* **server:** expose sanitized clientUrl and serverUrl ([8a32d5e](https://gitlab.coko.foundation/cokoapps/server/commit/8a32d5e763b0a8132b164439a4705d4935b3bf03))
+
 ## [3.6.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.5.0...v3.6.0) (2023-12-19)
 
 
