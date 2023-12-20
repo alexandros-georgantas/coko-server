@@ -15,5 +15,5 @@ const sanitizeUrlByConfigKey = configKey => {
 module.exports = {
   sanitizeUrlByConfigKey,
   clientUrl: sanitizeUrlByConfigKey('clientUrl'),
-  // serverUrl: sanitizeUrlByConfigKey('serverUrl')
+  serverUrl: sanitizeUrlByConfigKey('pubsweet-server.serverUrl'),
 }

@@ -12,6 +12,7 @@ module.exports = {
       database: 'POSTGRES_DB',
       port: 'POSTGRES_PORT',
     },
+    serverUrl: 'SERVER_URL',
   },
   fileStorage: {
     accessKeyId: 'S3_ACCESS_KEY_ID',

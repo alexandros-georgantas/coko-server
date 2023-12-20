@@ -45,6 +45,8 @@ const {
   authenticatedCall: makeOAuthCall,
 } = require('./utils/authenticatedCall')
 
+const { clientUrl, serverUrl } = require('./utils/urls')
+
 const createJWT = authentication.token.create
 const verifyJWT = authentication.token.verify
 
@@ -76,4 +78,7 @@ module.exports = {
   callMicroservice,
   makeOAuthCall,
   WaxToDocxConverter,
+
+  clientUrl,
+  serverUrl,
 }
