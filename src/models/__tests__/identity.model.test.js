@@ -136,4 +136,61 @@ describe('Identity model', () => {
     // second time should throw an error
     await expect(createIdentity).rejects.toThrow(/unique_provider_email/)
   })
+
+  it('forces lowercase on emails', async () => {
+    const user = await createUser()
+    const sampleEmail = 'jOhN@EXAMple.coM'
+
+    const identityData = {
+      ...identityWithProfileData,
+      email: sampleEmail,
+    }
+
+    const identity = await Identity.insert({
+      userId: user.id,
+      ...identityData,
+    })
+
+    const result = await Identity.findById(identity.id)
+
+    expect(result.email).toEqual(sampleEmail.toLowerCase())
+  })
+
+  it('finds identities using email irrespective of case', async () => {
+    const user = await createUser()
+    const sampleEmail = 'jOhN@EXAMple.coM'
+
+    const identityData = {
+      ...identityWithProfileData,
+      email: sampleEmail,
+    }
+
+    await Identity.insert({
+      userId: user.id,
+      ...identityData,
+    })
+
+    const identities = await Identity.find({ email: sampleEmail })
+    expect(identities.result).toHaveLength(1)
+    expect(identities.result[0].email).toEqual(sampleEmail.toLowerCase())
+  })
+
+  it('finds one identity using email irrespective of case', async () => {
+    const user = await createUser()
+    const sampleEmail = 'jOhN@EXAMple.coM'
+
+    const identityData = {
+      ...identityWithProfileData,
+      email: sampleEmail,
+    }
+
+    await Identity.insert({
+      userId: user.id,
+      ...identityData,
+    })
+
+    const result = await Identity.findOne({ email: sampleEmail })
+    expect(result).not.toBe(undefined)
+    expect(result.email).toEqual(sampleEmail.toLowerCase())
+  })
 })
