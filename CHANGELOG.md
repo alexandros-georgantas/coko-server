@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.7.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.7.0...v3.7.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* **models:** force lowercase emails in identity find methods ([9e2a254](https://gitlab.coko.foundation/cokoapps/server/commit/9e2a254715c787a4c49c0a339d3bcd33450a20cd))
+* **models:** remove non-existent user.email field from api ([3e403b0](https://gitlab.coko.foundation/cokoapps/server/commit/3e403b0f87c18b0decb108697b92b90cd5fa9d6c))
+
 ## [3.7.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.6.0...v3.7.0) (2023-12-20)
 
 
