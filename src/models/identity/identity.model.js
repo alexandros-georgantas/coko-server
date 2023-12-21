@@ -9,6 +9,20 @@ const {
   stringNullable,
 } = require('../_helpers/types')
 
+const formatIncomingQueryData = data => {
+  let parsedData = { ...data }
+  const emailValue = data.email
+
+  if (emailValue) {
+    parsedData = {
+      ...data,
+      email: emailValue.toLowerCase(),
+    }
+  }
+
+  return parsedData
+}
+
 class Identity extends BaseModel {
   constructor(properties) {
     super(properties)
@@ -55,6 +69,16 @@ class Identity extends BaseModel {
         },
       },
     }
+  }
+
+  static async find(data, options = {}) {
+    const parsedData = formatIncomingQueryData(data)
+    return super.find(parsedData, options)
+  }
+
+  static async findOne(data, options = {}) {
+    const parsedData = formatIncomingQueryData(data)
+    return super.findOne(parsedData, options)
   }
 
   $formatDatabaseJson(json) {
