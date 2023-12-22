@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.7.1...v3.8.0) (2023-12-22)
+
+
+### Features
+
+* add new env variable for separate s3 delete operations ([80c5ad7](https://gitlab.coko.foundation/cokoapps/server/commit/80c5ad770773ed89252cd88c5470617379dd1363))
+
 ### [3.7.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.7.0...v3.7.1) (2023-12-21)
 
 
