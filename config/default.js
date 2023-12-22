@@ -60,5 +60,6 @@ module.exports = {
     host: 'localhost',
     port: '9000',
     minioConsolePort: '9001',
+    s3SeparateDeleteOperations: false,
   },
 }

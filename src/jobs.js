@@ -104,6 +104,7 @@ const defaultJobs = [
         pubsub.publish(USER_UPDATED, {
           userUpdated: updatedUser,
         })
+        job.done()
       } catch (e) {
         logger.error(`Job ${jobs.REFRESH_TOKEN_EXPIRED}: defer error:`, e)
         throw e
