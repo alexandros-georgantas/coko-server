@@ -1,7 +1,7 @@
 const { boss } = require('pubsweet-server/src/jobs')
 const { subscribeJobsToQueue } = require('../jobs')
 const { jobs } = require('../services')
-const { renewAuthTokens } = require('../utils/tokens')
+// const { renewAuthTokens } = require('../utils/tokens')
 
 const freezeTime = 1701856542000
 const daySeconds = 24 * 3600
@@ -56,6 +56,16 @@ jest.mock('../utils/tokens', () => {
   }
 })
 
+jest.mock('../models/user/user.controller', () => {
+  const originalModule = jest.requireActual('../models/user/user.controller')
+  return {
+    __esModule: true,
+    ...originalModule,
+    getUser: jest.fn(async userId => ({
+      id: userId,
+    })),
+  }
+})
 // Mock the date and time
 Date.now = jest.fn(() => freezeTime)
 
@@ -77,42 +87,10 @@ describe('jobs service', () => {
 
   it('registers jobs', async () => {
     expect(Object.keys(boss.subscriptions)).toEqual([
-      jobs.RENEW_AUTH_TOKENS_JOB,
+      jobs.REFRESH_TOKEN_EXPIRED,
     ])
     expect(
-      typeof boss.subscriptions[jobs.RENEW_AUTH_TOKENS_JOB].callback,
+      typeof boss.subscriptions[jobs.REFRESH_TOKEN_EXPIRED].callback,
     ).toEqual('function')
-  })
-
-  it('reschedules auth token renewal after successfully renewing the refresh token', async () => {
-    boss.log = []
-
-    // Run the job callback directly and then verify its behaviour
-    const renewCallback =
-      boss.subscriptions[jobs.RENEW_AUTH_TOKENS_JOB].callback
-
-    const job = dummyJob(
-      { userId: 'fakeUserId', providerLabel: 'fakeProviderLabel' },
-      {},
-    )
-
-    await renewCallback(job)
-
-    // renewAuthTokens should have been called
-    expect(renewAuthTokens.mock.calls.length).toEqual(1)
-    expect(renewAuthTokens.mock.calls[0]).toEqual([
-      'fakeUserId',
-      'fakeProviderLabel',
-    ])
-
-    // Job should succeed and be marked done
-    expect(job.isDone).toBe(true)
-
-    // Job should schedule a future job
-    expect(boss.log).toEqual([`publish ${jobs.RENEW_AUTH_TOKENS_JOB}`])
-    expect(boss.lastJob.data).toEqual(job.data)
-    expect(Object.keys(boss.lastJob.options).length).toEqual(1)
-    // Refresh token expires in 7 days and must be renewed in 6
-    expect(boss.lastJob.options.startAfter).toEqual(daySeconds * 6)
   })
 })

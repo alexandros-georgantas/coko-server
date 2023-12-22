@@ -479,10 +479,35 @@ const deleteFiles = objectKeys => {
     )
   }
 
-  const { bucket } = config.get('fileStorage')
+  const { bucket, s3SeparateDeleteOperations } = config.get('fileStorage')
 
   if (objectKeys.length === 0) {
     throw new Error('the provided array of keys if empty')
+  }
+
+  const separateDeleteOperations = !emptyUndefinedOrNull(
+    s3SeparateDeleteOperations,
+  )
+    ? JSON.parse(s3SeparateDeleteOperations)
+    : false
+
+  if (separateDeleteOperations) {
+    return Promise.all(
+      objectKeys.map(
+        async objectKey =>
+          new Promise((resolve, reject) => {
+            const params = { Bucket: bucket, Key: objectKey }
+
+            s3.deleteObject(params, (err, data) => {
+              if (err) {
+                reject(err)
+              }
+
+              resolve(data)
+            })
+          }),
+      ),
+    )
   }
 
   const params = {

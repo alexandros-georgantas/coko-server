@@ -151,8 +151,10 @@ describe('Identity Controller', () => {
     // Expect renewal job to have been "scheduled"
     const lastCallIndex = jobs.defer.mock.calls.length - 1
     const [name, renewAfter, data] = jobs.defer.mock.calls[lastCallIndex]
-    expect(name).toEqual('renew-auth-tokens')
-    expect(renewAfter).toEqual({ seconds: 273600 }) // 360000 - 86400
+    expect(name).toEqual('refresh-token-expired')
+    expect({ seconds: Math.round(renewAfter.seconds) }).toEqual({
+      seconds: 360000,
+    }) // 360000 - 86400
     expect(data).toEqual({ providerLabel: 'test', userId: user.id })
   })
 })

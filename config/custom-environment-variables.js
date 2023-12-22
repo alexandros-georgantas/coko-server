@@ -22,6 +22,7 @@ module.exports = {
     minioConsolePort: 'MINIO_CONSOLE_PORT',
     maximumWidthForSmallImages: 'MAXIMUM_WIDTH_FOR_SMALL_IMAGES',
     maximumWidthForMediumImages: 'MAXIMUM_WIDTH_FOR_MEDIUM_IMAGES',
+    s3SeparateDeleteOperations: 'S3_SEPARATE_DELETE_OPERATIONS',
   },
   chatGPT: {
     key: 'CHAT_GPT_KEY',
