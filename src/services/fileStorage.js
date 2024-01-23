@@ -368,7 +368,7 @@ const upload = async (fileStream, filename, options = {}) => {
 
     const { forceFilenameAsObjectKey } = options
 
-    const mimetype = mime.lookup(filename)
+    const mimetype = mime.lookup(filename) || 'application/octet-stream'
     let storedObjects = []
     let hashedFilename
 
