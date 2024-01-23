@@ -47,6 +47,22 @@ describe('File Storage Service', () => {
     expect(storedObject).toHaveLength(1)
   })
 
+  it('uploads a not common extension file', async () => {
+    const filePath = path.join(
+      process.cwd(),
+      'src',
+      'services',
+      '__tests__',
+      'files',
+      'entry.njk',
+    )
+
+    const fileStream = fs.createReadStream(filePath)
+    const storedObject = await upload(fileStream, 'entry.njk')
+    expect(storedObject).toHaveLength(1)
+    expect(storedObject[0].mimetype).toBe('application/octet-stream')
+  })
+
   it('uploads an jpg image file', async () => {
     const filePath = path.join(
       process.cwd(),
