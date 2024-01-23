@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.8.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.0...v3.8.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* **server:** allow files without mimetype to be uploaded ([cca8846](https://gitlab.coko.foundation/cokoapps/server/commit/cca8846f967acfa658591fc1adacb86bbd1837ca))
+
 ## [3.8.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.7.1...v3.8.0) (2023-12-22)
 
 
