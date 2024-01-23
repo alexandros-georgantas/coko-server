@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.5.4](https://gitlab.coko.foundation/cokoapps/server/compare/v2.5.3...v2.5.4) (2024-01-23)
+
+
+### Bug Fixes
+
+* **server:** allow files without mimetype to be uploaded ([efca286](https://gitlab.coko.foundation/cokoapps/server/commit/efca286335f3cb569a90427b76ab2a403b0d6d04))
+
 ### [2.5.3](https://gitlab.coko.foundation/cokoapps/server/compare/v2.5.2...v2.5.3) (2023-12-19)
 
 
