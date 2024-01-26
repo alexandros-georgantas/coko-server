@@ -3,7 +3,7 @@ const logger = require('@pubsweet/logger')
 const db = require('@pubsweet/db-manager/src/db')
 
 const pubsubManager = require('./graphql/pubsub')
-const { jobs } = require('./services')
+const { REFRESH_TOKEN_EXPIRED } = require('./services/jobs/jobs.identifiers')
 
 const {
   subscriptions: { USER_UPDATED },
@@ -150,7 +150,7 @@ const defaultJobs = [
   //   },
   // },
   {
-    name: jobs.REFRESH_TOKEN_EXPIRED,
+    name: REFRESH_TOKEN_EXPIRED,
     callback: async job => {
       try {
         const pubsub = await pubsubManager.getPubsub()
@@ -163,7 +163,7 @@ const defaultJobs = [
         })
         job.done()
       } catch (e) {
-        logger.error(`Job ${jobs.REFRESH_TOKEN_EXPIRED}: defer error:`, e)
+        logger.error(`Job ${REFRESH_TOKEN_EXPIRED}: defer error:`, e)
         throw e
       }
     },

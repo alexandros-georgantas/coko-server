@@ -21,7 +21,6 @@ const registerComponents = require('./registerComponents')
 const healthcheck = require('./healthcheck')
 const createCORSConfig = require('./corsConfig')
 const { connectToFileStorage } = require('./services/fileStorage')
-const { subscribeJobsToQueue } = require('./jobs')
 
 const configureApp = app => {
   const models = require('@pubsweet/models')
@@ -159,7 +158,7 @@ const configureApp = app => {
     }
 
     if (useJobQueue) {
-      const { startJobQueue } = require('./jobs')
+      const { startJobQueue, subscribeJobsToQueue } = require('./jobs')
       await startJobQueue() // Manage job queue
       await subscribeJobsToQueue() // Subscribe job callbacks to the queue
     }

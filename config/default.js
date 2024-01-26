@@ -22,6 +22,7 @@ module.exports = {
     },
     tempFolderPath: path.join(process.cwd(), 'temp'),
     useFileStorage: true,
+    useJobQueue: true,
   },
   pubsweet: {
     components,

@@ -10,9 +10,9 @@ const authentication = require('./authentication')
 const { File } = require('./models')
 const { createFile, deleteFiles } = require('./models/file/file.controller')
 
+const { boss, connectToJobQueue } = require('./jobs')
 const app = require('./app')
 const startServer = require('./startServer')
-const { boss, connectToJobQueue } = require('./jobs')
 const { BaseModel, useTransaction } = require('./models')
 const modelTypes = require('./models/_helpers/types')
 

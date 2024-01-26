@@ -1,9 +1,9 @@
-const { boss } = require('../jobs')
+const { boss } = require('../../jobs')
 const { defer: deferJob } = require('../jobs')
 
 // Mock boss.<publish, subscribe>
-jest.mock('../jobs', () => {
-  const originalModule = jest.requireActual('../jobs')
+jest.mock('../../jobs', () => {
+  const originalModule = jest.requireActual('../../jobs')
   return {
     __esModule: true,
     ...originalModule,

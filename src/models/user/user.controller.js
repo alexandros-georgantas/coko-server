@@ -27,10 +27,11 @@ const {
   requestResetPasswordEmailNotFound,
 } = require('../_helpers/emailTemplates')
 
+const notify = require('../../services/notify')
+
 const {
-  notify,
   notificationTypes: { EMAIL },
-} = require('../../services')
+} = require('../../services/constants')
 
 const {
   labels: { USER_CONTROLLER },
