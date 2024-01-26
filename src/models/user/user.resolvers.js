@@ -1,6 +1,7 @@
 const logger = require('@pubsweet/logger')
-const { pubsubManager } = require('pubsweet-server')
 const { withFilter } = require('graphql-subscriptions')
+
+const pubsubManager = require('../../graphql/pubsub')
 
 const {
   labels: { USER_RESOLVER },

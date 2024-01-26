@@ -15,10 +15,9 @@ const wait = require('waait')
 
 const logger = require('@pubsweet/logger')
 
-const registerComponents = require('pubsweet-server/src/register-components')
-const api = require('pubsweet-server/src/routes/api')
-const index = require('pubsweet-server/src/routes/index')
-
+const api = require('./routes/api')
+const index = require('./routes/index')
+const registerComponents = require('./registerComponents')
 const healthcheck = require('./healthcheck')
 const createCORSConfig = require('./corsConfig')
 const { connectToFileStorage } = require('./services/fileStorage')
@@ -26,7 +25,7 @@ const { subscribeJobsToQueue } = require('./jobs')
 
 const configureApp = app => {
   const models = require('@pubsweet/models')
-  const authsome = require('pubsweet-server/src/helpers/authsome')
+  const authsome = require('./authsome')
 
   app.locals.models = models
 
@@ -72,7 +71,7 @@ const configureApp = app => {
 
   // Register passport authentication strategies
   app.use(passport.initialize())
-  const authentication = require('pubsweet-server/src/authentication')
+  const authentication = require('./authentication')
 
   passport.use('bearer', authentication.strategies.bearer)
   passport.use('anonymous', authentication.strategies.anonymous)
@@ -155,15 +154,12 @@ const configureApp = app => {
   // Actions to perform when the HTTP server starts listening
   app.onListen = async server => {
     if (useGraphQLServer) {
-      const {
-        addSubscriptions,
-      } = require('pubsweet-server/src/graphql/subscriptions')
-
+      const { addSubscriptions } = require('./graphql/subscriptions')
       addSubscriptions(server) // Add GraphQL subscriptions
     }
 
     if (useJobQueue) {
-      const { startJobQueue } = require('pubsweet-server/src/jobs')
+      const { startJobQueue } = require('./jobs')
       await startJobQueue() // Manage job queue
       await subscribeJobsToQueue() // Subscribe job callbacks to the queue
     }
@@ -177,7 +173,7 @@ const configureApp = app => {
   // Actions to perform when the server closes
   app.onClose = async () => {
     if (useJobQueue) {
-      const { stopJobQueue } = require('pubsweet-server/src/jobs')
+      const { stopJobQueue } = require('./jobs')
       await stopJobQueue()
     }
 

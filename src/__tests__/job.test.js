@@ -1,5 +1,4 @@
-const { boss } = require('pubsweet-server/src/jobs')
-const { subscribeJobsToQueue } = require('../jobs')
+const { boss, subscribeJobsToQueue } = require('../jobs')
 const { jobs } = require('../services')
 // const { renewAuthTokens } = require('../utils/tokens')
 
@@ -7,8 +6,8 @@ const freezeTime = 1701856542000
 const daySeconds = 24 * 3600
 
 // Mock boss.<publish, subscribe>
-jest.mock('pubsweet-server/src/jobs', () => {
-  const originalModule = jest.requireActual('pubsweet-server/src/jobs')
+jest.mock('../jobs', () => {
+  const originalModule = jest.requireActual('../jobs')
   return {
     __esModule: true,
     ...originalModule,
@@ -26,6 +25,7 @@ jest.mock('pubsweet-server/src/jobs', () => {
         this.subscriptions[name] = { options, callback }
       },
     },
+    subscribeJobsToQueue,
   }
 })
 

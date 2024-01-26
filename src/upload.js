@@ -4,10 +4,7 @@ const fs = require('fs-extra')
 const { promisify } = require('util')
 const config = require('config')
 
-const {
-  getPubsub,
-  asyncIterators,
-} = require('pubsweet-server/src/graphql/pubsub')
+const { getPubsub, asyncIterators } = require('./graphql/pubsub')
 
 const { ON_UPLOAD_PROGRESS } = asyncIterators
 const randomBytes = promisify(crypto.randomBytes)

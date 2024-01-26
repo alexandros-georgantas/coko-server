@@ -4,13 +4,14 @@ const moment = require('moment')
 const find = require('lodash/find')
 
 const logger = require('@pubsweet/logger')
-const authentication = require('pubsweet-server/src/authentication')
 
 const {
   AuthorizationError,
   ValidationError,
   ConflictError,
 } = require('@pubsweet/errors')
+
+const authentication = require('../../authentication')
 
 const User = require('./user.model')
 const Identity = require('../identity/identity.model')

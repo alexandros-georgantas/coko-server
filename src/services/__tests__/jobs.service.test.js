@@ -1,9 +1,9 @@
-const { boss } = require('pubsweet-server/src/jobs')
+const { boss } = require('../jobs')
 const { defer: deferJob } = require('../jobs')
 
 // Mock boss.<publish, subscribe>
-jest.mock('pubsweet-server/src/jobs', () => {
-  const originalModule = jest.requireActual('pubsweet-server/src/jobs')
+jest.mock('../jobs', () => {
+  const originalModule = jest.requireActual('../jobs')
   return {
     __esModule: true,
     ...originalModule,
