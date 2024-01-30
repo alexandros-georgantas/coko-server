@@ -1,5 +1,6 @@
 const { boss } = require('pubsweet-server/src/jobs')
 const logger = require('@pubsweet/logger')
+const moment = require('moment')
 
 const { pubsubManager } = require('pubsweet-server')
 const { jobs } = require('./services')
@@ -9,6 +10,7 @@ const {
 } = require('./models/user/constants')
 
 const { getUser } = require('./models/user/user.controller')
+const Identity = require('./models/identity/identity.model')
 
 /**
  * Add a list of jobs to the job queue. If no jobs are specified, subscribe all
@@ -97,15 +99,36 @@ const defaultJobs = [
     callback: async job => {
       try {
         const pubsub = await pubsubManager.getPubsub()
-        const { userId } = job.data
+        const { userId, providerLabel } = job.data
 
         const updatedUser = await getUser(userId)
 
-        pubsub.publish(USER_UPDATED, {
-          userUpdated: updatedUser,
+        const providerUserIdentity = await Identity.findOne({
+          userId,
+          provider: providerLabel,
         })
+
+        if (!providerUserIdentity) {
+          throw new Error(
+            `identity for user with id ${userId} does not exist for provider ${providerLabel}`,
+          )
+        }
+
+        const { oauthRefreshTokenExpiration } = providerUserIdentity
+        const UTCNowTimestamp = moment().utc().toDate().getTime()
+
+        const refreshTokenExpired =
+          oauthRefreshTokenExpiration.getTime() < UTCNowTimestamp
+
+        if (refreshTokenExpired) {
+          pubsub.publish(USER_UPDATED, {
+            userUpdated: updatedUser,
+          })
+        }
+
         job.done()
       } catch (e) {
+        job.done(e)
         logger.error(`Job ${jobs.REFRESH_TOKEN_EXPIRED}: defer error:`, e)
         throw e
       }

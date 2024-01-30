@@ -1,4 +1,5 @@
 const logger = require('@pubsweet/logger')
+const { pubsubManager } = require('pubsweet-server')
 
 const axios = require('axios')
 const config = require('config')
@@ -6,6 +7,11 @@ const moment = require('moment')
 const { getExpirationTime } = require('../../utils/tokens')
 const { jobs } = require('../../services')
 
+const {
+  subscriptions: { USER_UPDATED },
+} = require('../user/constants')
+
+const { getUser } = require('../user/user.controller')
 const Identity = require('./identity.model')
 
 const {
@@ -139,8 +145,20 @@ const authorizeOAuth = async (provider, sessionState, code) => {
   /* eslint-disable camelcase */
   const { access_token, expires_in, refresh_token, refresh_expires_in } = data
 
-  if (!access_token || !expires_in || !refresh_token || !refresh_expires_in) {
-    throw new Error('Missing data from response!')
+  if (!access_token) {
+    throw new Error('Missing access_token from response!')
+  }
+
+  if (!expires_in) {
+    throw new Error('Missing expires_in from response!')
+  }
+
+  if (!refresh_token) {
+    throw new Error('Missing refresh_token from response!')
+  }
+
+  if (!refresh_expires_in) {
+    throw new Error('Missing refresh_expires_in from response!')
   }
 
   return {
@@ -152,9 +170,50 @@ const authorizeOAuth = async (provider, sessionState, code) => {
   /* eslint-enable camelcase */
 }
 
+const invalidateProviderAccessToken = async (userId, providerLabel) => {
+  const providerUserIdentity = await Identity.findOne({
+    userId,
+    provider: providerLabel,
+  })
+
+  await Identity.patchAndFetchById(providerUserIdentity.id, {
+    oauthAccessTokenExpiration: moment().utc().toDate(),
+  })
+
+  logger.info(
+    `access token for provider ${providerLabel} became invalid, trying to get a new one via the refresh token`,
+  )
+}
+
+const invalidateProviderTokens = async (userId, providerLabel) => {
+  const pubsub = await pubsubManager.getPubsub()
+
+  const updatedUser = await getUser(userId)
+
+  const providerUserIdentity = await Identity.findOne({
+    userId,
+    provider: providerLabel,
+  })
+
+  await Identity.patchAndFetchById(providerUserIdentity.id, {
+    oauthAccessTokenExpiration: moment().utc().toDate(),
+    oauthRefreshTokenExpiration: moment().utc().toDate(),
+  })
+
+  pubsub.publish(USER_UPDATED, {
+    userUpdated: updatedUser,
+  })
+
+  logger.error(
+    `refresh token for provider ${providerLabel} became invalid, authorization flow (provider login) should be followed by the user`,
+  )
+}
+
 module.exports = {
   createOAuthIdentity,
   getUserIdentities,
   getDefaultIdentity,
   hasValidRefreshToken,
+  invalidateProviderAccessToken,
+  invalidateProviderTokens,
 }

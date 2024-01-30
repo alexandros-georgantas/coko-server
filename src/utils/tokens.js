@@ -9,9 +9,14 @@ const {
   subscriptions: { USER_UPDATED },
 } = require('../models/user/constants')
 
-const { Identity, ServiceCredential } = require('../models')
+const Identity = require('../models/identity/identity.model')
+const ServiceCredential = require('../models/serviceCredential/serviceCredential.model')
 
 const { getUser } = require('../models/user/user.controller')
+
+const {
+  invalidateProviderTokens,
+} = require('../models/identity/identity.controller')
 
 const getAuthTokens = async (userId, providerLabel) => {
   return requestTokensFromProvider(userId, providerLabel, {
@@ -114,27 +119,26 @@ const requestTokensFromProvider = async (
 
   if (status === 401) {
     // for the case that something happened and refreshToken become invalid -> set that expired
-    const updatedUser = await getUser(userId)
-    await Identity.patchAndFetchById(providerUserIdentity.id, {
-      oauthRefreshTokenExpiration: moment().utc().toDate(),
-    })
-    pubsub.publish(USER_UPDATED, {
-      userUpdated: updatedUser,
-    })
-    // logger.error(
-    //   `refresh token for provider ${providerLabel} expired, authorization flow should (provider login) be followed by the user`,
-    // )
-    // return false
-    throw new Error(
-      `refresh token for provider ${providerLabel} expired, authorization flow should (provider login) be followed by the user`,
-    )
+    await invalidateProviderTokens(userId, providerLabel)
   }
 
   /* eslint-disable camelcase */
   const { access_token, expires_in, refresh_token, refresh_expires_in } = data
 
-  if (!access_token || !expires_in || !refresh_token || !refresh_expires_in) {
-    throw new Error('Missing data from response!')
+  if (!access_token) {
+    throw new Error('Missing access_token from response!')
+  }
+
+  if (!expires_in) {
+    throw new Error('Missing expires_in from response!')
+  }
+
+  if (!refresh_token) {
+    throw new Error('Missing refresh_token from response!')
+  }
+
+  if (!refresh_expires_in) {
+    throw new Error('Missing refresh_expires_in from response!')
   }
 
   await Identity.patchAndFetchById(providerUserIdentity.id, {

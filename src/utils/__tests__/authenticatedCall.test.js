@@ -7,12 +7,29 @@ jest.mock('../tokens', () => {
   }
 })
 
+jest.mock('../../models/identity/identity.controller.js')
+
+const {
+  invalidateProviderAccessToken,
+} = require('../../models/identity/identity.controller')
+
+const { getAuthTokens } = require('../tokens')
+
 jest.mock('axios')
 
 describe('Authenticated call', () => {
   it('calls provider with auth', async () => {
     axios.mockResolvedValue(true)
     const res = await authenticatedCall('123', 'lulu', {})
+    expect(res).toBe(true)
+  })
+
+  it('fetches a new token when expired', async () => {
+    axios.mockResolvedValueOnce({ status: 401 }).mockResolvedValue(true)
+
+    const res = await authenticatedCall('123', 'lulu', {})
+    expect(invalidateProviderAccessToken).toHaveBeenCalled()
+    expect(getAuthTokens).toHaveBeenCalled()
     expect(res).toBe(true)
   })
 })
