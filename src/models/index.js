@@ -10,6 +10,7 @@ const User = require('./user/user.model')
 const Identity = require('./identity/identity.model')
 
 const File = require('./file/file.model')
+const ActivityLog = require('./activityLog/activityLog.model')
 
 const useTransaction = require('./useTransaction')
 const ServiceCredential = require('./serviceCredential/serviceCredential.model')
@@ -27,6 +28,7 @@ module.exports = {
   Identity,
 
   File,
+  ActivityLog,
 
   useTransaction,
   ServiceCredential,

@@ -27,6 +27,8 @@ const {
 
 const WaxToDocxConverter = require('./services/docx/docx.service')
 
+const activityLog = require('./services/activityLog')
+
 // Do not expose connectToFileStorage
 const fileStorage = {
   healthCheck,
@@ -62,7 +64,7 @@ module.exports = {
   deleteFiles,
   // serviceHandshake,
   sendEmail,
-
+  activityLog,
   BaseModel,
   File,
   logger,
