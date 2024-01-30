@@ -75,6 +75,7 @@ const subscribeJobsToQueue = async jobsList => {
   logger.info('Subscribing job callbacks to the job queue')
   const jobsToSubscribe = jobsList || defaultJobs
   const existingSubscriptions = boss.manager?.subscriptions || {}
+
   await Promise.all(
     jobsToSubscribe.map(async ({ name, callback, subscribeOptions = {} }) => {
       try {

@@ -21,6 +21,7 @@ module.exports = {
       unit: 'hours',
     },
     tempFolderPath: path.join(process.cwd(), 'temp'),
+    uploads: 'uploads',
     useFileStorage: true,
     useJobQueue: true,
   },
@@ -62,5 +63,8 @@ module.exports = {
     port: '9000',
     minioConsolePort: '9001',
     s3SeparateDeleteOperations: false,
+  },
+  authsome: {
+    mode: path.join(__dirname, 'authsome.js'),
   },
 }

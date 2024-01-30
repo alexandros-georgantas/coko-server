@@ -14,7 +14,8 @@ const resolvers = {
     upload: async (_, { file, fileSize }, context) => {
       const uploadsPath = config.get('pubsweet-server').uploads
       const pubsub = await getPubsub()
-      const { stream, filename, encoding } = await file
+      const { createReadStream, filename, encoding } = await file
+      const stream = createReadStream()
 
       const raw = await randomBytes(16)
       const generatedFilename = raw.toString('hex') + path.extname(filename)

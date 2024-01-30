@@ -6,7 +6,7 @@ module.exports = {
   //   '<rootDir>/src/models/useTransaction.js',
   //   '!<rootDir>/src/models/__tests__/helpers/**',
   // ],
-  coverageDirectory: '<rootDir>/coverage',
+  // coverageDirectory: '<rootDir>/coverage',
   projects: [
     {
       displayName: 'models',
@@ -46,8 +46,8 @@ module.exports = {
     {
       displayName: 'app',
       testEnvironment: 'node',
-      testRegex: 'src/__tests__/.+test.js$',
-      // globalSetup: '<rootDir>/src/models/__tests__/_setup.js',
+      testRegex: 'src/__tests__/.*\\.test\\.js$',
+      globalSetup: '<rootDir>/src/models/__tests__/_setup.js',
       // globalTeardown: '<rootDir>/src/models/__tests__/_teardown.js',
     },
   ],
