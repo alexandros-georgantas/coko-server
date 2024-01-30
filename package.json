@@ -1,6 +1,6 @@
 {
   "name": "@coko/server",
-  "version": "3.8.1",
+  "version": "3.8.2-beta.0",
   "description": "Resuable server for use by Coko's projects",
   "keywords": [
     "coko"

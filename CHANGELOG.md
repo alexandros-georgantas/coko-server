@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.8.2-beta.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.1...v3.8.2-beta.0) (2024-01-30)
+
+
+### Bug Fixes
+
+* fix jobs circular dependency ([897834f](https://gitlab.coko.foundation/cokoapps/server/commit/897834fc95cf6a72a9eee27cbafd6b01b6e9d9b1))
+
 ### [3.8.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.0...v3.8.1) (2024-01-23)
 
 
