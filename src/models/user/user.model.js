@@ -81,7 +81,6 @@ class User extends BaseModel {
           builder.where('isDefault', true)
         },
       },
-
       teams: {
         relation: BaseModel.ManyToManyRelation,
         modelClass: Team,

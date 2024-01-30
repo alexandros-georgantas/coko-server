@@ -11,6 +11,7 @@ const {
 } = require('../identity/identity.controller')
 
 const { User, Identity } = require('../index')
+
 const clearDb = require('./_clearDb')
 
 const { jobs } = require('../../services')
@@ -123,7 +124,6 @@ describe('Identity Controller', () => {
   it('authorizes access and inserts the Oauth tokens', async () => {
     axios.mockImplementationOnce(fakePostResponse)
     const user = await createUser()
-
     // Mock authorization
     await createOAuthIdentity(
       user.id,
@@ -168,7 +168,6 @@ describe('Identity Controller', () => {
   it('invalidates access token', async () => {
     axios.mockImplementationOnce(fakePostResponse)
     const user = await createUser()
-
     // Mock authorization
     await createOAuthIdentity(
       user.id,
@@ -176,7 +175,6 @@ describe('Identity Controller', () => {
       'fake-session-state',
       'fake-code',
     )
-
     await invalidateProviderAccessToken(user.id, 'test')
 
     const { oauthAccessTokenExpiration } = await Identity.findOne({
@@ -190,7 +188,6 @@ describe('Identity Controller', () => {
   it('invalidates provider tokens', async () => {
     axios.mockImplementationOnce(fakePostResponse)
     const user = await createUser()
-
     // Mock authorization
     await createOAuthIdentity(
       user.id,
@@ -198,7 +195,6 @@ describe('Identity Controller', () => {
       'fake-session-state',
       'fake-code',
     )
-
     await invalidateProviderTokens(user.id, 'test')
 
     const { oauthAccessTokenExpiration, oauthRefreshTokenExpiration } =

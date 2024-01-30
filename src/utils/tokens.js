@@ -5,6 +5,8 @@ const moment = require('moment')
 
 const { pubsubManager } = require('pubsweet-server')
 
+const { getExpirationTime } = require('./time')
+
 const {
   subscriptions: { USER_UPDATED },
 } = require('../models/user/constants')
@@ -23,10 +25,6 @@ const getAuthTokens = async (userId, providerLabel) => {
     checkAccessToken: true,
     returnAccessToken: true,
   })
-}
-
-const getExpirationTime = secondsFromNow => {
-  return moment().utc().add(secondsFromNow, 'seconds').toDate()
 }
 
 const requestTokensFromProvider = async (
@@ -256,5 +254,4 @@ module.exports = {
   getAuthTokens,
   getAccessToken,
   renewAuthTokens,
-  getExpirationTime,
 }
