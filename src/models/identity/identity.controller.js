@@ -4,7 +4,7 @@ const { pubsubManager } = require('pubsweet-server')
 const axios = require('axios')
 const config = require('config')
 const moment = require('moment')
-const { getExpirationTime } = require('../../utils/tokens')
+const { getExpirationTime } = require('../../utils/time')
 const { jobs } = require('../../services')
 
 const {
