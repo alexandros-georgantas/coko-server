@@ -4,7 +4,12 @@ const { URLSearchParams: UnpackedParams } = require('url')
 
 const { createUser } = require('./helpers/users')
 
-const { createOAuthIdentity } = require('../identity/identity.controller')
+const {
+  createOAuthIdentity,
+  invalidateProviderAccessToken,
+  invalidateProviderTokens,
+} = require('../identity/identity.controller')
+
 const { User, Identity } = require('../index')
 const clearDb = require('./_clearDb')
 
@@ -104,6 +109,8 @@ const timeLeft = dateTime => {
 }
 
 jest.mock('axios')
+const specificDate = new Date()
+Date.now = jest.fn(() => specificDate)
 
 describe('Identity Controller', () => {
   beforeEach(() => clearDb())
@@ -113,11 +120,11 @@ describe('Identity Controller', () => {
     knex.destroy()
   })
 
-  it('authorises access and inserts the Oauth tokens', async () => {
+  it('authorizes access and inserts the Oauth tokens', async () => {
     axios.mockImplementationOnce(fakePostResponse)
     const user = await createUser()
 
-    // Mock authorisation
+    // Mock authorization
     await createOAuthIdentity(
       user.id,
       'test',
@@ -156,5 +163,51 @@ describe('Identity Controller', () => {
       seconds: 360000,
     }) // 360000 - 86400
     expect(data).toEqual({ providerLabel: 'test', userId: user.id })
+  })
+
+  it('invalidates access token', async () => {
+    axios.mockImplementationOnce(fakePostResponse)
+    const user = await createUser()
+
+    // Mock authorization
+    await createOAuthIdentity(
+      user.id,
+      'test',
+      'fake-session-state',
+      'fake-code',
+    )
+
+    await invalidateProviderAccessToken(user.id, 'test')
+
+    const { oauthAccessTokenExpiration } = await Identity.findOne({
+      userId: user.id,
+      provider: 'test',
+    })
+
+    expect(oauthAccessTokenExpiration).toEqual(specificDate)
+  })
+
+  it('invalidates provider tokens', async () => {
+    axios.mockImplementationOnce(fakePostResponse)
+    const user = await createUser()
+
+    // Mock authorization
+    await createOAuthIdentity(
+      user.id,
+      'test',
+      'fake-session-state',
+      'fake-code',
+    )
+
+    await invalidateProviderTokens(user.id, 'test')
+
+    const { oauthAccessTokenExpiration, oauthRefreshTokenExpiration } =
+      await Identity.findOne({
+        userId: user.id,
+        provider: 'test',
+      })
+
+    expect(oauthAccessTokenExpiration).toEqual(specificDate)
+    expect(oauthRefreshTokenExpiration).toEqual(specificDate)
   })
 })
