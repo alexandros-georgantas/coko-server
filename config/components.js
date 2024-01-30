@@ -9,4 +9,5 @@ module.exports = [
   './src/models/__tests__/helpers/fake',
   './src/models/serviceCredential',
   './src/services/chatGPT',
+  './src/models/activityLog',
 ]
