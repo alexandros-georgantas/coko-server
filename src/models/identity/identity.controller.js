@@ -1,11 +1,11 @@
-const logger = require('@pubsweet/logger')
-
 const axios = require('axios')
 const config = require('config')
 const moment = require('moment')
+
+const logger = require('@pubsweet/logger')
+
 const { getExpirationTime } = require('../../utils/tokens')
 const { jobs } = require('../../services')
-
 const Identity = require('./identity.model')
 
 const {

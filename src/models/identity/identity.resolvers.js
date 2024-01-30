@@ -1,5 +1,5 @@
 const logger = require('@pubsweet/logger')
-const { pubsubManager } = require('../../graphql/pubsub')
+const pubsubManager = require('../../graphql/pubsub')
 
 const {
   createOAuthIdentity,
