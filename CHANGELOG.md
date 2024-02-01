@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.9.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.1...v3.9.0) (2024-02-01)
+
+
+### Features
+
+* add activity log service ([697038f](https://gitlab.coko.foundation/cokoapps/server/commit/697038f423abfa6cc43a36213f00bfa1815659de))
+
+
+### Bug Fixes
+
+* **server:** andle oauth refresh token having 0 as its expiration value ([14cd7f3](https://gitlab.coko.foundation/cokoapps/server/commit/14cd7f384bec46beb539d9f54a500dc09ca0d7b2))
+* **server:** fix identity-tokens circular dependency ([8beb1df](https://gitlab.coko.foundation/cokoapps/server/commit/8beb1dfcb9e7f959b0c4e842ad946d336b6c194d))
+* **server:** handle access token becoming invalid before expiration ([89fedbd](https://gitlab.coko.foundation/cokoapps/server/commit/89fedbd20493ec96b88488abaaba35ed79466eb7))
+
 ### [3.8.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.0...v3.8.1) (2024-01-23)
 
 
