@@ -1,6 +1,8 @@
 const axios = require('axios')
 const config = require('config')
 const { URLSearchParams: UnpackedParams } = require('url')
+const find = require('lodash/find')
+const flattenDeep = require('lodash/flattenDeep')
 
 const { createUser } = require('./helpers/users')
 
@@ -16,7 +18,9 @@ const clearDb = require('./_clearDb')
 
 const { jobs } = require('../../services')
 
-// Mock "renewAuthTokensJob"
+const { foreverDate } = require('../../utils/time')
+
+// Mock "refresh token expired job"
 jest.mock('../../services', () => {
   const { jobs: jobs_, ...originalModule } =
     jest.requireActual('../../services')
@@ -205,5 +209,39 @@ describe('Identity Controller', () => {
 
     expect(oauthAccessTokenExpiration).toEqual(specificDate)
     expect(oauthRefreshTokenExpiration).toEqual(specificDate)
+  })
+
+  it('authorizes access and inserts the Oauth tokens with never-expiring refresh token and not schedule a expiration job', async () => {
+    axios.mockResolvedValueOnce({
+      status: 200,
+      data: {
+        access_token: fakeAccessToken,
+        expires_in: 3600,
+        'not-before-policy': 0,
+        refresh_expires_in: 0,
+        refresh_token: 'fake.refresh.token',
+        scope: '',
+        session_state: 'fake-session-state',
+        token_type: 'Bearer',
+      },
+    })
+    const user = await createUser()
+    // Mock authorization
+    await createOAuthIdentity(
+      user.id,
+      'test',
+      'fake-session-state',
+      'fake-code',
+    )
+
+    const { oauthRefreshTokenExpiration } = await Identity.findOne({
+      userId: user.id,
+      provider: 'test',
+    })
+
+    expect(oauthRefreshTokenExpiration).toEqual(foreverDate)
+    expect(
+      find(flattenDeep(jobs.defer.mock.calls), { userId: user.id }),
+    ).toBeUndefined()
   })
 })

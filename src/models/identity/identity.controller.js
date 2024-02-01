@@ -4,7 +4,7 @@ const { pubsubManager } = require('pubsweet-server')
 const axios = require('axios')
 const config = require('config')
 const moment = require('moment')
-const { getExpirationTime } = require('../../utils/time')
+const { getExpirationTime, foreverDate } = require('../../utils/time')
 const { jobs } = require('../../services')
 
 const {
@@ -17,6 +17,8 @@ const Identity = require('./identity.model')
 const {
   labels: { IDENTITY_CONTROLLER },
 } = require('./constants')
+
+const { emptyUndefinedOrNull } = require('../../helpers')
 
 const getUserIdentities = async userId => {
   try {
@@ -90,13 +92,16 @@ const createOAuthIdentity = async (userId, provider, sessionState, code) => {
     }
 
     const { oauthRefreshTokenExpiration } = authData
-    const expiresIn = (oauthRefreshTokenExpiration - moment().utc()) / 1000
 
-    await jobs.defer(
-      jobs.REFRESH_TOKEN_EXPIRED,
-      { seconds: expiresIn },
-      { userId, providerLabel: provider },
-    )
+    if (oauthRefreshTokenExpiration.getTime() !== foreverDate.getTime()) {
+      const expiresIn = (oauthRefreshTokenExpiration - moment().utc()) / 1000
+
+      await jobs.defer(
+        jobs.REFRESH_TOKEN_EXPIRED,
+        { seconds: expiresIn },
+        { userId, providerLabel: provider },
+      )
+    }
 
     return identity
   } catch (e) {
@@ -149,7 +154,7 @@ const authorizeOAuth = async (provider, sessionState, code) => {
     throw new Error('Missing access_token from response!')
   }
 
-  if (!expires_in) {
+  if (emptyUndefinedOrNull(expires_in)) {
     throw new Error('Missing expires_in from response!')
   }
 
@@ -157,15 +162,19 @@ const authorizeOAuth = async (provider, sessionState, code) => {
     throw new Error('Missing refresh_token from response!')
   }
 
-  if (!refresh_expires_in) {
+  if (emptyUndefinedOrNull(refresh_expires_in)) {
     throw new Error('Missing refresh_expires_in from response!')
   }
 
   return {
     oauthAccessToken: access_token,
     oauthRefreshToken: refresh_token,
-    oauthAccessTokenExpiration: getExpirationTime(expires_in),
-    oauthRefreshTokenExpiration: getExpirationTime(refresh_expires_in),
+    oauthAccessTokenExpiration:
+      expires_in === 0 ? foreverDate : getExpirationTime(expires_in),
+    oauthRefreshTokenExpiration:
+      refresh_expires_in === 0
+        ? foreverDate
+        : getExpirationTime(refresh_expires_in),
   }
   /* eslint-enable camelcase */
 }
