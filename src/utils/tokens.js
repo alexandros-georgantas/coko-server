@@ -5,7 +5,7 @@ const moment = require('moment')
 
 const { pubsubManager } = require('pubsweet-server')
 
-const { getExpirationTime } = require('./time')
+const { getExpirationTime, foreverDate } = require('./time')
 
 const {
   subscriptions: { USER_UPDATED },
@@ -19,6 +19,8 @@ const { getUser } = require('../models/user/user.controller')
 const {
   invalidateProviderTokens,
 } = require('../models/identity/identity.controller')
+
+const { emptyUndefinedOrNull } = require('../helpers')
 
 const getAuthTokens = async (userId, providerLabel) => {
   return requestTokensFromProvider(userId, providerLabel, {
@@ -127,7 +129,7 @@ const requestTokensFromProvider = async (
     throw new Error('Missing access_token from response!')
   }
 
-  if (!expires_in) {
+  if (emptyUndefinedOrNull(expires_in)) {
     throw new Error('Missing expires_in from response!')
   }
 
@@ -135,15 +137,19 @@ const requestTokensFromProvider = async (
     throw new Error('Missing refresh_token from response!')
   }
 
-  if (!refresh_expires_in) {
+  if (emptyUndefinedOrNull(refresh_expires_in)) {
     throw new Error('Missing refresh_expires_in from response!')
   }
 
   await Identity.patchAndFetchById(providerUserIdentity.id, {
     oauthAccessToken: access_token,
     oauthRefreshToken: refresh_token,
-    oauthAccessTokenExpiration: getExpirationTime(expires_in),
-    oauthRefreshTokenExpiration: getExpirationTime(refresh_expires_in),
+    oauthAccessTokenExpiration:
+      expires_in === 0 ? foreverDate : getExpirationTime(expires_in),
+    oauthRefreshTokenExpiration:
+      refresh_expires_in === 0
+        ? foreverDate
+        : getExpirationTime(refresh_expires_in),
   })
 
   if (returnAccessToken) {
