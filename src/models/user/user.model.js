@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt')
 const config = require('config')
-const { ValidationError } = require('@pubsweet/errors')
-const logger = require('@pubsweet/logger')
+const { ValidationError } = require('../../errors')
 
 const BCRYPT_COST = config.util.getEnv('NODE_ENV') === 'test' ? 1 : 12
 
+const logger = require('../../logger')
 const BaseModel = require('../base.model')
 const useTransaction = require('../useTransaction')
 const { displayNameConstructor } = require('../_helpers/utilities')

@@ -1,7 +1,7 @@
 const config = require('config')
 const isEmpty = require('lodash/isEmpty')
-const logger = require('@pubsweet/logger')
 
+const logger = require('../../logger')
 const { boss } = require('../../jobs')
 
 /**

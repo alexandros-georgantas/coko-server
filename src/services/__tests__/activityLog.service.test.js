@@ -7,7 +7,9 @@ const ActivityLog = require('../../models/activityLog/activityLog.model')
 const { actionTypes } = require('../../models/activityLog/constants')
 
 describe('Activity Log Service', () => {
-  beforeEach(() => clearDb())
+  beforeEach(async () => {
+    await clearDb()
+  })
 
   afterAll(() => {
     const knex = Fake.knex()

@@ -1,10 +1,10 @@
 const cron = require('node-cron')
 const { v4: uuid } = require('uuid')
 
-const logger = require('@pubsweet/logger')
-const { db } = require('@pubsweet/db-manager')
-const { send: sendEmail } = require('@pubsweet/component-send-email')
+const { send: sendEmail } = require('./services/sendEmail')
 
+const logger = require('./logger')
+const db = require('./dbManager/db')
 const pubsubManager = require('./graphql/pubsub')
 const authentication = require('./authentication')
 const { File } = require('./models')

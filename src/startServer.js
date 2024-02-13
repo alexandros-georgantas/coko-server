@@ -6,7 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const isFunction = require('lodash/isFunction')
 
-const logger = require('@pubsweet/logger')
+const logger = require('./logger')
 
 let server
 

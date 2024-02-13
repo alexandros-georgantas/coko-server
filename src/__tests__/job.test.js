@@ -2,6 +2,7 @@
 
 const { boss, subscribeJobsToQueue } = require('../jobs')
 const { jobs } = require('../services')
+const db = require('../dbManager/db')
 // const { renewAuthTokens } = require('../utils/tokens')
 
 const freezeTime = 1701856542000
@@ -84,6 +85,10 @@ describe.skip('jobs service', () => {
     // Reset the mock boss object
     boss.reset()
     await subscribeJobsToQueue()
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   it('registers jobs', async () => {

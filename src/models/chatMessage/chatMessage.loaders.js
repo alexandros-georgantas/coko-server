@@ -1,4 +1,4 @@
-const logger = require('@pubsweet/logger')
+const logger = require('../../logger')
 
 const ChatMessage = require('./chatMessage.model')
 

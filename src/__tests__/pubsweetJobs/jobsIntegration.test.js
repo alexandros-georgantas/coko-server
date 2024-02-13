@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-disabled-tests, jest/no-done-callback */
 
 const startServer = require('../../startServer')
-
+const db = require('../../dbManager/db')
 const { connectToJobQueue } = require('../../jobs')
 
 const someHandler = async job => {
@@ -14,6 +14,10 @@ describe.skip('integrated job queue', () => {
 
   beforeAll(async () => {
     server = await startServer()
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   // This is to verify that pg-boss has been setup with pg-boss.start()

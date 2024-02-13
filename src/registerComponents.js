@@ -1,6 +1,6 @@
-const logger = require('@pubsweet/logger')
 const config = require('config')
 
+const logger = require('./logger')
 const tryRequireRelative = require('./tryRequireRelative')
 
 const registerRecursively = (app, componentName) => {

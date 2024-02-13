@@ -1,5 +1,5 @@
 const { Model } = require('objection')
-const { db } = require('@pubsweet/db-manager')
+const db = require('../dbManager/db')
 
 Model.knex(db)
 

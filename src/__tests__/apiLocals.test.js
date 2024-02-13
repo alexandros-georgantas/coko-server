@@ -1,5 +1,6 @@
 const api = require('../app')(require('express')())
 
+const db = require('../dbManager/db')
 const clearDb = require('../models/__tests__/_clearDb')
 const { User } = require('../models')
 
@@ -14,6 +15,10 @@ describe('api/app locals', () => {
     await clearDb()
 
     return User.insert(userData)
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   it('exposes models', async () => {

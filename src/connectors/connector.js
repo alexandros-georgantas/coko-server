@@ -1,6 +1,6 @@
 const { ref, val } = require('objection')
 
-const { NotFoundError } = require('@pubsweet/errors')
+const { NotFoundError } = require('../errors')
 
 const notFoundError = (property, value, className) =>
   new NotFoundError(`Object not found: ${className} with ${property} ${value}`)

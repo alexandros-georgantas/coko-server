@@ -4,6 +4,7 @@ const api = require('../helpers/api')
 const authentication = require('../../authentication')
 const { User } = require('../../models')
 const clearDb = require('../../models/__tests__/_clearDb')
+const db = require('../../dbManager/db')
 
 describe('GraphQL core mutations', () => {
   let token
@@ -18,6 +19,10 @@ describe('GraphQL core mutations', () => {
     await clearDb()
     user = await User.insert(userData)
     token = authentication.token.create(user)
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   describe('mutations', () => {

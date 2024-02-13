@@ -3,12 +3,17 @@
 const path = require('path')
 const { spawn } = require('child_process')
 const { startJobQueue } = require('../../jobs')
+const db = require('../../dbManager/db')
 
 describe('job runner in a different process', () => {
   let jobQueue
 
   beforeAll(async () => {
     jobQueue = await startJobQueue()
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   it('submits a job and gets notified on completion', async done => {

@@ -5,7 +5,8 @@ const forEach = require('lodash/forEach')
 const crypto = require('crypto')
 const path = require('path')
 const mime = require('mime-types')
-const logger = require('@pubsweet/logger')
+
+const logger = require('../logger')
 
 const {
   getFileExtension,

@@ -1,5 +1,3 @@
-const logger = require('@pubsweet/logger')
-
 exports.up = async knex => {
   try {
     const tableExists = await knex.schema.hasTable('users')
@@ -141,8 +139,7 @@ exports.up = async knex => {
     )
     return true
   } catch (e) {
-    logger.error('Users: Initial: Migration failed!')
-    throw new Error(e)
+    throw new Error(`Users: Initial: Migration failed! ${e}`)
   }
 }
 

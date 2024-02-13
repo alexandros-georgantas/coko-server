@@ -1,9 +1,8 @@
 const find = require('lodash/find')
 const { ValidationError } = require('objection')
-const logger = require('@pubsweet/logger')
-
 const config = require('config')
 
+const logger = require('../../logger')
 const BaseModel = require('../base.model')
 
 const {

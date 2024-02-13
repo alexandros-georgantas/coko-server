@@ -13,8 +13,7 @@ const morgan = require('morgan')
 const passport = require('passport')
 const wait = require('waait')
 
-const logger = require('@pubsweet/logger')
-
+const logger = require('./logger')
 const api = require('./routes/api')
 const index = require('./routes/index')
 const registerComponents = require('./registerComponents')

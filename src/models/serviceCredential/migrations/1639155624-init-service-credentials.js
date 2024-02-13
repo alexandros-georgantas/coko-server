@@ -1,5 +1,3 @@
-const logger = require('@pubsweet/logger')
-
 exports.up = async knex => {
   try {
     return knex.schema.createTable('service_credential', table => {
@@ -14,8 +12,7 @@ exports.up = async knex => {
       table.text('accessToken').nullable()
     })
   } catch (e) {
-    logger.error('Service Credentials: Initial: Migration failed!')
-    throw new Error(e)
+    throw new Error(`Service Credentials: Initial: Migration failed! ${e}`)
   }
 }
 

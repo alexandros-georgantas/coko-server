@@ -1,5 +1,3 @@
-const logger = require('@pubsweet/logger')
-
 exports.up = knex => {
   try {
     return knex.schema.createTable('chat_threads', table => {
@@ -17,8 +15,7 @@ exports.up = knex => {
       table.text('type')
     })
   } catch (e) {
-    logger.error('Chat Thread: Initial: Migration failed!')
-    throw new Error(e)
+    throw new Error(`Chat Thread: Initial: Migration failed! ${e}`)
   }
 }
 

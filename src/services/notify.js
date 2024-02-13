@@ -1,7 +1,7 @@
-const logger = require('@pubsweet/logger')
-
 const config = require('config')
-const mailer = require('@pubsweet/component-send-email')
+
+const mailer = require('./sendEmail')
+const logger = require('../logger')
 
 const {
   labels: { NOTIFY_SERVICE },
@@ -22,6 +22,7 @@ const sendEmail = async data => {
   logger.info(
     `${NOTIFY_SERVICE} sendEmail: email will be sent to ${to} with subject ${subject}`,
   )
+
   return mailer.send(emailData)
 }
 

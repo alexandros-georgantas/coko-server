@@ -1,8 +1,9 @@
 const { User } = require('@pubsweet/models')
-const errors = require('@pubsweet/errors')
+const errors = require('../../errors')
 const api = require('../helpers/api')
 const authentication = require('../../authentication')
 const clearDb = require('../../models/__tests__/_clearDb')
+const db = require('../../dbManager/db')
 
 /* eslint-disable-next-line jest/no-disabled-tests */
 describe.skip('GraphQL errors', () => {
@@ -18,6 +19,10 @@ describe.skip('GraphQL errors', () => {
     await clearDb()
     user = await User.insert(userData)
     token = authentication.token.create(user)
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   it('should pass GraphQLError to clients', async () => {

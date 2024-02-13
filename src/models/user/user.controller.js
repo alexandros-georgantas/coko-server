@@ -3,16 +3,14 @@ const crypto = require('crypto')
 const moment = require('moment')
 const find = require('lodash/find')
 
-const logger = require('@pubsweet/logger')
-
 const {
   AuthorizationError,
   ValidationError,
   ConflictError,
-} = require('@pubsweet/errors')
+} = require('../../errors')
 
+const logger = require('../../logger')
 const authentication = require('../../authentication')
-
 const User = require('./user.model')
 const Identity = require('../identity/identity.model')
 const useTransaction = require('../useTransaction')
