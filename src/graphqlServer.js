@@ -9,9 +9,8 @@ const {
 const isEmpty = require('lodash/isEmpty')
 const config = require('config')
 
-const logger = require('@pubsweet/logger')
-const errors = require('@pubsweet/errors')
-
+const errors = require('./errors')
+const logger = require('./logger')
 const helpers = require('./authorization')
 const loaders = require('./graphql/loaders')
 const connectors = require('./connectors')

@@ -2,6 +2,7 @@ const { Team, TeamMember, User } = require('../../models')
 const clearDb = require('../../models/__tests__/_clearDb')
 const api = require('../helpers/api')
 const authentication = require('../../authentication')
+const db = require('../../dbManager/db')
 
 describe('GraphQL core queries', () => {
   let token
@@ -16,6 +17,10 @@ describe('GraphQL core queries', () => {
     await clearDb()
     user = await User.insert(userData)
     token = authentication.token.create(user)
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   it('can resolve all users', async () => {

@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 
 const configureApp = app => {
-  // console.log('og', app)
-
   app.get('/verify', (req, res) => res.send('hi'))
 
   // Actions to perform when the HTTP server starts listening

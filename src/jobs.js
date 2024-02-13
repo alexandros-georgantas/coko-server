@@ -1,8 +1,8 @@
 const PgBoss = require('pg-boss')
-const logger = require('@pubsweet/logger')
 const moment = require('moment')
-const db = require('@pubsweet/db-manager/src/db')
 
+const logger = require('./logger')
+const db = require('./dbManager/db')
 const pubsubManager = require('./graphql/pubsub')
 const { REFRESH_TOKEN_EXPIRED } = require('./services/jobs/jobs.identifiers')
 

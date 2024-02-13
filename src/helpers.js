@@ -5,7 +5,8 @@ const fs = require('fs-extra')
 const config = require('config')
 const commandExists = require('command-exists').sync
 const { exec } = require('child_process')
-const logger = require('@pubsweet/logger')
+
+const logger = require('./logger')
 
 const imageConversionToSupportedFormatMapper = {
   eps: 'svg',

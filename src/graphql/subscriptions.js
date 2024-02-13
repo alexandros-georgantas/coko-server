@@ -4,7 +4,7 @@
 const { execute, subscribe } = require('graphql')
 const { SubscriptionServer } = require('subscriptions-transport-ws')
 
-const logger = require('@pubsweet/logger')
+const logger = require('../logger')
 
 const graphqlSchema = require('../graphqlSchema')
 const { token } = require('../authentication')

@@ -2,6 +2,7 @@ const api = require('../helpers/api')
 const authentication = require('../../authentication')
 const clearDb = require('../../models/__tests__/_clearDb')
 const { User } = require('../../models')
+const db = require('../../dbManager/db')
 
 describe('GraphQL uploads', () => {
   let token
@@ -16,6 +17,10 @@ describe('GraphQL uploads', () => {
     await clearDb()
     user = await User.insert(userData)
     token = authentication.token.create(user)
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   it('can upload a file', async () => {

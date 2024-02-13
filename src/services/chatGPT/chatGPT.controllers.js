@@ -1,7 +1,7 @@
 const axios = require('axios')
 const config = require('config')
 
-const logger = require('@pubsweet/logger')
+const logger = require('../../logger')
 
 const chatGPT = async input => {
   try {

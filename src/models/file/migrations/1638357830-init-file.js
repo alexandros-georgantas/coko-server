@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-const logger = require('@pubsweet/logger')
-
 exports.up = async knex => {
   try {
     const tableExists = await knex.schema.hasTable('files')
@@ -104,8 +101,7 @@ exports.up = async knex => {
     })
     return true
   } catch (e) {
-    logger.error('File: Initial: Migration failed!')
-    throw new Error(e)
+    throw new Error(`File: Initial: Migration failed! ${e}`)
   }
 }
 

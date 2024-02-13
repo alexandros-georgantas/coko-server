@@ -7,7 +7,7 @@ const { shield } = require('graphql-shield')
 const { GraphQLUpload } = require('graphql-upload')
 const { makeExecutableSchema } = require('apollo-server-express')
 
-const logger = require('@pubsweet/logger')
+const logger = require('./logger')
 const tryRequireRelative = require('./tryRequireRelative')
 
 const upload = require('./upload')

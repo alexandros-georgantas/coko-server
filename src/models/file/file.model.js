@@ -1,7 +1,7 @@
 const { v4: uuid } = require('uuid')
-const { logger } = require('@pubsweet/logger')
 const find = require('lodash/find')
 
+const logger = require('../../logger')
 const BaseModel = require('../base.model')
 const useTransaction = require('../useTransaction')
 

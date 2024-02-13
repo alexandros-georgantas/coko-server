@@ -1,5 +1,4 @@
 /* eslint-disable import/no-unresolved */
-const logger = require('@pubsweet/logger')
 const mime = require('mime-types')
 const fs = require('fs-extra')
 const path = require('path')
@@ -151,16 +150,14 @@ exports.up = async knex => {
       try {
         await fs.remove(tempDir)
       } catch (e) {
-        logger.error(e)
         throw new Error(e)
       }
 
       return true
     })
   } catch (e) {
-    logger.error(
-      'File: Add full conversion image quality to stored objects migration failed!',
+    throw new Error(
+      `'File: Add full conversion image quality to stored objects migration failed!' ${e}`,
     )
-    throw new Error(e)
   }
 }

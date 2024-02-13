@@ -1,11 +1,11 @@
-const logger = require('@pubsweet/logger')
+const config = require('config')
 const jwt = require('jsonwebtoken')
 
 const BearerStrategy = require('passport-http-bearer').Strategy
 const AnonymousStrategy = require('passport-anonymous').Strategy
 const LocalStrategy = require('passport-local').Strategy
 
-const config = require('config')
+const logger = require('./logger')
 
 const createToken = user => {
   logger.debug('Creating token for', user.username)

@@ -1,4 +1,4 @@
-const { db } = require('@pubsweet/db-manager')
+const db = require('../../dbManager/db')
 
 const dbCleaner = async () => {
   const query = await db.raw(

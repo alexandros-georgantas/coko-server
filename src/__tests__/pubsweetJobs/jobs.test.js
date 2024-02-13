@@ -1,6 +1,7 @@
 /* eslint-disable jest/no-disabled-tests, jest/no-done-callback */
 
 const { startJobQueue } = require('../../jobs')
+const db = require('../../dbManager/db')
 
 const someHandler = async job => {
   expect(job.data.param).toEqual('aThing')
@@ -12,6 +13,10 @@ describe.skip('jobs', () => {
 
   beforeAll(async () => {
     jobQueue = await startJobQueue()
+  })
+
+  afterAll(() => {
+    db.destroy()
   })
 
   it('submits a job, runs it, and notifies on completion', async done => {

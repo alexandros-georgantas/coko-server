@@ -2,8 +2,7 @@ const axios = require('axios')
 const config = require('config')
 const moment = require('moment')
 
-const logger = require('@pubsweet/logger')
-
+const logger = require('../../logger')
 const pubsubManager = require('../../graphql/pubsub')
 const { getExpirationTime, foreverDate } = require('../../utils/time')
 const { jobs } = require('../../services')

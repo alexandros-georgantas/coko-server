@@ -1,5 +1,3 @@
-const logger = require('@pubsweet/logger')
-
 exports.up = async knex => {
   try {
     await knex.schema.alterTable('identities', table => {
@@ -10,9 +8,8 @@ exports.up = async knex => {
     )
     return true
   } catch (e) {
-    logger.error(e)
     throw new Error(
-      'Migration: Identity: require unique email per provider failed',
+      `Migration: Identity: require unique email per provider failed ${e}`,
     )
   }
 }
@@ -27,7 +24,6 @@ exports.down = async knex => {
     )
     return true
   } catch (e) {
-    logger.error(e)
-    throw new Error('Migration: Identity: require unique email failed')
+    throw new Error(`Migration: Identity: require unique email failed ${e}`)
   }
 }

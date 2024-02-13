@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-const logger = require('@pubsweet/logger')
-
 exports.up = async knex => {
   try {
     return knex.schema.createTable('fakes', table => {
@@ -16,8 +13,7 @@ exports.up = async knex => {
       table.text('status')
     })
   } catch (e) {
-    logger.error('Fake: Initial: Migration failed!')
-    throw new Error(e)
+    throw new Error(`Fake: Initial: Migration failed! ${e}`)
   }
 }
 

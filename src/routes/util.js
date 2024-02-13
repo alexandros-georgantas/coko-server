@@ -1,5 +1,5 @@
 // const _ = require('lodash')
-// const { AuthorizationError, NotFoundError } = require('@pubsweet/errors')
+// const { AuthorizationError, NotFoundError } = require('../errors')
 
 // const Util = {}
 

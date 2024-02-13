@@ -1,5 +1,3 @@
-const logger = require('@pubsweet/logger')
-
 exports.up = async knex => {
   try {
     const tableExists = await knex.schema.hasTable('identities')
@@ -47,9 +45,8 @@ exports.up = async knex => {
       }),
     )
   } catch (e) {
-    logger.error(e)
     throw new Error(
-      'Migration: Identity: creating oauthAccessTokenExpiration and oauthRefreshTokenExpiration and setting them to default false failed',
+      `Migration: Identity: creating oauthAccessTokenExpiration and oauthRefreshTokenExpiration and setting them to default false failed ${e}`,
     )
   }
 }
@@ -61,9 +58,8 @@ exports.down = async knex => {
       table.dropColumn('oauthRefreshTokenExpiration')
     })
   } catch (e) {
-    logger.error(e)
     throw new Error(
-      `Migration: Identity: removing oauthAccessTokenExpiration and oauthRefreshTokenExpiration columns failed`,
+      `Migration: Identity: removing oauthAccessTokenExpiration and oauthRefreshTokenExpiration columns failed ${e}`,
     )
   }
 }

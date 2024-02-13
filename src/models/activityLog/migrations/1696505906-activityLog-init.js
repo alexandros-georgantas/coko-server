@@ -1,5 +1,3 @@
-const logger = require('@pubsweet/logger')
-
 exports.up = knex => {
   try {
     return knex.schema.createTable('activity_logs', table => {
@@ -22,8 +20,7 @@ exports.up = knex => {
       table.text('type').notNullable()
     })
   } catch (e) {
-    logger.error('Acitivity log: Initial: Migration failed!')
-    throw new Error(e)
+    throw new Error(`Acitivity log: Initial: Migration failed! ${e}`)
   }
 }
 

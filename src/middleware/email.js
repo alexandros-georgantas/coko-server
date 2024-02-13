@@ -2,8 +2,6 @@ const config = require('config')
 const { isEmpty } = require('lodash')
 const { middleware } = require('graphql-middleware')
 
-// const logger = require('@pubsweet/logger')
-
 const generator = middleware(schema => {
   const emailService =
     config.has('emailMiddleware.service') &&
