@@ -1,18 +1,18 @@
-const logger = require('@pubsweet/logger')
-const { pubsubManager } = require('pubsweet-server')
-
 const axios = require('axios')
 const config = require('config')
 const moment = require('moment')
+
+const logger = require('@pubsweet/logger')
+
+const pubsubManager = require('../../graphql/pubsub')
 const { getExpirationTime, foreverDate } = require('../../utils/time')
 const { jobs } = require('../../services')
+const { getUser } = require('../user/user.controller')
+const Identity = require('./identity.model')
 
 const {
   subscriptions: { USER_UPDATED },
 } = require('../user/constants')
-
-const { getUser } = require('../user/user.controller')
-const Identity = require('./identity.model')
 
 const {
   labels: { IDENTITY_CONTROLLER },

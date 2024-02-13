@@ -4,10 +4,7 @@ const fs = require('fs-extra')
 const { promisify } = require('util')
 const config = require('config')
 
-const {
-  getPubsub,
-  asyncIterators,
-} = require('pubsweet-server/src/graphql/pubsub')
+const { getPubsub, asyncIterators } = require('./graphql/pubsub')
 
 const { ON_UPLOAD_PROGRESS } = asyncIterators
 const randomBytes = promisify(crypto.randomBytes)
@@ -17,7 +14,8 @@ const resolvers = {
     upload: async (_, { file, fileSize }, context) => {
       const uploadsPath = config.get('pubsweet-server').uploads
       const pubsub = await getPubsub()
-      const { stream, filename, encoding } = await file
+      const { createReadStream, filename, encoding } = await file
+      const stream = createReadStream()
 
       const raw = await randomBytes(16)
       const generatedFilename = raw.toString('hex') + path.extname(filename)

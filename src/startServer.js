@@ -4,6 +4,7 @@ const http = require('http')
 const config = require('config')
 const fs = require('fs')
 const path = require('path')
+const isFunction = require('lodash/isFunction')
 
 const logger = require('@pubsweet/logger')
 
@@ -20,7 +21,14 @@ const startServer = async (app = express()) => {
 
   if (config.has('pubsweet-server.app')) {
     // See if a custom app entrypoint is configured
-    configureApp = config.get('pubsweet-server.app')
+
+    try {
+      /* eslint-disable-next-line global-require, import/no-dynamic-require */
+      configureApp = require(config.get('pubsweet-server.app'))
+    } catch (e) {
+      logger.error(e)
+      throw new Error('Cannot load app from provided path!')
+    }
   } else if (fs.existsSync(appPath)) {
     // See if a custom app entrypoint exists at ./server/app.js
     /* eslint-disable-next-line global-require, import/no-dynamic-require */
@@ -29,6 +37,14 @@ const startServer = async (app = express()) => {
     // If no custom entrypoints exist, use the default
     /* eslint-disable-next-line global-require */
     configureApp = require('./app')
+  }
+
+  if (!configureApp) {
+    throw new Error('App module not found!')
+  }
+
+  if (!isFunction(configureApp)) {
+    throw new Error('App module is not a function!')
   }
 
   const configuredApp = configureApp(app)

@@ -3,7 +3,7 @@ const config = require('config')
 const axios = require('axios')
 const moment = require('moment')
 
-const { pubsubManager } = require('pubsweet-server')
+const pubsubManager = require('../graphql/pubsub')
 
 const { getExpirationTime, foreverDate } = require('./time')
 
