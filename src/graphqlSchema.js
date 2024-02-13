@@ -8,7 +8,7 @@ const { GraphQLUpload } = require('graphql-upload')
 const { makeExecutableSchema } = require('apollo-server-express')
 
 const logger = require('@pubsweet/logger')
-const tryRequireRelative = require('pubsweet-server/src/helpers/tryRequireRelative')
+const tryRequireRelative = require('./tryRequireRelative')
 
 const upload = require('./upload')
 const emailMiddleware = require('./middleware/email')

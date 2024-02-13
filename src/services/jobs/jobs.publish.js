@@ -1,7 +1,8 @@
 const config = require('config')
 const isEmpty = require('lodash/isEmpty')
-const { boss } = require('pubsweet-server/src/jobs')
 const logger = require('@pubsweet/logger')
+
+const { boss } = require('../../jobs')
 
 /**
  * Publish a named job and job data to the job queue.

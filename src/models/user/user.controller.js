@@ -4,13 +4,14 @@ const moment = require('moment')
 const find = require('lodash/find')
 
 const logger = require('@pubsweet/logger')
-const authentication = require('pubsweet-server/src/authentication')
 
 const {
   AuthorizationError,
   ValidationError,
   ConflictError,
 } = require('@pubsweet/errors')
+
+const authentication = require('../../authentication')
 
 const User = require('./user.model')
 const Identity = require('../identity/identity.model')
@@ -26,10 +27,11 @@ const {
   requestResetPasswordEmailNotFound,
 } = require('../_helpers/emailTemplates')
 
+const notify = require('../../services/notify')
+
 const {
-  notify,
   notificationTypes: { EMAIL },
-} = require('../../services')
+} = require('../../services/constants')
 
 const {
   labels: { USER_CONTROLLER },

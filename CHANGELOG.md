@@ -2,6 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+
 ## [3.9.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.1...v3.9.0) (2024-02-01)
 
 
@@ -15,6 +16,23 @@ All notable changes to this project will be documented in this file. See [standa
 * **server:** andle oauth refresh token having 0 as its expiration value ([14cd7f3](https://gitlab.coko.foundation/cokoapps/server/commit/14cd7f384bec46beb539d9f54a500dc09ca0d7b2))
 * **server:** fix identity-tokens circular dependency ([8beb1df](https://gitlab.coko.foundation/cokoapps/server/commit/8beb1dfcb9e7f959b0c4e842ad946d336b6c194d))
 * **server:** handle access token becoming invalid before expiration ([89fedbd](https://gitlab.coko.foundation/cokoapps/server/commit/89fedbd20493ec96b88488abaaba35ed79466eb7))
+
+
+### [3.8.2-beta.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.2-beta.0...v3.8.2-beta.1) (2024-01-30)
+
+
+### Bug Fixes
+
+* **server:** fix pubsubmanager imports ([3f1bb6a](https://gitlab.coko.foundation/cokoapps/server/commit/3f1bb6a4ec801ad599e535a907d5731897cdb322))
+
+
+### [3.8.2-beta.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.1...v3.8.2-beta.0) (2024-01-30)
+
+
+### Bug Fixes
+
+* fix jobs circular dependency ([897834f](https://gitlab.coko.foundation/cokoapps/server/commit/897834fc95cf6a72a9eee27cbafd6b01b6e9d9b1))
+
 
 ### [3.8.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.8.0...v3.8.1) (2024-01-23)
 

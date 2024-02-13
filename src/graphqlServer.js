@@ -11,10 +11,10 @@ const config = require('config')
 
 const logger = require('@pubsweet/logger')
 const errors = require('@pubsweet/errors')
-const connectors = require('pubsweet-server/src/connectors')
-const loaders = require('pubsweet-server/src/graphql/loaders')
-const helpers = require('pubsweet-server/src/helpers/authorization')
 
+const helpers = require('./authorization')
+const loaders = require('./graphql/loaders')
+const connectors = require('./connectors')
 const schema = require('./graphqlSchema')
 
 const isDevelopment = process.env.NODE_ENV === 'development'

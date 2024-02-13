@@ -1,9 +1,10 @@
-const { boss } = require('pubsweet-server/src/jobs')
+const PgBoss = require('pg-boss')
 const logger = require('@pubsweet/logger')
 const moment = require('moment')
+const db = require('@pubsweet/db-manager/src/db')
 
-const { pubsubManager } = require('pubsweet-server')
-const { jobs } = require('./services')
+const pubsubManager = require('./graphql/pubsub')
+const { REFRESH_TOKEN_EXPIRED } = require('./services/jobs/jobs.identifiers')
 
 const {
   subscriptions: { USER_UPDATED },
@@ -11,6 +12,62 @@ const {
 
 const { getUser } = require('./models/user/user.controller')
 const Identity = require('./models/identity/identity.model')
+
+const dbAdapter = {
+  executeSql: (sql, parameters = []) => {
+    try {
+      // This is needed to replace pg-boss' $1, $2 arguments
+      // into knex's :val, :val2 style.
+      const replacedSql = sql.replace(/\$(\d+)\b/g, (_, number) => `:${number}`)
+
+      const parametersObject = {}
+      parameters.forEach(
+        (value, index) => (parametersObject[`${index + 1}`] = value),
+      )
+
+      return db.raw(replacedSql, parametersObject)
+    } catch (err) {
+      return logger.error('Error querying database:', err.message)
+    }
+  },
+}
+
+const boss = new PgBoss({ db: dbAdapter })
+
+boss.on('error', async error => {
+  logger.error(error)
+
+  // We've had processes remain open in testing,
+  // because job queues kept polling the database,
+  // while the database no longer existed.
+  if (
+    process.env.NODE_ENV === 'test' &&
+    error.message.match(/database.*does not exist/)
+  ) {
+    if (started) {
+      started = false
+      await boss.stop()
+    }
+    // if (connected) {
+    //   connected = false
+    //   await boss.disconnect()
+    // }
+  }
+})
+
+// 'Start' is for queue maintainers (i.e. pubsweet-server)
+let started = false
+// 'Connect' is for queue observers (e.g. a job worker)
+// let connected = false
+
+const start = async () => {
+  if (started) return boss
+
+  await boss.start()
+  started = true
+  // connected = true
+  return boss
+}
 
 /**
  * Add a list of jobs to the job queue. If no jobs are specified, subscribe all
@@ -20,6 +77,7 @@ const subscribeJobsToQueue = async jobsList => {
   logger.info('Subscribing job callbacks to the job queue')
   const jobsToSubscribe = jobsList || defaultJobs
   const existingSubscriptions = boss.manager?.subscriptions || {}
+
   await Promise.all(
     jobsToSubscribe.map(async ({ name, callback, subscribeOptions = {} }) => {
       try {
@@ -95,7 +153,7 @@ const defaultJobs = [
   //   },
   // },
   {
-    name: jobs.REFRESH_TOKEN_EXPIRED,
+    name: REFRESH_TOKEN_EXPIRED,
     callback: async job => {
       try {
         const pubsub = await pubsubManager.getPubsub()
@@ -129,11 +187,21 @@ const defaultJobs = [
         job.done()
       } catch (e) {
         job.done(e)
-        logger.error(`Job ${jobs.REFRESH_TOKEN_EXPIRED}: defer error:`, e)
+        logger.error(`Job ${REFRESH_TOKEN_EXPIRED}: defer error:`, e)
         throw e
       }
     },
   },
 ]
 
-module.exports = { subscribeJobsToQueue }
+module.exports = {
+  boss,
+  startJobQueue: start,
+  stopJobQueue: async () => {
+    await boss.stop()
+    started = false
+    // connected = false
+  },
+  connectToJobQueue: start,
+  subscribeJobsToQueue,
+}
