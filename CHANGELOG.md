@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.10.1-alpha.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.10.0...v3.10.1-alpha.0) (2024-02-22)
+
+
+### Bug Fixes
+
+* fix cli path in package.json ([df06372](https://gitlab.coko.foundation/cokoapps/server/commit/df0637284e18fde140efe9ddaf37a07277db8b83))
+
 ## [3.10.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.9.1...v3.10.0) (2024-02-16)
 
 

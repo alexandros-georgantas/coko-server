@@ -1,6 +1,6 @@
 {
   "name": "@coko/server",
-  "version": "3.10.0",
+  "version": "3.10.1-alpha.0",
   "description": "Reusable server for use by Coko's projects",
   "keywords": [
     "coko"
@@ -13,8 +13,7 @@
   "author": "Yannis Barlas",
   "main": "src/index.js",
   "bin": {
-    "coko-server": "./cli/coko-server.js",
-    "cs": "./cli/coko-server.js"
+    "coko-server": "./src/cli/coko-server.js"
   },
   "scripts": {
     "cz": "git-cz",
