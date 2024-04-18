@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.11.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.10.1...v3.11.0) (2024-04-18)
+
+
+### Features
+
+* **db-manager:** expose create tables command ([3611f59](https://gitlab.coko.foundation/cokoapps/server/commit/3611f59facab8c5cbeb8c5f41d64a5bfc76c2f4c))
+
 ### [3.10.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.10.0...v3.10.1) (2024-02-22)
 
 
