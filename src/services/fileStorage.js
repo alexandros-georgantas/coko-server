@@ -38,7 +38,7 @@ const healthCheck = () => {
     const { bucket } = config.get('fileStorage')
 
     return new Promise((resolve, reject) => {
-      s3.getBucketLogging({ Bucket: bucket }, (err, data) => {
+      s3.headBucket({ Bucket: bucket }, (err, data) => {
         if (err) {
           logger.error(
             'File Storage Healthcheck: Communication to remote file service unsuccessful',
