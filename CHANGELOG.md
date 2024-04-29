@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.12.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.11.0...v3.12.0) (2024-04-29)
+
+
+### Features
+
+* **db-manager:** add POSTGRES_ALLOW_SELF_SIGNED_CERTIFICATES env variable ([5589a8e](https://gitlab.coko.foundation/cokoapps/server/commit/5589a8ec9055ebc973b22d4d708648a54cf93fc5))
+
+
+### Bug Fixes
+
+* switch s3 healthcheck to using headBucket for compatibility with do ([d732d75](https://gitlab.coko.foundation/cokoapps/server/commit/d732d7561f77c2c59e09f0cc2e9521a13c7fb3b7))
+
 ## [3.11.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.10.1...v3.11.0) (2024-04-18)
 
 
