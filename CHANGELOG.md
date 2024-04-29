@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.13.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.12.0...v3.13.0) (2024-04-29)
+
+
+### Features
+
+* expose isEnvVariableTrue helper function ([2ac0bac](https://gitlab.coko.foundation/cokoapps/server/commit/2ac0bac6db56a5040f31512fc75b8a1b3b81b5ee))
+
+
+### Bug Fixes
+
+* **db-manager:** fix immutability issue of db config so that it can be extended ([d75713b](https://gitlab.coko.foundation/cokoapps/server/commit/d75713b91dc79ef0349fbd47bf9586c338014a49))
+
 ## [3.12.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.11.0...v3.12.0) (2024-04-29)
 
 
