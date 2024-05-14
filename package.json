@@ -19,7 +19,7 @@
     "cz": "git-cz",
     "prepare": "husky install",
     "release": "standard-version",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test ALLOW_CONFIG_MUTATIONS=1 docker compose run server yarn jest"
   },
   "husky": {
     "hooks": {

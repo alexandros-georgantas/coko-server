@@ -33,15 +33,16 @@ services:
     ports:
       - ${SERVER_PORT:-3000}:${SERVER_PORT:-3000}
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV:-development}
       - POSTGRES_HOST=db
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
       - POSTGRES_DB=${POSTGRES_DB:-test_db}
       - POSTGRES_USER=${POSTGRES_USER:-test_user}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
-      - POSTGRES_ALLOW_SELF_SIGNED_CERTIFICATES=1
+      # - POSTGRES_ALLOW_SELF_SIGNED_CERTIFICATES=1
       - PUBSWEET_SECRET=${PUBSWEET_SECRET:-theSecret}
       - SERVER_PORT=${SERVER_PORT:-3000}
+      - ALLOW_CONFIG_MUTATIONS=${ALLOW_CONFIG_MUTATIONS}
       # - CLIENT_URL=${CLIENT_URL:-http://0.0.0.0:4000////}
       # - SERVER_URL=http://www.google.com///
     #   - MAILER_SENDER=${MAILER_SENDER:-dev@example.com}

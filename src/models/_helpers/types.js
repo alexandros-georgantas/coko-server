@@ -1,11 +1,4 @@
-const config = require('config')
-const union = require('lodash/union')
-
-const globalTeams = Object.values(config.get('teams.global'))
-const nonGlobalTeams = Object.values(config.get('teams.nonGlobal'))
-const allTeams = union(globalTeams, nonGlobalTeams)
-const flattenAllTeamRoles = allTeams.map(team => team.role)
-const flattenAllTeamDisplayNames = allTeams.map(team => team.displayName)
+const { rolesEnum, displayNamesEnum } = require('./teams')
 
 const alphaNumericStringNotNullable = {
   type: 'string',
@@ -110,12 +103,12 @@ const arrayOfStrings = {
 
 const teamRoles = {
   type: 'string',
-  enum: flattenAllTeamRoles,
+  enum: rolesEnum,
 }
 
 const teamDisplayNames = {
   type: 'string',
-  enum: flattenAllTeamDisplayNames,
+  enum: displayNamesEnum,
 }
 
 module.exports = {
