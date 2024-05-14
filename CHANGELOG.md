@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.13.1](https://gitlab.coko.foundation/cokoapps/server/compare/v3.13.0...v3.13.1) (2024-05-14)
+
+
+### Bug Fixes
+
+* **server:** fix bug where server crashes if teams are not defined ([62d20ff](https://gitlab.coko.foundation/cokoapps/server/commit/62d20ffec566f2ef4081f4bc41d20e8f3e5b30dd))
+
 ## [3.13.0](https://gitlab.coko.foundation/cokoapps/server/compare/v3.12.0...v3.13.0) (2024-04-29)
 
 
