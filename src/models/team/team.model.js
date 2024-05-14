@@ -1,6 +1,5 @@
 const find = require('lodash/find')
 const { ValidationError } = require('objection')
-const config = require('config')
 
 const logger = require('../../logger')
 const BaseModel = require('../base.model')
@@ -13,10 +12,9 @@ const {
   teamDisplayNames,
 } = require('../_helpers/types')
 
-const useTransaction = require('../useTransaction')
+const { globalTeams, nonGlobalTeams } = require('../_helpers/teams')
 
-const globalTeams = Object.values(config.get('teams.global'))
-const nonGlobalTeams = Object.values(config.get('teams.nonGlobal'))
+const useTransaction = require('../useTransaction')
 
 class Team extends BaseModel {
   constructor(properties) {

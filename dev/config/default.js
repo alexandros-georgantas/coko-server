@@ -12,8 +12,29 @@ module.exports = {
         displayName: 'Admin',
         role: 'admin',
       },
+      editor: {
+        displayName: 'Editor',
+        role: 'editor',
+      },
+      author: {
+        displayName: 'Author',
+        role: 'author',
+      },
     },
-    nonGlobal: {},
+    nonGlobal: {
+      editor: {
+        displayName: 'Editor',
+        role: 'editor',
+      },
+      author: {
+        displayName: 'Author',
+        role: 'author',
+      },
+      reviewer: {
+        displayName: 'Reviewer',
+        role: 'reviewer',
+      },
+    },
   },
   'pubsweet-server': {
     host: 'localhost',
