@@ -5,16 +5,21 @@ const config = require('config')
 const fs = require('fs')
 const path = require('path')
 const isFunction = require('lodash/isFunction')
+const chalk = require('chalk')
 
 const logger = require('./logger')
 const { migrate } = require('./dbManager/migrate')
 const seedGlobalTeams = require('./startup/seedGlobalTeams')
+const ensureTempFolderExists = require('./startup/ensureTempFolderExists')
 
 let server
 
 const startServer = async (app = express()) => {
   if (server) return server
 
+  logger.info(chalk.yellow('\n\u26CF  Coko server init tasks  \u26CF'))
+
+  await ensureTempFolderExists()
   await migrate()
   await seedGlobalTeams()
 
