@@ -5,7 +5,14 @@ const config = require('config')
 const { Umzug } = require('umzug')
 const sortBy = require('lodash/sortBy')
 const isFunction = require('lodash/isFunction')
-const chalk = require('chalk')
+
+const {
+  logTask,
+  logTaskItem,
+  logSuccess,
+  logErrorTask,
+  logSuccessTask,
+} = require('../logger/internals')
 
 const logger = require('../logger')
 const db = require('./db')
@@ -191,12 +198,12 @@ const getUmzug = threshold => {
 
   umzug.on('migrating', e => logger.info(`Migrating ${e.name}`))
   umzug.on('migrated', (e, f) =>
-    logger.info(chalk.green(`Successfully migrated ${e.name}\n`)),
+    logSuccess(`Successfully migrated ${e.name}\n`),
   )
 
   umzug.on('reverting', e => logger.info(`Reverting ${e.name}`))
   umzug.on('reverted', (e, f) =>
-    logger.info(chalk.green(`Successfully reverted ${e.name}\n`)),
+    logSuccess(`Successfully reverted ${e.name}\n`),
   )
 
   return umzug
@@ -216,25 +223,30 @@ const getMetaCreatedAsUnixTimestamp = async () => {
 }
 
 const updateCheckpoint = async () => {
+  const baseMsg = 'Last successful migrate checkpoint:'
+
   if (!(await meta.exists())) {
-    logger.info(
-      `${chalk.cyan(
-        '\u25cf',
-      )} Coko server meta table does not exist! Not updating last successful migrate checkpoint`,
+    logErrorTask(
+      `Coko server meta table does not exist! Not updating last successful migrate checkpoint`,
     )
     return
   }
 
-  logger.info(
-    `${chalk.cyan('\u25cf')} Last successful migrate checkpoint: updating`,
-  )
-
   const lastMigration = await migrations.getLastMigration()
+  const currentCheckpoint = await meta.getCheckpoint()
+
+  if (lastMigration === currentCheckpoint) {
+    logTaskItem(
+      `${baseMsg} Checkpoint already at latest migration. Performing no operation.`,
+    )
+    return
+  }
+
+  logTaskItem(`${baseMsg} updating`)
+
   await meta.setCheckpoint(lastMigration)
 
-  logger.info(
-    `${chalk.cyan('\u25cf')} Last successful migrate checkpoint: updated`,
-  )
+  logTaskItem(`${baseMsg} updated`)
 }
 // #endregion helpers
 
@@ -248,7 +260,7 @@ const updateCheckpoint = async () => {
  * coko server v4).
  */
 const migrate = async (options = {}) => {
-  logger.info(`\n${chalk.cyan('Task:')} Run migrations\n`)
+  logTask(`Run migrations`)
 
   const threshold = await getMetaCreatedAsUnixTimestamp()
   const umzug = getUmzug(threshold)
@@ -287,13 +299,7 @@ const migrate = async (options = {}) => {
     await umzug.up(otherOptions)
   }
 
-  logger.info(
-    `${chalk.cyan('\u25cf')} ${chalk.green(
-      'All migrations ran successfully!',
-    )} \u2705`,
-  )
-
-  // logger.info(`${chalk.cyan('\u25cf')} All migrations ran successfully! \u2705`)
+  logSuccessTask('All migrations ran successfully!')
   await updateCheckpoint()
 }
 
