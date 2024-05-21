@@ -5,8 +5,8 @@ const validations = require('./validations')
 
 let loggerConfig
 
-if (config.has('pubsweet-server')) {
-  loggerConfig = config.get('pubsweet-server').logger
+if (config.has('logger')) {
+  loggerConfig = config.get('logger')
 }
 
 let logger = validations.validateConfig(loggerConfig)

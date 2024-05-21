@@ -1,45 +1,39 @@
-// const path = require('path')
-
 const components = require('./components')
 
 module.exports = {
-  pubsweet: {
-    components,
-  },
+  components,
   teams: {
-    global: {
-      admin: {
+    global: [
+      {
         displayName: 'Admin',
         role: 'admin',
       },
-      editor: {
+      {
         displayName: 'Editor',
         role: 'editor',
       },
-      author: {
+      {
         displayName: 'Author',
         role: 'author',
       },
-    },
-    nonGlobal: {
-      editor: {
+    ],
+    nonGlobal: [
+      {
         displayName: 'Editor',
         role: 'editor',
       },
-      author: {
+      {
         displayName: 'Author',
         role: 'author',
       },
-      reviewer: {
+      {
         displayName: 'Reviewer',
         role: 'reviewer',
       },
-    },
+    ],
   },
-  'pubsweet-server': {
-    host: 'localhost',
-    useFileStorage: true,
-  },
+  host: 'localhost',
+  useFileStorage: true,
   fileStorage: {
     accessKeyId: 'cokoServerUser',
     secretAccessKey: 'superSecretUserPassword',

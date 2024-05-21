@@ -42,19 +42,19 @@ function getSchemaRecursively(componentName) {
   }
 }
 
-if (config.has('pubsweet.components')) {
-  config.get('pubsweet.components').forEach(componentName => {
+if (config.has('components')) {
+  config.get('components').forEach(componentName => {
     getSchemaRecursively(componentName)
   })
 }
 
 // merge in app-specific types and resolvers from config
-if (config.has('pubsweet-server.typeDefs')) {
-  typeDefs.push(config.get('pubsweet-server.typeDefs'))
+if (config.has('typeDefs')) {
+  typeDefs.push(config.get('typeDefs'))
 }
 
-if (config.has('pubsweet-server.resolvers')) {
-  merge(resolvers, config.get('pubsweet-server.resolvers'))
+if (config.has('resolvers')) {
+  merge(resolvers, config.get('resolvers'))
 }
 
 const schema = makeExecutableSchema({ typeDefs, resolvers })
