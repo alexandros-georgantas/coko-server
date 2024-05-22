@@ -1,12 +1,9 @@
 /* eslint-disable global-require, no-param-reassign */
 
-const path = require('path')
-
 const bodyParser = require('body-parser')
 const config = require('config')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
-const express = require('express')
 const helmet = require('helmet')
 const STATUS = require('http-status-codes')
 const morgan = require('morgan')
@@ -15,11 +12,12 @@ const wait = require('waait')
 
 const logger = require('./logger')
 const api = require('./routes/api')
-const index = require('./routes/index')
 const registerComponents = require('./registerComponents')
 const healthcheck = require('./healthcheck')
 const createCORSConfig = require('./corsConfig')
 const { connectToFileStorage } = require('./services/fileStorage')
+
+const mountStatic = require('./startup/static')
 
 const configureApp = async app => {
   app.use(bodyParser.json({ limit: '50mb' }))
@@ -56,17 +54,7 @@ const configureApp = async app => {
   const CORSConfig = createCORSConfig()
   app.use(cors(CORSConfig))
 
-  app.use(express.static(path.resolve('.', '_build')))
-  app.use(express.static(path.resolve('.', 'static')))
-
-  if (config.has('uploads')) {
-    app.use(
-      '/uploads',
-      express.static(
-        path.resolve(config.has('uploads') && config.get('uploads')),
-      ),
-    )
-  }
+  mountStatic(app)
 
   // Register passport authentication strategies
   app.use(passport.initialize())
@@ -96,10 +84,6 @@ const configureApp = async app => {
   if (useGraphQLServer) {
     const gqlApi = require('./graphqlApi')
     gqlApi(app) // GraphQL API
-  }
-
-  if (config.has('serveClient') && config.get('serveClient')) {
-    app.use('/', index)
   }
 
   app.use((err, req, res, next) => {

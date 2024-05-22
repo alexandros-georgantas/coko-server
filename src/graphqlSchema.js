@@ -11,19 +11,18 @@ const logger = require('./logger')
 const { logTask } = require('./logger/internals')
 const tryRequireRelative = require('./tryRequireRelative')
 
-const upload = require('./upload')
 const emailMiddleware = require('./middleware/email')
 
 // #region BUILD-SCHEMA
 // load base types and resolvers
-const typeDefs = [
-  `type Query, type Mutation, type Subscription`,
-  upload.typeDefs,
-]
+const typeDefs = [`type Query, type Mutation, type Subscription, scalar Upload`]
 
-const resolvers = merge({}, upload.resolvers, {
-  Upload: GraphQLUpload,
-})
+const resolvers = merge(
+  {},
+  {
+    Upload: GraphQLUpload,
+  },
+)
 
 // recursively merge in component types and resolvers
 function getSchemaRecursively(componentName) {
@@ -46,15 +45,6 @@ if (config.has('components')) {
   config.get('components').forEach(componentName => {
     getSchemaRecursively(componentName)
   })
-}
-
-// merge in app-specific types and resolvers from config
-if (config.has('typeDefs')) {
-  typeDefs.push(config.get('typeDefs'))
-}
-
-if (config.has('resolvers')) {
-  merge(resolvers, config.get('resolvers'))
 }
 
 const schema = makeExecutableSchema({ typeDefs, resolvers })
