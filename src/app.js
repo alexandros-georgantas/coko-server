@@ -8,14 +8,12 @@ const helmet = require('helmet')
 const STATUS = require('http-status-codes')
 const morgan = require('morgan')
 const passport = require('passport')
-const wait = require('waait')
 
 const logger = require('./logger')
 const api = require('./routes/api')
 const registerComponents = require('./registerComponents')
 const healthcheck = require('./healthcheck')
 const createCORSConfig = require('./corsConfig')
-const { connectToFileStorage } = require('./services/fileStorage')
 
 const mountStatic = require('./startup/static')
 
@@ -113,45 +111,6 @@ const configureApp = async app => {
       .status(err.status || STATUS.INTERNAL_SERVER_ERROR)
       .json({ message: err.message })
   })
-
-  let useJobQueue = true
-
-  if (config.has('useJobQueue') && config.get('useJobQueue') === false) {
-    useJobQueue = false
-  }
-
-  if (config.has('useFileStorage') && config.get('useFileStorage')) {
-    await connectToFileStorage()
-  }
-
-  // Actions to perform when the HTTP server starts listening
-  app.onListen = async server => {
-    if (useGraphQLServer) {
-      const { addSubscriptions } = require('./graphql/subscriptions')
-      addSubscriptions(server) // Add GraphQL subscriptions
-    }
-
-    if (useJobQueue) {
-      const { startJobQueue, subscribeJobsToQueue } = require('./jobs')
-      await startJobQueue() // Manage job queue
-      await subscribeJobsToQueue() // Subscribe job callbacks to the queue
-    }
-
-    if (config.has('cron.path')) {
-      /* eslint-disable-next-line import/no-dynamic-require */
-      require(config.get('cron.path'))
-    }
-  }
-
-  // Actions to perform when the server closes
-  app.onClose = async () => {
-    if (useJobQueue) {
-      const { stopJobQueue } = require('./jobs')
-      await stopJobQueue()
-    }
-
-    return wait(500)
-  }
 
   return app
 }
