@@ -12,7 +12,6 @@ const { File } = require('./models')
 const { createFile, deleteFiles } = require('./models/file/file.controller')
 
 const { boss, connectToJobQueue } = require('./jobs')
-const startServer = require('./startServer')
 const { BaseModel, useTransaction } = require('./models')
 const modelTypes = require('./models/_helpers/types')
 const tempFolderPath = require('./utils/tempFolderPath')
@@ -30,6 +29,7 @@ const WaxToDocxConverter = require('./services/docx/docx.service')
 
 const activityLog = require('./services/activityLog')
 const { isEnvVariableTrue } = require('./utils/env')
+const request = require('./utils/request')
 
 // Do not expose connectToFileStorage
 const fileStorage = {
@@ -58,7 +58,6 @@ module.exports = {
   createJWT,
   verifyJWT,
   pubsubManager,
-  startServer,
   modelTypes,
   fileStorage,
   createFile,
@@ -73,6 +72,7 @@ module.exports = {
   migrate,
   useTransaction,
   isEnvVariableTrue,
+  request,
   tempFolderPath,
 
   cron,
